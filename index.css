@@ -191,22 +191,31 @@
 }
 
 @media (max-width: 767px) {
+  .u-section-1 .u-sheet-1 {
+    min-height: 909px;
+  }
+
   .u-section-1 .u-image-1 {
+    margin-top: 232px;
     margin-right: initial;
     margin-left: initial;
     width: auto;
   }
 
   .u-section-1 .u-group-1 {
+    margin-top: -673px;
     margin-right: initial;
     margin-left: initial;
     width: auto;
   }
 
+  .u-section-1 .u-list-1 {
+    width: 512px;
+    margin: 481px 0 26px auto;
+  }
+
   .u-section-1 .u-repeater-1 {
-    grid-auto-columns: calc(50% - 2.5px);
-    grid-template-columns: repeat(2, calc(50% - 2.5px));
-    min-height: 765px;
+    min-height: 170px;
   }
 }
 
@@ -248,8 +257,6 @@
   }
 
   .u-section-1 .u-repeater-1 {
-    grid-auto-columns: calc(25% - 3.75px);
-    grid-template-columns: repeat(4, calc(25% - 3.75px));
     min-height: 147px;
   }
 
@@ -356,7 +363,7 @@
   }
 
   .u-section-2 .u-image-1 {
-    min-height: 380px;
+    min-height: 490px;
   }
 
   .u-section-2 .u-container-layout-1 {
@@ -966,34 +973,33 @@
 
 @media (max-width: 767px) {
    .u-section-4 {
-    min-height: 1988px;
+    min-height: auto;
   }
 
   .u-section-4 .u-sheet-1 {
-    min-height: 3790px;
+    min-height: 991px;
   }
 
   .u-section-4 .u-shape-1 {
     width: 402px;
-    height: 2907px;
-    margin-right: 34px;
-    margin-left: 50px;
+    height: 880px;
+    margin-top: 30px;
+    margin-right: auto;
   }
 
   .u-section-4 .u-gallery-1 {
-    height: 2486px;
+    height: 300px;
+    margin-top: -808px;
     width: auto;
     margin-right: initial;
     margin-left: initial;
   }
 
-  .u-section-4 .u-gallery-inner-1 {
-    grid-template-columns: repeat(1, auto);
-  }
-
   .u-section-4 .u-group-1 {
     width: 425px;
-    margin-right: 50px;
+    margin-top: 30px;
+    margin-right: auto;
+    margin-bottom: 60px;
   }
 }
 
@@ -1010,8 +1016,6 @@
     width: 276px;
     height: 1485px;
     margin-top: 32px;
-    margin-left: auto;
-    margin-right: auto;
   }
 
   .u-section-4 .u-gallery-1 {
@@ -1022,11 +1026,14 @@
     margin-left: initial;
   }
 
+  .u-section-4 .u-gallery-inner-1 {
+    grid-template-columns: repeat(1, auto);
+  }
+
   .u-section-4 .u-group-1 {
     width: 305px;
     min-height: 463px;
     margin-top: 32px;
-    margin-right: auto;
     margin-bottom: 69px;
   }
 

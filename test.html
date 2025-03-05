@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turmeric Dragon - 控制器展示</title>
+    <style>
+        body {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            overflow: hidden;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1s ease-in-out;
+            /* 1 秒過渡 */
+            z-index: -1;
+        }
+
+        body::before {
+            background-image: var(--current-background, none);
+            opacity: 1;
+        }
+
+        body::after {
+            background-image: var(--next-background, none);
+            opacity: 0;
+        }
+
+        body.fade-out::before {
+            opacity: 0;
+        }
+
+        body.fade-out::after {
+            opacity: 1;
+        }
+
+
+        /* 新增：確保在切換完成後，偽元素狀態被正確覆蓋 */
+        body.fade-completed::before {
+            opacity: 1 !important;
+        }
+
+        body.fade-completed::after {
+            opacity: 0 !important;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            /* 垂直置中 */
+            justify-content: center;
+            /* 水平置中 */
+            height: 100vh;
+        }
+
+        /* 左側內容區 */
+        .left-content {
+            flex: 3;
+            padding: 40px 15%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-wrapper {
+            transition: transform 0.6s;
+        }
+
+        .product-card {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 400px;
+            border-radius: 15px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
+        }
+
+        .product-title {
+            font-size: 2.5rem;
+            color: #000;
+            text-shadow: -1px -1px 0 #fff,
+                1px -1px 0 #fff,
+                -1px 1px 0 #fff,
+                1px 1px 0 #fff;
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+
+        .product-subtitle {
+            font-size: 1.8rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .product-desc {
+            color: #888;
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        /* 右側選擇區 */
+        .image-picker {
+            flex: 1;
+            width: 400px;
+            position: fixed;
+            right: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.6s;
+            padding: 20px 0;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        @media (max-width: 950px) {
+            .image-picker {
+                flex-direction: column;
+                width: 30%;
+                gap: 20px;
+                /* 縱向排列時增加間距 */
+            }
+        }
+
+        .image-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .image-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 動畫類 */
+        .slide-out {
+            transform: translateX(100%);
+        }
+
+        .rotate-up {
+            transform: translateY(-100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 左側內容 -->
+        <div class="left-content">
+            <div class="content-wrapper">
+                <div class="product-card">
+                    <h1 class="product-title">I'm Gamer</h1>
+                    <h2 class="product-subtitle"></h2>
+                    <p class="product-desc">我的興趣之一就是打遊戲，身為一名 Gamer，各種類型的遊戲我都愛涉略！無論是競技對戰的
+                        LOL、Overwatch，還是能開拓世界的原神、崩鐵、艾爾登、Minecraft等，每款遊戲都有獨特的魅力。遊戲不只是娛樂，更是一種策略與挑戰，每當突破瓶頸或戰勝強敵時，那種成就感和寫程式
+                        Debug
+                        成功的快感不相上下！</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側顏色選擇 -->
+        <div class="image-picker">
+            <div class="image-item" data-image="images/genshin.gif" style="background-image: url('images/genshin.jpg')">
+            </div>
+            <div class="image-item" data-image="images/star_rail.gif"
+                style="background-image: url('images/star_rail.jpg')">
+            </div>
+            <div class="image-item" data-image="images/image.jpg" style="background-image: url('images/lol.png')"></div>
+            <div class="image-item" data-image="images/image.jpg" style="background-image: url('images/ow.png')"></div>
+            <div class="image-item" data-image="images/image.jpg"
+                style="background-image: url('images/elden_ring.jpg')"></div>
+        </div>
+    </div>
+
+    <script>
+        const colorItems = document.querySelectorAll('.image-item');
+        const contentWrapper = document.querySelector('.content-wrapper');
+        const colorPicker = document.querySelector('.image-picker');
+        const productTitle = document.querySelector('.product-title');
+        const productSubtitle = document.querySelector('.product-subtitle');
+        const productDesc = document.querySelector('.product-desc');
+        const body = document.body;
+
+        // 顏色對應內容
+        const contentData = {
+            'images/genshin.gif': {
+                title: '原神',
+                subtitle: '',
+                desc: ''
+            },
+            'images/star_rail.gif': {
+                title: '崩壞:星穹鐵道',
+                subtitle: '',
+                desc: ''
+            },
+            'images/image.jpg': {
+                title: '',
+                subtitle: '',
+                desc: ''
+            },
+            '': {
+                title: 'Emerald Green',
+                subtitle: 'Eco-Friendly Edition',
+                desc: '環保綠色版本，採用再生材料'
+            }
+        };
+
+        const imageItems = document.querySelectorAll('.image-item');
+        imageItems.forEach(item => {
+            const imageUrl = item.getAttribute('data-image');
+            const img = new Image();
+            img.src = imageUrl; // 預加載圖片
+        });
+
+        colorItems.forEach(item => {
+            item.addEventListener('click', function () {
+                const selectedImageUrl = item.getAttribute('data-image'); // 獲取圖片的 URL
+
+                // 左側滾輪動畫
+                contentWrapper.style.transform = 'translateY(-100%)';
+                setTimeout(() => {
+                    contentWrapper.style.transform = 'translateY(0)';
+                    // 更新內容
+                    productTitle.textContent = contentData[selectedImageUrl].title;
+                    productSubtitle.textContent = contentData[selectedImageUrl].subtitle;
+                    productDesc.textContent = contentData[selectedImageUrl].desc;
+                }, 600);
+
+                // 右側收起動畫
+                colorPicker.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    colorPicker.style.transform = 'translateX(0)';
+                }, 600);
+
+                // 背景淡入淡出
+                body.style.setProperty('--next-background', `url('${selectedImageUrl}')`);
+                body.classList.add('fade-out');
+
+                setTimeout(() => {
+                    body.style.setProperty('--current-background', `url('${selectedImageUrl}')`);
+                    body.classList.remove('fade-out');
+                    body.classList.add('fade-completed'); // 添加新類別確保狀態覆蓋
+
+                    // 短暫延遲後移除新類別，避免影響下次動畫
+                    setTimeout(() => {
+                        body.classList.remove('fade-completed');
+                    }, 50);
+                }, 500); // 確保與 CSS 過渡時間一致（1s）
+            });
+        });
+    </script>
+</body>
+
+</html>

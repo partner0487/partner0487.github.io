@@ -12,27 +12,27 @@ const contentData = {
     'genshin': {
         title: '原神',
         subtitle: 'UID：900498591',
-        desc: ''
+        desc: '刻晴main'
     },
     'star_rail': {
         title: '崩壞：星穹鐵道',
         subtitle: 'UID：802859889',
-        desc: ''
+        desc: '雀門'
     },
     'lol': {
         title: '英雄聯盟',
         subtitle: 'ID：夥伴 Partnero#0487',
-        desc: ''
+        desc: '李星OTP'
     },
     'ow': {
         title: '鬥陣特攻',
-        subtitle: '',
-        desc: ''
+        subtitle: 'ID：PARTNER#4280',
+        desc: '白金輔助'
     },
     'elden_ring': {
         title: '艾爾登法環',
-        subtitle: '',
-        desc: ''
+        subtitle: 'steam：1192053283',
+        desc: '新手法師'
     }
 };
 

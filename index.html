@@ -9,12 +9,17 @@
 我是王家騏, Nam ultrices ultrices nec tortor pulvinar esteras loremips est, Experiences, Our Portfolio, Nam ultrices ultrices nec tortor pulvinar esteras loremips est orem., Follow us, Contact us, INTUITIVE">
   <meta name="description" content="">
   <title>Home</title>
+
   <link rel="stylesheet" href="nicepage.css" media="screen">
   <link rel="stylesheet" href="index.css" media="screen">
   <link rel="stylesheet" href="blob.css" media="screen">
+  <link rel="stylesheet" href="gamer.css" media="screen">
+
   <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="bolb.js" defer=""></script>
+  <script class="u-script" type="text/javascript" src="gamer.js" defer=""></script>
+
   <meta name="generator" content="Nicepage 7.4.4, nicepage.com">
   <link id="u-theme-google-font" rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
@@ -274,50 +279,32 @@
     </div>
   </section>
   <section class="u-clearfix u-palette-5-light-3 u-section-4" id="sec-704a">
-    <div class="u-clearfix u-sheet u-valign-middle-md u-sheet-1">
-      <div class="u-palette-2-base u-radius-20 u-shape u-shape-round u-shape-1"></div>
-      <div
-        class="u-expanded-width-md u-expanded-width-sm u-expanded-width-xs u-gallery u-layout-grid u-lightbox u-no-transition u-show-text-on-hover u-gallery-1">
-        <div class="u-gallery-inner u-gallery-inner-1">
-          <div class="u-effect-fade u-gallery-item">
-            <div class="u-back-slide" data-image-width="1313" data-image-height="787">
-              <img class="u-back-image u-expanded" src="images/image1.png">
-            </div>
-            <div class="u-over-slide u-shading u-over-slide-1"></div>
-          </div>
-          <div class="u-effect-fade u-gallery-item">
-            <div class="u-back-slide" data-image-width="1918" data-image-height="1190">
-              <img class="u-back-image u-expanded" src="images/Screenshot_20250222_134205_Genshin_Impact1.jpg">
-            </div>
-            <div class="u-over-slide u-shading u-over-slide-2"></div>
-          </div>
-          <div class="u-effect-fade u-gallery-item">
-            <div class="u-back-slide" data-image-width="2362" data-image-height="1327">
-              <img class="u-back-image u-expanded" src="images/Screenshot_20250222_134545_HonkaiStarRail1.jpg">
-            </div>
-            <div class="u-over-slide u-shading u-over-slide-3"></div>
-          </div>
-          <div class="u-effect-fade u-gallery-item">
-            <div class="u-back-slide" data-image-width="1123" data-image-height="632">
-              <img class="u-back-image u-expanded" src="images/2025-02-22134803.png">
-            </div>
-            <div class="u-over-slide u-shading u-over-slide-4"></div>
+    <div class="container">
+      <!-- 左側內容 -->
+      <div class="left-content">
+        <div class="content-wrapper">
+          <div class="product-card">
+            <h1 class="product-title">I'm Gamer</h1>
+            <h2 class="product-subtitle">遊戲不只是娛樂</p>也是我的生活</h2>
+            <p class="product-desc">點擊右側查看細節</p>
+            <img class="product-image" src="images/image1.png" alt="Product Image">
           </div>
         </div>
       </div>
-      <div
-        class="u-align-left u-border-2 u-border-grey-75 u-container-align-left u-container-style u-group u-radius-20 u-shape-round u-white u-group-1">
-        <div class="u-container-layout u-valign-bottom-xs u-container-layout-1">
-          <h1 class="u-text u-text-palette-1-base u-text-1">Gamer</h1>
-          <p class="u-text u-text-2"> 我的興趣之一就是打遊戲，身為一名 Gamer，各種類型的遊戲我都愛涉略！無論是競技對戰的
-            LOL、Overwatch，還是能開拓世界的原神、崩鐵、艾爾登、Minecraft等，每款遊戲都有獨特的魅力。遊戲不只是娛樂，更是一種策略與挑戰，每當突破瓶頸或戰勝強敵時，那種成就感和寫程式 Debug
-            成功的快感不相上下！</p>
-        </div>
+
+      <!-- 右側影片選擇 -->
+      <div class="video-picker">
+        <div class="video-item" data="genshin" style="background-image: url('images/genshin.jpg')"></div>
+        <div class="video-item" data="star_rail" style="background-image: url('images/star_rail.jpg')"></div>
+        <div class="video-item" data="lol" style="background-image: url('images/lol.png')"></div>
+        <div class="video-item" data="ow" style="background-image: url('images/ow.png')"></div>
+        <div class="video-item" data="elden_ring"style="background-image: url('images/elden_ring.jpg')"></div>
       </div>
+
+      <!-- 動態背景影片容器 -->
+      <video id="background-video" autoplay muted loop class="background-video"></video>
     </div>
   </section>
-
-
 
   <footer class="u-align-center u-clearfix u-container-align-center u-footer u-grey-80 u-footer" id="footer">
     <div class="u-clearfix u-sheet u-sheet-1">
@@ -325,7 +312,16 @@
     </div>
   </footer>
   <section class="u-backlink u-clearfix u-grey-80">
-    
+<<<<<<< HEAD
+
+=======
+    <p class="u-text">
+      <span>This site was created with the </span>
+      <a class="u-link" href="https://nicepage.com/" target="_blank" rel="nofollow">
+        <span>Nicepage</span>
+      </a>
+    </p>
+>>>>>>> parent of 164f0a5 (test somthing cool)
   </section>
 
 </body>

@@ -1,0 +1,39 @@
+.language-selector {
+    font-family: Arial, sans-serif;
+    margin: -55px auto auto 70px;
+    display: flex; /* 啟用 flexbox 佈局 */
+    align-items: center; /* 垂直居中 */
+    gap: 5px; /* 設置元素之間的間距 */
+    height: auto;
+}
+
+@media (max-width: 1199px) {
+    .language-selector {
+        width: auto;
+    }
+}
+
+.language-selector label {
+    font-size: 16px;
+    white-space: nowrap; /* 防止文字換行 */
+}
+
+/* 調整 Google 翻譯下拉選單的樣式 */
+.goog-te-combo {
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.goog-te-combo:hover {
+    border-color: #888;
+}
+
+.goog-te-combo:focus {
+    outline: none;
+    border-color: #555;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}

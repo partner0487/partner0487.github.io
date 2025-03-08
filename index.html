@@ -14,11 +14,13 @@
   <link rel="stylesheet" href="index.css" media="screen">
   <link rel="stylesheet" href="blob.css" media="screen">
   <link rel="stylesheet" href="gamer.css" media="screen">
+  <link rel="stylesheet" href="language.css" media="screen">
 
   <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="bolb.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="gamer.js" defer=""></script>
+  <script class="u-script" type="text/javascript" src="language.js" defer=""></script>
 
   <meta name="generator" content="Nicepage 7.4.4, nicepage.com">
   <link id="u-theme-google-font" rel="stylesheet"
@@ -41,9 +43,19 @@
   class="u-body u-xl-mode" data-lang="en">
   <header class="u-clearfix u-header u-header" id="header">
     <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-      <a href="#" class="u-image u-logo u-image-1" data-image-width="828" data-image-height="828">
+      <a href="#" class="u-image u-image-1" data-image-width="828" data-image-height="828">
         <img src="images/logo.png" class="u-logo-image u-logo-image-1">
       </a>
+
+      <div class="language-selector" style="display: inline-block; margin-left: 20px;">
+        <label for="language">選擇語言:</label>
+        <select id="language">
+          <option value="zh-TW">繁體中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+        </select>
+      </div>
+
       <nav class="u-menu u-menu-one-level u-offcanvas u-menu-1">
         <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;">
           <a class="u-button-style u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-top-bottom-menu-spacing u-hamburger-link u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"

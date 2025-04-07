@@ -12,27 +12,32 @@ const contentData = {
     'genshin': {
         title: '原神',
         subtitle: 'UID：900498591',
-        desc: '刻晴main'
+        desc: '刻晴main',
+        color: "purple"
     },
     'star_rail': {
         title: '崩壞：星穹鐵道',
         subtitle: 'UID：802859889',
-        desc: '雀門'
+        desc: '雀門',
+        color: "lightgreen"
     },
     'lol': {
         title: '英雄聯盟',
         subtitle: 'ID：夥伴 Partnero#0487',
-        desc: '李星OTP'
+        desc: '李星OTP',
+        color: "lightblue"
     },
     'ow': {
         title: '鬥陣特攻',
         subtitle: 'ID：PARTNER#4280',
-        desc: '白金輔助'
+        desc: '白金輔助',
+        color: "blue"
     },
     'elden_ring': {
         title: '艾爾登法環',
         subtitle: 'steam：1192053283',
-        desc: '新手法師'
+        desc: '新手法師',
+        color: "gold"
     }
 };
 
@@ -53,20 +58,6 @@ videoItems.forEach(item => {
             }
         }
 
-        function getBase64Video(url, callback) {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function () {
-                const reader = new FileReader();
-                reader.onloadend = function () {
-                    callback(reader.result); // Base64 編碼的 Data URI
-                };
-                reader.readAsDataURL(xhr.response);
-            };
-            xhr.open('GET', url);
-            xhr.responseType = 'blob';
-            xhr.send();
-        }
-
         // Ensure your function is asynchronous
         async function updateContentAndAnimate() {
             // Start the upward animation
@@ -79,6 +70,7 @@ videoItems.forEach(item => {
             productTitle.textContent = contentData[selectedFileName].title;
             productSubtitle.textContent = contentData[selectedFileName].subtitle;
             productDesc.textContent = contentData[selectedFileName].desc;
+            productDesc.style.color = contentData[selectedFileName].color;
 
             // Check if the image exists
             const exists = await fileExists(selectedImageUrl);
@@ -109,13 +101,19 @@ videoItems.forEach(item => {
         backgroundVideo.classList.add('hidden');
 
         // 左側滾輪動畫
-        contentWrapper.style.transform = 'translateY(-100%)';
+        if (window.innerWidth <= 980) {
+            contentWrapper.style.transform = 'translateY(-150%)';
+        } else {
+            contentWrapper.style.transform = 'translateY(-100%)';
+        }
         setTimeout(() => {
             contentWrapper.style.transform = 'translateY(0)'; // 更新內容 
 
             productTitle.textContent = contentData[selectedFileName].title;
             productSubtitle.textContent = contentData[selectedFileName].subtitle;
             productDesc.textContent = contentData[selectedFileName].desc;
+            productDesc.style.color = contentData[selectedFileName].color;
+
             productImage.src = selectedImageUrl; // Update the source
             fileExists(selectedImageUrl).then((exists) => {
                 if (exists) {
@@ -135,10 +133,20 @@ videoItems.forEach(item => {
         }, 600);
 
         // 右側收起動畫
-        colorPicker.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            colorPicker.style.transform = 'translateX(0)';
-        }, 600);
+        if (window.innerWidth <= 980) {
+            // 螢幕小於等於 980px（行動版）：往下收起
+            colorPicker.style.transform = 'translateY(100%)';
+            setTimeout(() => {
+                colorPicker.style.transform = 'translateY(0)';
+            }, 600);
+        } else {
+            // 螢幕大於 980px（桌機版）：往右收起
+            colorPicker.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                colorPicker.style.transform = 'translateX(0)';
+            }, 600);
+        }
+        
 
         // 等待淡出動畫結束後更新影片並播放
         setTimeout(() => {

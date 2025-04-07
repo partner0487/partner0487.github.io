@@ -1,4 +1,14 @@
- .u-section-1 {
+.school-logo {
+  width: 30px;
+}
+
+.school-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* logo 和文字之間留點空隙 */
+}
+
+.u-section-1 {
   background-image: none;
 }
 

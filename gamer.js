@@ -38,6 +38,12 @@ const contentData = {
         subtitle: 'steam：1192053283',
         desc: '新手法師',
         color: "gold"
+    },
+    'MH': {
+        title: '魔物獵人荒野',
+        subtitle: 'ID：YW45P7K4',
+        desc: '雙刀俠',
+        color: "darkslateblue"
     }
 };
 
@@ -159,4 +165,22 @@ videoItems.forEach(item => {
             }, { once: true });
         }, 300); // 與 CSS 過渡時間一致
     });
+});
+
+// 圖片放大
+const zoomables = document.querySelectorAll('.zoomable');
+const overlay = document.getElementById('overlay');
+const overlayImg = document.getElementById('overlay-img');
+
+// 點擊圖片時顯示 overlay 並換圖
+zoomables.forEach(img => {
+  img.addEventListener('click', () => {
+    overlayImg.src = img.src;
+    overlay.classList.add('show');
+  });
+});
+
+// 點 overlay 任意區域時關閉
+overlay.addEventListener('click', () => {
+  overlay.classList.remove('show');
 });

@@ -1,0 +1,170 @@
+.matrix {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 0;
+  border: whitesmoke 1px solid;
+  font-size: clamp(14px, 1.2vw, 18px);
+
+}
+
+/* 角色卡片容器 */
+.character-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #2a2734;
+  border: 2px solid #3e3b54;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  display: flex;
+  gap: 1rem;
+}
+
+/* 頭像區設定 */
+.avatar-border {
+  width: 105px;
+  height: 105px;
+  padding: 2.5px; /* 邊框粗細 */
+  border-radius: 50%;
+  background: linear-gradient(270deg, #f6d365, #fda085, #ff6f91, #845ec2);
+  background-size: 800% 800%;
+  animation: rainbow-spin 8s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes rainbow-spin {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  > img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+}
+
+/* 角色詳細資料區 */
+.character-details {
+  flex: 1;
+}
+
+/* 標題風格 */
+.character-card h2,
+.character-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #ffcc66;
+}
+
+/* 角色狀態文字 */
+.character-stats p {
+  margin: 0.2rem 0;
+}
+
+/* 經驗值進度條 */
+.exp-bar {
+  position: relative;
+  background-color: #3e3b54;
+  height: 20px;
+  border-radius: 10px;
+  margin: 0.5rem 0 1rem 0;
+  overflow: hidden;
+}
+
+.exp-progress {
+  height: 100%;
+  width: 0;
+  background-color: lightblue;
+  transition: width 1.5s ease-out;
+}
+
+.exp-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.6rem;
+  color: #2a2734;
+  font-weight: bold;
+}
+
+/* 技能列表設定 */
+.skill-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skill-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.skill-name {
+  flex: 1;
+  display: inline-block;
+  min-width: 80px; /* 設定最小寬度 */
+}
+
+.skill-bar {
+  flex: 3;
+  margin: 0 1rem;
+  width: 100%;
+  height: 10px;
+  background-color: #3e3b54;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  height: 100%;
+  width: 0;
+  background-color: green;
+  transition: width 1.5s ease-out;
+}
+
+.skill-percent {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
+.skill-level {
+  flex: 1;
+  text-align: right;
+}
+
+.character-card h2,
+.character-card h3 {
+  color: #ffe599; /* 顯眼標題字色，偏淺金色 */
+}
+
+.character-stats p {
+  color: #e0e0e0; /* 統一文字風格 */
+}
+
+.exp-text {
+  color: #1e1c29; /* 經驗條內文字要深色才看得清 */
+  font-weight: bold;
+}
+
+.skill-name,
+.skill-level {
+  color: #f8f8f8; /* 技能名稱 & 等級文字也改亮 */
+}

@@ -15,12 +15,14 @@
   <link rel="stylesheet" href="blob.css" media="screen">
   <link rel="stylesheet" href="gamer.css" media="screen">
   <link rel="stylesheet" href="language.css" media="screen">
+  <link rel="stylesheet" href="skill.css" media="screen">
 
   <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="bolb.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="gamer.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="language.js" defer=""></script>
+  <script class="u-script" type="text/javascript" src="skill.js" defer=""></script>
 
 
   <meta name="generator" content="Nicepage 7.4.4, nicepage.com">
@@ -294,6 +296,128 @@
         </div>
       </div>
     </div>
+  </section>
+  
+  <section class="u-clearfix u-section-2 block-4" id="block-4">
+    <canvas id="matrix" class="matrix"></canvas>
+
+    <!-- <div class="u-clearfix u-sheet u-sheet-1"></div> -->
+    <div class="character-card">
+      <!-- 頭像區 -->
+      <div class="avatar-border">
+        <div class="avatar">
+          <img src="images/me.jpg" alt="Avatar">
+        </div>
+      </div>      
+      
+      <!-- 角色資訊 & 技能樹 -->
+      <div class="character-details">
+        <h2>角色能力面板</h2>
+        <div class="character-stats">
+          <p class="current-exp"><strong>Total Experience:</strong> 0 exp</p>
+          <div class="exp-bar">
+            <div class="exp-progress" data-percent="80"></div>
+            <span class="exp-text">Lv. 4 → Lv. 5 (1083 / 2200 exp)</span>
+          </div>
+        </div>
+    
+        <h3>My Skills:</h3>
+        <ul class="skill-list">
+          <li>
+            <span class="skill-name">HTML</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="70">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 4</span>
+          </li>
+          <li>
+            <span class="skill-name">Javascript</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="50">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 4</span>
+          </li>
+          <li>
+            <span class="skill-name">C++</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="40">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 4</span>
+          </li>
+          <li>
+            <span class="skill-name">Python</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="7">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 4</span>
+          </li>
+          <li>
+            <span class="skill-name">TypeScript</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="80">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 3</span>
+          </li>
+          <li>
+            <span class="skill-name">Verilog</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="37">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 2</span>
+          </li>
+          <li>
+            <span class="skill-name">SQL</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="78">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 1</span>
+          </li>
+          <li>
+            <span class="skill-name">Java</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="73">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 1</span>
+          </li>
+          <li>
+            <span class="skill-name">PHP</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="43">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 1</span>
+          </li>
+          <li>
+            <span class="skill-name">Kotlin</span>
+            <div class="skill-bar">
+              <div class="skill-progress" data-percent="10">
+                <span class="skill-percent"></span>
+              </div>
+            </div>
+            <span class="skill-level">Lv. 1</span>
+          </li>
+          <!-- 依需求加入更多技能 -->
+        </ul>
+      </div>
+    </div>
+    
   </section>
   <section 
   class="u-align-center u-palette-5-light-3 u-section-3" 

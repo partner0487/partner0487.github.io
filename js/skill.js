@@ -97,7 +97,7 @@ const observer = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.5 }
+  { threshold: 0.7 }
 );
 
 observer.observe(document.querySelector(".character-card")); // 監聽技能條的容器

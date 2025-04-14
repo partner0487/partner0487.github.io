@@ -313,7 +313,7 @@
 
 .u-section-2 .u-image-1 {
   min-height: 400px;
-  background-image: url("images/O9oBNRs1.jpg");
+  background-image: url(../images/usage.jpg);
   --radius: 10px;
   background-position: 50% 50%;
 }

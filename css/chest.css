@@ -14,10 +14,11 @@
   font-weight: bold;
   background: linear-gradient(
     90deg,
-    #7dd6b4 0%,
-    /* 淺綠 */ #3edb93 40%,
-    /* 祖母綠 */ #007f5f 100% /* 綠寶石 */
+    #7dd6b4 0%,/* 淺綠 */ 
+    #3edb93 40%,/* 祖母綠 */ 
+    #007f5f 100% /* 綠寶石 */
   );
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 6px rgba(100, 255, 200, 0.5); /* 綠光光暈 */

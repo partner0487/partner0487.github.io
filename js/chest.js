@@ -115,7 +115,7 @@ function showLoadingScreen() {
     overlay.classList.add("active");
   
     setTimeout(() => {
-      window.location.href = "About.html"; // 專案頁面
+      window.location.href = "project.html"; // 專案頁面
     }, 3000); // 播個3秒再跳頁
   }
   

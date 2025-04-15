@@ -1,0 +1,84 @@
+.floating-label {
+  position: absolute;
+  top: 20%; /* 可以微調讓它浮在 chest 上方 */
+  left: 50%;
+  transform: translate(-50%, -100%);
+  text-align: center;
+  pointer-events: none;
+  animation: floatUpDown 2s ease-in-out infinite;
+  z-index: 10;
+}
+
+.floating-label .line1 {
+  font-size: 40px;
+  font-weight: bold;
+  background: linear-gradient(
+    90deg,
+    #7dd6b4 0%,
+    /* 淺綠 */ #3edb93 40%,
+    /* 祖母綠 */ #007f5f 100% /* 綠寶石 */
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 6px rgba(100, 255, 200, 0.5); /* 綠光光暈 */
+}
+
+.floating-label .line2 {
+  font-size: 16px;
+  color: #ffffff;
+  opacity: 0.9;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+@keyframes floatUpDown {
+  0% {
+    transform: translate(-50%, -100%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -100%) translateY(-50px);
+  }
+  100% {
+    transform: translate(-50%, -100%) translateY(0);
+  }
+}
+
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none; /* 預設不顯示 */
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#loading-overlay.active {
+  display: flex;
+}
+
+#loading-video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loading-text {
+  position: relative;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00ffcc;
+  z-index: 1;
+  animation: flicker 1.2s infinite alternate;
+}
+
+@keyframes flicker {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}

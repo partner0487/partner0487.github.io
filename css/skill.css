@@ -60,8 +60,7 @@
 }
 
 /* 標題風格 */
-.character-card h2,
-.character-card h3 {
+.character-card h2{
   margin-top: 0;
   margin-bottom: 1rem;
   color: #ffcc66;
@@ -71,6 +70,23 @@
 .character-stats p {
   margin: 0.2rem 0;
 }
+
+.skill-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* 圖片與文字之間的間距 */
+}
+
+.skill-title img {
+  width: 3rem; /* 或你原本的 100px / 100rem 應該是打錯 XD */
+  height: auto;
+}
+
+.skill-title h3 {
+  margin: 0; /* 清除預設 margin */
+  font-size: 2rem;
+}
+
 
 /* 經驗值進度條 */
 .exp-bar {
@@ -168,3 +184,4 @@
 .skill-level {
   color: #f8f8f8; /* 技能名稱 & 等級文字也改亮 */
 }
+

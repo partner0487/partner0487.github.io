@@ -1,0 +1,195 @@
+.anime-label {
+  position: absolute;
+  top: 5%; /* 浮在頁面上方 */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  animation: floatUpDown 2.5s ease-in-out infinite;
+  z-index: 100;
+}
+
+.anime-label .line1 {
+  font-size: 2.5rem; /* 比40px小一點點，看起來精緻 */
+  font-weight: bold;
+  background: linear-gradient(
+    90deg,
+    #ff7b9c 0%,
+    /* 粉紅紅寶石 */ #ff416c 50%,
+    /* 濃一點 */ #ff003c 100% /* 深紅寶石 */
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 8px rgba(255, 80, 120, 0.6); /* 紅光光暈 */
+}
+
+/* 浮動畫 */
+@keyframes floatUpDown {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-10px);
+  }
+}
+
+.anime-card.highlight {
+  border: 3px solid #ff0; /* 黃色邊框 */
+  animation: highlight 1s ease-in-out infinite;
+}
+
+@keyframes highlight {
+  0% {
+    border-color: #ff0;
+  }
+  50% {
+    border-color: #f00;
+  }
+  100% {
+    border-color: #ff0;
+  }
+}
+
+.search-container {
+  position: absolute;
+  top: 3%; /* 讓搜尋框距離頁面上方 5% */
+  right: 15%; /* 讓搜尋框距離右邊 10% */
+  transform: translateX(50%); /* 水平居中對齊 */
+  z-index: 10; /* 確保搜尋框在最上層 */
+  padding: 10px 20px; /* 調整內邊距 */
+  border-radius: 8px; /* 邊框圓角 */
+}
+
+.search-container input {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #121212;
+  font-size: 16px;
+}
+
+.anime-board {
+  padding: 2rem;
+  padding-top: 120px;
+  margin: 0;
+  background: linear-gradient(135deg, #1a1a1a, #121212);
+  color: #fff;
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+.category-section {
+  margin-bottom: 2.5rem;
+}
+
+.category-title {
+  font-size: 1.5rem; /* 小一點 */
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+}
+
+.anime-list {
+  display: flex;
+  overflow-x: auto;
+  padding: 1rem;
+  gap: 1rem;
+  scroll-behavior: smooth;
+  cursor: grab;
+}
+
+.anime-card {
+  position: relative; /* 記得一定要 relative 才能讓角落元素定位！ */
+  flex: 0 0 auto;
+  width: 200px; /* 卡片變小一點 */
+  height: 100px; /* 卡片變小一點 */
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.anime-card.highlight {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.anime-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.recommend-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 1.5rem;
+  animation: pulse 2s infinite;
+}
+
+.anime-tags {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 1.5rem;
+  animation: pulse 2s infinite;
+}
+
+/* 💖 脈動一下，看起來更可愛 */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.anime-card h3 {
+  font-size: 0.9rem; /* 卡片內字也小一點 */
+  margin: 0;
+}
+
+/* 滑動條美化 */
+.anime-list::-webkit-scrollbar {
+  height: 6px; /* 更細緻一點 */
+}
+
+.anime-list::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.anime-list-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.left-btn {
+  left: -25px;
+}
+
+.right-btn {
+  right: -25px;
+}

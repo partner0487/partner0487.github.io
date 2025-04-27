@@ -1,6 +1,6 @@
 .anime-label {
   position: absolute;
-  top: 5%; /* 浮在頁面上方 */
+  top: 3%; /* 浮在頁面上方 */
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -54,11 +54,11 @@
 
 .search-container {
   position: absolute;
-  top: 3%; /* 讓搜尋框距離頁面上方 5% */
-  right: 15%; /* 讓搜尋框距離右邊 10% */
-  transform: translateX(50%); /* 水平居中對齊 */
+  top: 6%; /* 浮在頁面上方 */
+  left: 50%;
+  text-align: center;
+  transform: translate(-50%, -50%);
   z-index: 10; /* 確保搜尋框在最上層 */
-  padding: 10px 20px; /* 調整內邊距 */
   border-radius: 8px; /* 邊框圓角 */
 }
 

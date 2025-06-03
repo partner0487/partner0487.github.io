@@ -8,35 +8,38 @@ fetch(`https://api.github.com/users/${username}/repos?sort=updated`)
     const languageSet = new Set();
 
     data.forEach((repo) => {
-      if (repo.language) {
-        languageSet.add(repo.language); // 收集語言
-      }
-      else{
-        languageSet.add("Unknown"); // 收集語言
-      }
-
+      // 轉換語言分類用，但不修改原始 repo.language
+      const webLangs = ["TypeScript", "JavaScript", "HTML", "CSS"];
+      const displayLanguage = repo.language
+        ? (webLangs.includes(repo.language) ? "Web" : repo.language)
+        : "Unknown";
+    
+      languageSet.add(displayLanguage); // 收集語言分類
+    
       const card = document.createElement("div");
       card.className = "card";
-      card.dataset.category = repo.language || "Unknown"; // 設定資料類別
+      card.dataset.category = displayLanguage; // 設定分類用語言
+    
+      const iconLang = repo.language ? repo.language.toLowerCase() : null;
+      const iconImg = iconLang
+        ? `<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${iconLang}/${iconLang}-original.svg" onerror="this.style.display='none'" width="16" height="16" style="vertical-align: middle; margin-right: 6px;" />`
+        : "";
+    
       card.innerHTML = `
         <h2>${repo.name}</h2>
         <p>${repo.description || "（沒有描述）"}</p>
         <div class="repo-footer">
-            <span class="language">
-              ${
-                repo.language
-                  ? `<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${repo.language.toLowerCase()}/${repo.language.toLowerCase()}-original.svg" onerror="this.style.display='none'" width="16" height="16" style="vertical-align: middle; margin-right: 6px;" />`
-                  : ""
-              }
-              ${repo.language || "未知語言"} ・ ⭐ ${repo.stargazers_count}
-            </span>
-            <a href="${
-              repo.html_url
-            }" target="_blank" class="repo-btn">🔗 GitHub</a>
+          <span class="language">
+            ${iconImg}
+            ${repo.language || "未知語言"} ・ ⭐ ${repo.stargazers_count}
+          </span>
+          <a href="${repo.html_url}" target="_blank" class="repo-btn">🔗 GitHub</a>
         </div>
       `;
+    
       container.appendChild(card);
     });
+    
 
     // ✅ 自動建立語言按鈕
     const allBtn = `<button class="filter active" data-category="all">全部</button>`;

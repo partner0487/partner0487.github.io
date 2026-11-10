@@ -5,10 +5,9 @@ const matrixSection = canvas.closest("section");
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*";
 
-// 跟著系統的深色 / 淺色主題換顏色
-const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+// 跟著深色 / 淺色主題換顏色（主題切換時 js/site.js 會發 themechange 事件）
 const matrixColors = () =>
-  darkQuery.matches
+  document.documentElement.dataset.theme === "dark"
     ? { fade: "rgba(18, 20, 24, 0.2)", text: "#4a515c" } // 深色：深底、灰字
     : { fade: "rgba(255, 255, 255, 0.2)", text: "#111" };
 let colors = matrixColors();
@@ -46,7 +45,7 @@ function draw() {
 
 resetMatrix(); // 初始設定
 window.addEventListener("resize", resetMatrix); // 視窗改變時更新
-darkQuery.addEventListener("change", () => {
+window.addEventListener("themechange", () => {
   colors = matrixColors();
   resetMatrix(); // 重畫一次，舊顏色的字不會殘留
 });

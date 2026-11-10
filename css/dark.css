@@ -1,75 +1,139 @@
 /*
- * 深色模式：跟著系統主題（prefers-color-scheme）自動切換。
+ * 深色模式。
+ * 用哪個主題由 <head> 裡的一小段 script 決定（存過的選擇 > 系統主題），寫在 <html data-theme="dark|light">；
+ * 導覽列的太陽 / 月亮按鈕可以切換（js/site.js）。
  * 只覆寫原本是淺色的地方；動漫清單、能力面板、footer 本來就是深色，不用動。
- * 寶箱的 3D 背景（js/chest.js）和數字雨（js/skill.js）是在 JS 裡畫的，那邊也有對應的深色。
+ * 寶箱的 3D 背景（js/chest.js）和數字雨（js/skill.js）是在 JS 裡畫的，它們會聽 themechange 事件換色。
  */
 :root {
-  color-scheme: light dark; /* 讓捲軸、下拉選單等瀏覽器元件也跟著變色 */
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --dark-bg: #121418;
-    --dark-surface: #181b21;
-    --dark-text: #e6e6e6;
-    --dark-muted: #a0a8b2;
-    --dark-accent: #6fa8dc;
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark; /* 讓捲軸、下拉選單等瀏覽器元件也跟著變色 */
+  --dark-bg: #121418;
+  --dark-surface: #181b21;
+  --dark-text: #e6e6e6;
+  --dark-muted: #a0a8b2;
+}
 
-  /* ---- 底色和文字 ---- */
-  body,
-  .u-body {
-    background-color: var(--dark-bg);
-    color: var(--dark-text);
-  }
+/* ---- 底色和文字 ---- */
+[data-theme="dark"] body,
+[data-theme="dark"] .u-body {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
 
-  /* Nicepage 的淺灰區塊（首頁 hero、寶箱、研究方向、學歷、遊戲區） */
-  .u-palette-5-light-3,
-  section.u-palette-5-light-3:before {
-    background-color: var(--dark-surface) !important;
-    color: var(--dark-text);
-  }
+/* Nicepage 的淺灰區塊（首頁 hero、寶箱、研究方向、學歷、遊戲區） */
+[data-theme="dark"] .u-palette-5-light-3,
+[data-theme="dark"] section.u-palette-5-light-3:before {
+  background-color: var(--dark-surface) !important;
+  color: var(--dark-text);
+}
 
-  /* 學歷的學校名稱（原本是深灰色） */
-  .u-text-palette-5-dark-2 {
-    color: var(--dark-muted) !important;
-  }
+/* 學歷的學校名稱（原本是深灰色） */
+[data-theme="dark"] .u-text-palette-5-dark-2 {
+  color: var(--dark-muted) !important;
+}
 
-  /* 首頁 hero 的社群圖示是黑色的，反白（footer 也是這樣做） */
-  #sec-1b52 img[data-href] {
-    filter: invert(1);
-  }
+/* 首頁 hero 的社群圖示是黑色的，反白（footer 也是這樣做） */
+[data-theme="dark"] #sec-1b52 img[data-href] {
+  filter: invert(1);
+}
 
-  /* Google 翻譯的下拉選單 */
-  .goog-te-combo {
-    border-color: #3a3f47;
-    background-color: #22262d;
-    color: var(--dark-text);
-  }
+/* Google 翻譯的下拉選單 */
+[data-theme="dark"] .goog-te-combo {
+  border-color: #3a3f47;
+  background-color: #22262d;
+  color: var(--dark-text);
+}
 
-  /* ---- 興趣頁：遊戲區 ---- */
-  /* 還沒選遊戲時，背景影片元素是一整片底色 */
-  .background-video {
-    background-color: var(--dark-surface);
-  }
+/* ---- 興趣頁：遊戲區 ---- */
+/* 還沒選遊戲時，背景影片元素是一整片底色 */
+[data-theme="dark"] .background-video {
+  background-color: var(--dark-surface);
+}
 
-  /* 卡片文字原本是黑字白框（為了疊在亮色影片上），深色改成白字黑框 */
-  .product-title {
-    color: #fff;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  }
+/* 卡片文字原本是黑字白框（為了疊在亮色影片上），深色改成白字黑框 */
+[data-theme="dark"] .product-title {
+  color: #fff;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
 
-  .product-subtitle {
-    color: #c8ccd2;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  }
+[data-theme="dark"] .product-subtitle {
+  color: #c8ccd2;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
 
-  .product-desc {
-    color: var(--dark-text);
-  }
+[data-theme="dark"] .product-desc {
+  color: var(--dark-text);
+}
 
-  /* ---- 關於頁：數字雨的邊框（字和底色在 js/skill.js） ---- */
-  .matrix {
-    border-color: #2a2d33;
-  }
+/* ---- 關於頁：數字雨的邊框（字和底色在 js/skill.js） ---- */
+[data-theme="dark"] .matrix {
+  border-color: #2a2d33;
+}
+
+/* ---- 太陽 / 月亮切換按鈕（js/site.js 產生） ---- */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.3s;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  background-color: rgba(127, 127, 127, 0.18);
+}
+
+.theme-toggle:active {
+  transform: rotate(30deg);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 淺色時顯示月亮（按了變深色），深色時顯示太陽 */
+.theme-toggle .icon-sun,
+[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
+}
+
+/* 桌機：放在導覽列最後一項（其他項目是 inline-block，這裡也要是 inline 才不會換行） */
+.theme-toggle-item {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* 手機：放在漢堡按鈕左邊，兩個排成同一列 */
+.menu-collapse .theme-toggle {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.u-menu .menu-collapse .u-hamburger-link {
+  display: inline-block;
+  vertical-align: middle;
 }

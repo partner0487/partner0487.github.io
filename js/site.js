@@ -3,6 +3,7 @@
 // 2. 手機版漢堡選單的開關
 // 3. 標示目前所在頁面的選單項目
 // 4. 讓有 data-href 的元素可以點擊（社群圖示、學校 logo）
+// 5. 深色 / 淺色主題切換（太陽 / 月亮按鈕）
 
 (() => {
   const root = document.documentElement;
@@ -92,6 +93,70 @@
       if (e.key === "Enter") go();
     });
   });
+
+  // ---- 5. 深色 / 淺色主題 ----
+  // 一開始用哪個主題，已經由 <head> 裡的 script 決定並寫在 <html data-theme>（避免先閃一下白畫面）。
+  // 這裡負責：產生切換按鈕、記住使用者的選擇、沒選過的人跟著系統主題走。
+  const THEME_KEY = "theme";
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const savedTheme = () => {
+    try {
+      return localStorage.getItem(THEME_KEY);
+    } catch (e) {
+      return null; // 無痕模式或封鎖儲存空間時會丟錯
+    }
+  };
+
+  function setTheme(theme, save) {
+    root.dataset.theme = theme;
+    if (save) {
+      try {
+        localStorage.setItem(THEME_KEY, theme);
+      } catch (e) {}
+    }
+    document.querySelectorAll(".theme-toggle").forEach((btn) => {
+      btn.setAttribute("aria-label", theme === "dark" ? "切換成淺色模式" : "切換成深色模式");
+      btn.setAttribute("aria-pressed", String(theme === "dark"));
+    });
+    // 寶箱和數字雨是在 JS 裡畫的，聽這個事件換顏色
+    window.dispatchEvent(new CustomEvent("themechange", { detail: theme }));
+  }
+
+  systemDark.addEventListener("change", (e) => {
+    if (!savedTheme()) setTheme(e.matches ? "dark" : "light", false);
+  });
+
+  const THEME_ICONS =
+    '<svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>' +
+    '<svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/>' +
+    '<path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+
+  function makeThemeToggle() {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "theme-toggle";
+    btn.innerHTML = THEME_ICONS;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setTheme(root.dataset.theme === "dark" ? "light" : "dark", true);
+    });
+    return btn;
+  }
+
+  if (nav) {
+    // 桌機：導覽列最後一項；手機：漢堡按鈕左邊
+    const list = nav.querySelector(".u-nav-container .u-nav");
+    if (list) {
+      const li = document.createElement("li");
+      li.className = "u-nav-item theme-toggle-item";
+      li.append(makeThemeToggle());
+      list.append(li);
+    }
+    const collapse = nav.querySelector(".menu-collapse");
+    if (collapse) collapse.prepend(makeThemeToggle());
+  }
+  setTheme(root.dataset.theme || (systemDark.matches ? "dark" : "light"), false);
 
   updateResponsive();
   window.addEventListener("resize", updateResponsive);

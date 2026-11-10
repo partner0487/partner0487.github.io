@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title>Partner0487</title>
+  <!-- 先決定深色 / 淺色（存過的選擇 > 系統主題），放在 CSS 前面才不會先閃一下白畫面 -->
+  <script>(() => { let t; try { t = localStorage.getItem("theme"); } catch (e) {} if (t !== "dark" && t !== "light") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; document.documentElement.dataset.theme = t; })();</script>
   <meta name="description" content="Partner0487 的個人網站：成大資訊所碩士生，研究電腦視覺，喜歡做各種軟體專案。">
   <link rel="icon" href="images/favicon/favicon.ico" sizes="any">
   <link rel="icon" href="images/favicon/favicon-32.png" type="image/png">

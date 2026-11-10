@@ -44,7 +44,7 @@ function getNumberEmojis(number) {
 }
 
 // 讀取 JSON 檔案
-fetch("images/anime.json")
+fetch("data/anime.json")
   .then((response) => response.json())
   .then((animeData) => {
     // 分類

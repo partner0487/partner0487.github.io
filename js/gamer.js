@@ -40,7 +40,7 @@ const contentData = {
         desc: '新手法師',
         color: "gold"
     },
-    'MH': {
+    'monster_hunter': {
         title: '魔物獵人荒野',
         subtitle: 'ID：YW45P7K4',
         desc: '雙刀俠',
@@ -51,8 +51,8 @@ const contentData = {
 videoItems.forEach(item => {
     item.addEventListener('click', function () {
         const selectedFileName = item.getAttribute('data');
-        const selectedVideoUrl = `images/${selectedFileName}.mp4`; // Dynamically generate the full path
-        const selectedImageUrl = `images/${contentData[selectedFileName].detail || `${selectedFileName}_detail.jpg`}`;
+        const selectedVideoUrl = `videos/games/${selectedFileName}.mp4`;
+        const selectedImageUrl = `images/games/${contentData[selectedFileName].detail || `${selectedFileName}_detail.jpg`}`;
 
         // Function to check if the file exists
         async function fileExists(url) {

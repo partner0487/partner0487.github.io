@@ -28,7 +28,7 @@ function init() {
 
   const loader = new THREE.GLTFLoader();
   loader.load(
-    "images/minecraft_chest.glb",
+    "models/minecraft_chest.glb",
     function (gltf) {
       model = gltf.scene;
       model.scale.set(0.09, 0.09, 0.09);

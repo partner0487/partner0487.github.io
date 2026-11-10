@@ -10,6 +10,7 @@ THREE.ColorManagement.enabled = false;
 let scene, camera, renderer, mixer, model;
 let isHovered = false; // 變數來記錄是否處於 hover 狀態
 let actions = []; // 模型的開箱動畫
+let openness = 0; // 0 = 關著（模型的靜止姿勢），1 = 完全套用開箱動畫
 let chestVisible = false; // 寶箱是否在畫面上
 let frame = null; // requestAnimationFrame 的 id，null 代表沒在渲染
 
@@ -53,17 +54,13 @@ function init() {
 
       if (gltf.animations && gltf.animations.length > 0) {
         mixer = new THREE.AnimationMixer(model);
+        // 模型的靜止姿勢是關著的，動畫則是「打開後蓋子晃一下」。
+        // 用權重控制開關：權重 0 = 關著，1 = 打開並播動畫，中間的值 three.js 會自動補間成半開
         actions = gltf.animations.map((clip) => {
           const action = mixer.clipAction(clip);
-          action.setLoop(THREE.LoopOnce); // 開箱動畫一次播一輪
-          action.clampWhenFinished = true; // 播完停在打開的樣子
+          action.setEffectiveWeight(0);
           action.play();
-          action.paused = true; // 初始時暫停動畫
           return action;
-        });
-        // 播完一輪時滑鼠還在寶箱上，就再播一次
-        mixer.addEventListener("finished", (e) => {
-          if (isHovered) e.action.reset().play();
         });
       }
 
@@ -76,14 +73,11 @@ function init() {
     }
   );
 
+  // 滑鼠移上去打開、離開關上；實際的開合在 animate() 裡慢慢靠近目標
   container.addEventListener("mouseenter", () => {
     isHovered = true;
-    actions.forEach((action) => {
-      if (!action.isRunning()) action.reset().play(); // 只有動畫沒在跑時才重播
-    });
   });
 
-  // 離開時不打斷動畫，讓這一輪播完
   container.addEventListener("mouseleave", () => {
     isHovered = false;
   });
@@ -119,7 +113,14 @@ function showLoadingScreen() {
 function animate() {
   frame = requestAnimationFrame(animate);
   if (mixer) {
-    mixer.update(0.02); // ✨ 無論是否 hover，都讓動畫更新
+    const target = isHovered ? 1 : 0;
+    openness += (target - openness) * 0.12; // 每一幀往目標靠近一點，開合比較自然
+    if (!isHovered && openness < 0.001) {
+      openness = 0;
+      actions.forEach((action) => (action.time = 0)); // 關好了，下次從頭開始晃
+    }
+    actions.forEach((action) => action.setEffectiveWeight(openness));
+    mixer.update(0.02);
   }
 
   renderer.render(scene, camera);

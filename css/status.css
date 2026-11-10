@@ -376,6 +376,11 @@
 }
 
 .rpg-proof {
+  /* .rpg-window 的 position: relative 會蓋掉 <dialog> 預設的 fixed，視窗跑到整頁最上面、打開時畫面跟著跳上去 */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
   max-width: min(92vw, 900px);
   padding: 14px;
   font-family: "DotGothic16", "Noto Sans TC", sans-serif;

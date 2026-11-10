@@ -102,3 +102,49 @@
 .u-sidenav .u-nav-2 .u-nav-link.active {
   color: #6fb6ff !important;
 }
+
+/* ---- 個性簽名（images/profile/signature.webp 只當遮罩用，顏色由 CSS 決定，切換主題時跟著變） ---- */
+.signature {
+  --signature-color: #1f2a44; /* 淺色：深藍黑，像鋼筆墨水 */
+  display: inline-block;
+  aspect-ratio: 742 / 211;
+  width: 220px;
+  vertical-align: middle;
+  background-color: var(--signature-color);
+  -webkit-mask: url("../images/profile/signature.webp") center / contain no-repeat;
+  mask: url("../images/profile/signature.webp") center / contain no-repeat;
+}
+
+[data-theme="dark"] .signature {
+  --signature-color: #f1e4c6; /* 深色：米白，不會像純白那麼刺眼 */
+}
+
+/* 首頁自我介紹的結尾，靠右，像在信的最後署名 */
+.signature-intro {
+  display: block;
+  margin: 18px 0 0 auto;
+}
+
+/* footer 底色不分主題都是深灰，簽名一律用白色 */
+.signature-footer,
+[data-theme="dark"] .signature-footer {
+  --signature-color: rgba(255, 255, 255, 0.9);
+  width: 92px;
+  margin-left: 4px;
+}
+
+/* 捲到的時候由左往右「寫」出來（js/site.js 加上 class；沒有 JS 就直接顯示完整簽名） */
+.signature.sign-ready {
+  clip-path: inset(0 100% 0 0);
+}
+
+.signature.signed {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.6s cubic-bezier(0.55, 0.1, 0.35, 1);
+}
+
+@media (max-width: 575px) {
+  .signature-intro {
+    width: 170px;
+  }
+}

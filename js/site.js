@@ -4,6 +4,7 @@
 // 3. 標示目前所在頁面的選單項目
 // 4. 讓有 data-href 的元素可以點擊（社群圖示、學校 logo）
 // 5. 深色 / 淺色主題切換（太陽 / 月亮按鈕）
+// 6. 個性簽名的「寫出來」動畫
 
 (() => {
   const root = document.documentElement;
@@ -157,6 +158,29 @@
     if (collapse) collapse.prepend(makeThemeToggle());
   }
   setTheme(root.dataset.theme || (systemDark.matches ? "dark" : "light"), false);
+
+  // ---- 6. 個性簽名：捲到的時候由左往右寫出來 ----
+  // 先藏起來（.sign-ready），進到畫面再加 .signed 讓 clip-path 展開；不喜歡動畫的人直接顯示。
+  // 觀察的是父元素：簽名自己被 clip-path 裁光時，瀏覽器算出來的可見比例永遠是 0，不會觸發
+  const signatures = document.querySelectorAll(".signature");
+  if (signatures.length && "IntersectionObserver" in window &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const owners = new Map(); // 父元素 → 裡面的簽名
+    const signObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        owners.get(entry.target).forEach((s) => s.classList.add("signed"));
+        signObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.5 });
+    signatures.forEach((s) => {
+      s.classList.add("sign-ready");
+      const parent = s.parentElement;
+      if (!owners.has(parent)) owners.set(parent, []);
+      owners.get(parent).push(s);
+      signObserver.observe(parent);
+    });
+  }
 
   updateResponsive();
   window.addEventListener("resize", updateResponsive);

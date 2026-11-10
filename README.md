@@ -67,6 +67,7 @@
 - **Google 翻譯**：左上角 logo 旁邊可以切換繁中、簡中、英文、日文（[js/language.js](js/language.js)）
 - **手機版選單**：[js/site.js](js/site.js) 負責漢堡選單、響應式斷點、標示目前頁面。這是拿掉 Nicepage 之後自己寫的替代版
 - **footer**：社群連結和 Email
+- **個性簽名**：首頁自我介紹結尾和每頁 footer 的「P4RTNER」。[images/profile/signature.webp](images/profile/signature.webp) 只當 CSS 遮罩用（`mask`），顏色由 CSS 決定：淺色深藍黑、深色米白、footer 一律白色；捲到時用 `clip-path` 由左往右「寫」出來（js/site.js），系統設定減少動態效果的人會直接顯示
 - **深色模式**：預設跟著系統主題，導覽列的太陽 / 月亮按鈕可以手動切換，選擇存在 `localStorage`。主題在 `<head>` 裡的一小段 script 就先決定好（寫在 `<html data-theme>`），才不會先閃一下白畫面。樣式集中在 [css/dark.css](css/dark.css)；寶箱的 3D 背景和數字雨是在 JS 裡畫的，聽 `themechange` 事件重畫
 
 ## 專案結構

@@ -107,7 +107,15 @@
       return dd;
     };
     row("名字", c.name);
-    row("職業", c.class);
+    // 職業：轉職路線的最後一階；點了在對話框看完整的轉職紀錄
+    const path = c.classPath || [];
+    const job = row("職業", "");
+    const jobBtn = el("button", "rpg-class", path.length ? `${path[path.length - 1].rank}・${c.class}` : c.class);
+    jobBtn.type = "button";
+    jobBtn.addEventListener("click", () =>
+      say("轉職紀錄：" + path.map((p) => `【${p.rank}】${p.name}：${p.desc}`).join(" → ") + "。下一次轉職：畢業之後再看看。")
+    );
+    job.append(jobBtn);
     row("稱號", `「${c.title}」`, "rpg-title");
     const lv = row("等級", `Lv. ${c.level}`, "rpg-level");
     hero.append(pixelAvatar("images/profile/me.jpg"), info);

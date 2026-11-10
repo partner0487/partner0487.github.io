@@ -153,6 +153,23 @@
   margin: 0;
 }
 
+/* 職業可以點，看轉職紀錄 */
+.rpg-class {
+  padding: 0;
+  border: none;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.6);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rpg-class:hover,
+.rpg-class:focus-visible {
+  outline: none;
+  color: #ffe08a;
+  border-bottom-color: #ffe08a;
+}
+
 .rpg-info .rpg-title {
   color: #ffe08a;
 }

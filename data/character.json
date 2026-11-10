@@ -1,6 +1,11 @@
 {
   "name": "王家騏",
-  "class": "電腦視覺研究者",
+  "class": "資工所研究生",
+  "classPath": [
+    { "rank": "初心者", "name": "高中生", "desc": "在永春高中自學 C++、考 APCS，用 Arduino 做出第一個作品" },
+    { "rank": "一轉", "name": "資工系學生", "desc": "選了海大資工，把軟體相關的課修了一輪" },
+    { "rank": "二轉", "name": "資工所研究生", "desc": "進成大資訊所研究電腦視覺" }
+  ],
   "title": "斜咖軟體人",
   "startedCoding": "2019-11",
   "githubFrom": "2026-12",

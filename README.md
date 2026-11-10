@@ -4,7 +4,7 @@
 
 這裡除了放自我介紹，也是我試各種網頁想法的地方。想到什麼新東西就做成一個區塊塞進來，所以每一塊背後幾乎都有一個想試的功能。
 
-一開始是用 Nicepage 模板搭出外框（2025/02），之後的區塊都是自己加的。2026/11 把 Nicepage 的 JS 和 CSS 拿掉，現在整個網站是純 HTML / CSS / JavaScript，沒有用框架。
+一開始是用 Nicepage 模板搭出外框（2025/02），之後的區塊都是自己加的。2026/11 把 Nicepage 的 JS 和 CSS 拿掉，現在整個網站是純 HTML / CSS / JavaScript，除了作品頁用 Vue 練習以外，沒有用框架。
 
 ## 各區塊做了什麼
 
@@ -35,6 +35,7 @@
 ### 作品（[project.html](project.html)）
 - 從 [data/projects.json](data/projects.json) 讀取作品，依「實驗室計畫、碩士課程、個人專案、大學課程」分類，上方按鈕可以篩選
 - 新增作品只要改 JSON
+- **用 Vue 3 寫的**（從 CDN 載入，不用打包）：卡片和篩選按鈕是 [project.html](project.html) 裡的 template，[js/project.js](js/project.js) 只管資料和目前選的分類。這是我第一次用 Vue，程式裡有註解每個用法對應原本的哪種寫法
 - 早期版本是用 GitHub API 抓所有 repo、依程式語言篩選。後來改成自己整理，因為 API 有次數限制，也會抓到不想放的 repo
 
 ### 興趣（[interests.html](interests.html)）

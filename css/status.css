@@ -637,74 +637,55 @@
   }
 }
 
-/* ---- 寵物視窗（js/status.js 的 showPet） ---- */
-.rpg-pet {
-  position: fixed; /* 跟獎狀視窗一樣：.rpg-window 的 relative 會蓋掉 <dialog> 的 fixed */
-  inset: 0;
-  margin: auto;
-  width: min(92vw, 560px);
-  height: fit-content;
-  padding: 16px 20px 20px;
-  font-family: "DotGothic16", "Noto Sans TC", sans-serif;
-}
-
-.rpg-pet::backdrop {
-  background: rgba(5, 8, 30, 0.75);
-}
-
-.rpg-pet .rpg-sub {
-  margin-top: 0;
-}
-
-.rpg-pet-close {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  color: #fff;
-  font-size: 1.1rem;
-  cursor: pointer;
-}
-
-.rpg-pet-close:hover,
-.rpg-pet-close:focus-visible {
-  outline: none;
-  background: rgba(255, 255, 255, 0.15);
+/* ---- 寵物分頁（js/status.js 的 buildPet）：左邊小院子、右邊資料 ----
+   四個分頁一樣高（取最高的那頁），寵物頁內容少，院子撐滿剩下的高度才不會空一大片 */
+.rpg-pet-page {
+  display: flex;
+  flex-direction: column;
 }
 
 .rpg-pet-body {
+  flex: 1;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 20px;
+  padding-top: 6px;
 }
 
-/* 小樹散步的小院子：上面夜空、下面草地（草地在 canvas 裡畫） */
-.rpg-pet-stage {
+/* 小樹散步的小院子：上面夜空、下面草地（草地和星星在 canvas 裡畫） */
+.rpg-pet-yard {
+  position: relative;
   flex: 1 1 auto;
   min-width: 0;
-  height: 120px;
+  min-height: 150px;
+}
+
+.rpg-pet-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   border: 2px solid rgba(255, 255, 255, 0.6);
   border-radius: 6px;
-  background: linear-gradient(180deg, #24348f 0%, #3b56b8 100%);
+  background: linear-gradient(180deg, #16206a 0%, #24348f 55%, #3b56b8 100%);
 }
 
 .rpg-pet-info {
   flex: 0 0 auto;
+  align-self: center;
 }
 
 @media (max-width: 600px) {
   .rpg-pet-body {
     flex-direction: column;
-    align-items: stretch;
   }
 
-  .rpg-pet-stage {
-    flex: none;
+  .rpg-pet-yard {
     width: 100%;
+  }
+
+  .rpg-pet-info {
+    align-self: flex-start;
   }
 }
 

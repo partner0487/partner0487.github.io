@@ -117,16 +117,6 @@
     job.append(jobBtn);
     row("稱號", `「${c.title}」`, "rpg-title");
     const lv = row("等級", `Lv. ${c.level}`, "rpg-level");
-    // 寵物：點名字打開寵物視窗
-    if (c.pet) {
-      const petBtn = el("button", "rpg-class", c.pet.name);
-      petBtn.type = "button";
-      petBtn.addEventListener("click", () => {
-        showPet(c.pet);
-        say(`${c.pet.name}：${c.pet.breed}，個性是${c.pet.personality}。`);
-      });
-      row("寵物", "").append(petBtn);
-    }
     hero.append(avatar("images/profile/oc-pixel.png", `${c.name} 的 OC`), info);
 
     const exp = el("div", "rpg-exp");
@@ -366,45 +356,31 @@
     return c;
   }
 
-  // 寵物視窗：左邊小樹在草地上走來走去，走一陣子就趴下來睡覺（愛睡覺），右邊是名字、品種、個性
-  let petDialog = null;
-  function showPet(pet) {
-    if (!petDialog) petDialog = buildPetDialog(pet);
-    petDialog.showModal();
-    petDialog._start();
-  }
-
-  function buildPetDialog(pet) {
-    const dialog = el("dialog", "rpg-window rpg-pet");
-    dialog.setAttribute("aria-label", `寵物：${pet.name}`);
-    const close = el("button", "rpg-pet-close", "✕");
-    close.type = "button";
-    close.setAttribute("aria-label", "關閉");
-    close.addEventListener("click", () => dialog.close());
-    // 點視窗外面（背景）也關閉
-    dialog.addEventListener("click", (e) => {
-      if (e.target === dialog) dialog.close();
-    });
-
+  // 寵物分頁：左邊小樹在草地上走來走去，走一陣子就趴下來睡覺（愛睡覺），右邊是名字、品種、性別、個性、能力
+  function buildPet(c) {
+    const pet = c.pet;
+    const page = el("div", "rpg-page rpg-pet-page");
     const stage = el("canvas", "rpg-pet-stage");
     stage.setAttribute("role", "img");
-    stage.setAttribute("aria-label", `${pet.name}在走路`);
+    stage.setAttribute("aria-label", `${pet.name}在草地上走來走去，累了就趴下睡覺`);
     const info = el("dl", "rpg-info rpg-pet-info");
     [["名字", pet.name], ["品種", pet.breed], ["性別", pet.gender], ["個性", pet.personality], ["能力", pet.ability]]
       .filter(([, v]) => v) // 沒填的欄位不顯示
-      .forEach(([k, v]) => {
-      info.append(el("dt", "", k), el("dd", "", v));
-    });
+      .forEach(([k, v]) => info.append(el("dt", "", k), el("dd", "", v)));
     const body = el("div", "rpg-pet-body");
-    body.append(stage, info);
-    dialog.append(close, el("h3", "rpg-sub", "寵物"), body);
-    root.append(dialog);
+    // canvas 放在外框裡、絕對定位：大小由外框決定，不會因為 canvas 本身的解析度越撐越高
+    const yard = el("div", "rpg-pet-yard");
+    yard.append(stage);
+    body.append(yard, info);
+    page.append(body);
 
     const walk = [...PET_LEGS.map((legs) => spriteCanvas([...PET_BODY, ...legs]))];
     const sleep = spriteCanvas(PET_SLEEP);
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const PX = 3; // 一格像素在畫面上是 3px
-    const spriteW = walk[0].width * PX;
+    let PX = 3; // 一格像素在畫面上幾 px：院子大的時候放大成 4
+    let spriteW = walk[0].width * PX;
+    // 夜空的星星：位置固定（用簡單的亂數種子），亮度慢慢閃
+    const stars = Array.from({ length: 26 }, (_, i) => ({ x: ((i * 7919) % 997) / 997, y: ((i * 104729) % 991) / 991, p: i * 0.7 }));
 
     let raf = null;
     let x = 0, dir = 1, last = 0, stepTime = 0, step = 0;
@@ -422,8 +398,26 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = false;
       ctx.clearRect(0, 0, w, h);
-      // 草地
-      const ground = h - 18;
+      PX = Math.max(3, Math.min(5, Math.round(h / 120))); // 院子越大，小樹畫得越大（3～5 倍）
+      spriteW = walk[0].width * PX;
+      // 草地（院子越高，草地越厚）
+      const ground = h - Math.max(18, Math.round(h * 0.16));
+      // 星星
+      ctx.fillStyle = "#ffffff";
+      stars.forEach((st) => {
+        ctx.globalAlpha = still ? 0.6 : 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(now / 900 + st.p));
+        ctx.fillRect(Math.round(st.x * w), Math.round(st.y * (ground - 30)) + 6, 2, 2);
+      });
+      ctx.globalAlpha = 1;
+      // 月亮：像素風的圓，右上角，有一個淡淡的坑
+      const mr = Math.max(9, Math.round(Math.min(w, h) * 0.055));
+      const mx = w - mr * 2.6, my = mr * 2.4;
+      for (let yy = -mr; yy <= mr; yy += 3)
+        for (let xx = -mr; xx <= mr; xx += 3) {
+          if (Math.hypot(xx, yy) > mr) continue;
+          ctx.fillStyle = Math.hypot(xx + mr * 0.4, yy - mr * 0.25) < mr * 0.3 ? "#e6d79c" : "#fff3c2";
+          ctx.fillRect(Math.round(mx + xx), Math.round(my + yy), 3, 3);
+        }
       ctx.fillStyle = "#2f7d3a";
       ctx.fillRect(0, ground, w, h - ground);
       ctx.fillStyle = "#49a552";
@@ -437,7 +431,7 @@
         modeUntil = now + (mode === "walk" ? rand(4000, 7000) : rand(3000, 5000));
       }
       if (!still && mode === "walk") {
-        x += dir * 34 * dt;
+        x += dir * PX * 11 * dt; // 畫得越大走得越快，看起來速度一樣
         if (x < 0) { x = 0; dir = 1; }
         if (x > w - spriteW) { x = w - spriteW; dir = -1; }
         stepTime += dt;
@@ -458,29 +452,46 @@
       // 睡覺時頭上冒 Z z
       if (!still && mode === "sleep") {
         const t = (now / 1000) % 1.8;
-        const headX = dir > 0 ? x + spriteW - 18 : x + 4;
+        const headX = dir > 0 ? x + spriteW - PX * 6 : x + PX;
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 14px DotGothic16, monospace";
+        ctx.font = `bold ${PX * 5}px DotGothic16, monospace`;
         ctx.globalAlpha = 1 - t / 1.8;
-        ctx.fillText("Z", headX + t * 8, y + 12 - t * 14);
-        ctx.font = "bold 10px DotGothic16, monospace";
-        ctx.fillText("z", headX + 12 + t * 6, y + 2 - t * 10);
+        ctx.fillText("Z", headX + t * PX * 3, y + PX * 4 - t * PX * 5);
+        ctx.font = `bold ${PX * 3.4}px DotGothic16, monospace`;
+        ctx.fillText("z", headX + PX * 4 + t * PX * 2, y - t * PX * 3.4);
         ctx.globalAlpha = 1;
       }
       if (still) return; // 不要動畫：只畫一次站著的樣子
       raf = requestAnimationFrame(draw);
     }
 
-    dialog._start = () => {
+    // 只有在寵物分頁打開、而且面板在畫面上的時候才跑動畫
+    let active = false;
+    let onScreen = false;
+    function update() {
       cancelAnimationFrame(raf);
-      last = 0;
-      mode = "walk";
-      modeUntil = performance.now() + rand(4000, 7000);
-      x = Math.max(0, (stage.clientWidth - spriteW) / 2);
-      raf = requestAnimationFrame(draw);
+      raf = null;
+      if (active && onScreen) {
+        last = 0;
+        if (!modeUntil) modeUntil = performance.now() + rand(4000, 7000);
+        raf = requestAnimationFrame(draw);
+      }
+    }
+    new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      update();
+    }).observe(stage);
+    page._onShow = () => {
+      if (!x) x = Math.max(0, (stage.clientWidth - spriteW) / 2); // 第一次打開時站在中間
+      active = true;
+      update();
     };
-    dialog.addEventListener("close", () => cancelAnimationFrame(raf)); // 關掉就停，不浪費效能
-    return dialog;
+    page._onHide = () => {
+      active = false;
+      update();
+    };
+    page._intro = () => say(`${pet.name}：${pet.breed}，個性是${pet.personality}，能力是${pet.ability}。`);
+    return page;
   }
 
   // 看獎狀的彈出視窗（<dialog>：Esc、點任何地方都會關閉，關掉後焦點回到原本的按鈕）
@@ -515,9 +526,10 @@
     const pagesWrap = el("div", "rpg-pages");
     const pages = [
       ["角色", buildStatus(c)], // 「狀態」的「狀」像素字型裡沒有（日文是「状」），所以叫「角色」
+      c.pet && ["寵物", buildPet(c)],
       ["技能", buildSkills(c, projects)],
       ["成就", buildAchievements(c)],
-    ];
+    ].filter(Boolean);
     const revealed = new Set();
 
     const tabButtons = pages.map(([label, page], i) => {
@@ -537,6 +549,7 @@
 
     let current = -1;
     function show(i, intro = true) {
+      if (current >= 0 && current !== i) pages[current][1]._onHide?.();
       current = i;
       tabButtons.forEach((t, k) => {
         t.setAttribute("aria-selected", String(k === i));
@@ -549,6 +562,7 @@
         page._reveal();
         revealed.add(i);
       }
+      page._onShow?.();
       if (intro) page._intro();
     }
 

@@ -13,19 +13,19 @@
     { "name": "遊戲力", "value": 90, "desc": "原神、星鐵、魔物獵人……很多作品都是從遊戲裡長出來的。" }
   ],
   "skills": [
-    { "name": "HTML", "level": 4, "progress": 70, "langs": ["html"] },
-    { "name": "JavaScript", "level": 4, "progress": 50, "langs": ["react", "html"] },
-    { "name": "C++", "level": 4, "progress": 40, "langs": [] },
-    { "name": "Python", "level": 4, "progress": 7, "langs": ["python"] },
-    { "name": "TypeScript", "level": 3, "progress": 80, "langs": [] },
-    { "name": "Verilog", "level": 2, "progress": 37, "langs": [] },
-    { "name": "SQL", "level": 1, "progress": 78, "langs": [] },
-    { "name": "Java", "level": 1, "progress": 73, "langs": ["java"] },
-    { "name": "PHP", "level": 1, "progress": 43, "langs": [] },
-    { "name": "Kotlin", "level": 1, "progress": 10, "langs": ["kotlin"] }
+    { "name": "C++", "since": "2019-11", "from": "高中", "langs": [] },
+    { "name": "Python", "since": "2022-09", "from": "大二 Python 程式語言", "langs": ["python"] },
+    { "name": "HTML", "since": "2022-09", "from": "大二網頁程式設計", "langs": ["html"] },
+    { "name": "JavaScript", "since": "2022-09", "from": "大二網頁程式設計", "langs": ["react", "html"] },
+    { "name": "Verilog", "since": "2022-09", "from": "大二數位系統設計", "langs": [] },
+    { "name": "Java", "since": "2023-02", "from": "大二 JAVA 程式設計", "langs": ["java"] },
+    { "name": "SQL", "since": "2023-09", "from": "大三資料庫系統", "langs": [] },
+    { "name": "PHP", "since": "2023-09", "from": "大三資料庫系統", "langs": [] },
+    { "name": "Kotlin", "since": "2024-02", "from": "大三 Android 行動裝置軟體設計", "langs": ["kotlin"] },
+    { "name": "TypeScript", "since": "2024-09", "langs": [] }
   ],
   "achievements": [
-    { "icon": "💻", "name": "APCS 4／3", "desc": "APCS 觀念題 4 級、實作題 3 級，用 C++ 應考。這是高中開始寫程式的起點。", "date": "2020" },
+    { "icon": "💻", "name": "APCS 4／3", "desc": "APCS 觀念題 4 級、實作題 3 級，用 C++ 應考。這是高中開始寫程式的起點。", "date": "2020", "image": "images/achievements/apcs.webp", "imageLabel": "成績證明" },
     { "icon": "🏅", "name": "旺宏科學獎", "desc": "高中用 Arduino 和感應卡做的「感應式智能登錄助手」拿下旺宏科學獎佳作，第一次體會到作品跑起來的成就感。", "date": "2020", "image": "images/achievements/macronix.webp", "imageLabel": "證書" },
     { "icon": "🧮", "name": "CPE 5／7", "desc": "大學程式能力檢定 CPE 解出 5 題，排名 131 / 2811，前 4.7%。", "date": "2023", "image": "images/achievements/cpe.webp", "imageLabel": "成績紀錄" },
     { "icon": "🏆", "name": "海洋盃佳作", "desc": "和兩位同學組成「Part-Time Coder」隊，拿下 2023 海洋盃程式設計競賽資工組佳作。", "date": "2023", "image": "images/achievements/oceancup.webp", "imageLabel": "獎狀" },

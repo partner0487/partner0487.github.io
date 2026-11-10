@@ -141,9 +141,19 @@
     return page;
   }
 
+  // 技能等級 = 從開始學（since: "YYYY-MM"）到現在過了幾個月，每個月 1 號自動升一級
+  function skillLevel(since, now = new Date()) {
+    const [y, m] = since.split("-").map(Number);
+    const level = Math.max(0, (now.getFullYear() - y) * 12 + (now.getMonth() + 1 - m));
+    const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    return { level, left: days - now.getDate() + 1 };
+  }
+
   function buildSkills(c, projects) {
     const page = el("div", "rpg-page");
     const list = el("ul", "rpg-list rpg-skills");
+    c.skills.forEach((s) => Object.assign(s, skillLevel(s.since)));
+    c.skills.sort((a, b) => b.level - a.level);
     c.skills.forEach((s) => {
       const li = el("li");
       const btn = el("button", "rpg-row");
@@ -152,7 +162,13 @@
       btn.addEventListener("click", () =>
         select(btn, () => {
           const used = projects.filter((p) => s.langs.includes(p.lang));
-          const text = `${s.name} Lv. ${s.level}，升到 Lv. ${s.level + 1} 的進度 ${s.progress}%。` +
+          const [y, m] = s.since.split("-").map(Number);
+          const years = Math.floor(s.level / 12);
+          const months = s.level % 12;
+          const span = [years && `${years} 年`, months && `${months} 個月`].filter(Boolean).join(" ") || "不到一個月";
+          const when = `${y} 年 ${m} 月`;
+          const text = `${s.name} Lv. ${s.level}：${s.from ? `從${s.from}（${when}）` : when}開始，學了 ${span}。` +
+            `再 ${s.left} 天升到 Lv. ${s.level + 1}。` +
             (used.length ? `用它做過 ${used.length} 個作品：` : "還沒有放上來的作品。");
           let extra = null;
           if (used.length) {
@@ -172,8 +188,10 @@
       list.append(li);
       s._bar = btn.querySelector(".rpg-bar");
     });
-    page.append(list, el("p", "rpg-hint", "等級越高越熟練；進度條是升到下一級的進度。"));
-    page._reveal = () => c.skills.forEach((s, i) => fillBar(s._bar, s.progress / 100, i * 80));
+    page.append(list, el("p", "rpg-hint", "等級 = 學了幾個月，每個月 1 號自動升一級。"));
+    // 進度條：跟最高等的技能比，看得出差距
+    const top = Math.max(1, ...c.skills.map((s) => s.level));
+    page._reveal = () => c.skills.forEach((s, i) => fillBar(s._bar, s.level / top, i * 80));
     page._intro = () => say("選一個技能，看看它的等級和用它做過的作品。");
     return page;
   }

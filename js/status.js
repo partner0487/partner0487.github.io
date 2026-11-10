@@ -75,7 +75,7 @@
     }, 28);
   }
 
-  // ---- 頭像：自己的 OC（images/profile/oc.webp，已經裁成正方形） ----
+  // ---- 頭像：自己的 OC 轉成 48×48 的像素圖（images/profile/oc-pixel.png），畫面上放大 2 倍 ----
   function avatar(src, alt) {
     const img = el("img", "rpg-avatar");
     img.src = src;
@@ -106,7 +106,10 @@
     // 職業：轉職路線的最後一階；點了在對話框看完整的轉職紀錄
     const path = c.classPath || [];
     const job = row("職業", "");
-    const jobBtn = el("button", "rpg-class", path.length ? `${path[path.length - 1].rank}・${c.class}` : c.class);
+    const jobBtn = el("button", "rpg-class");
+    // 「二轉・」和職業名各自不斷行，螢幕窄的時候只會在「・」後面換行
+    if (path.length) jobBtn.append(el("span", "rpg-nowrap", `${path[path.length - 1].rank}・`));
+    jobBtn.append(el("span", "rpg-nowrap", c.class));
     jobBtn.type = "button";
     jobBtn.addEventListener("click", () =>
       say("轉職紀錄：" + path.map((p) => `【${p.rank}】${p.name}：${p.desc}`).join(" → ") + "。下一次轉職：畢業之後再看看。")
@@ -114,7 +117,17 @@
     job.append(jobBtn);
     row("稱號", `「${c.title}」`, "rpg-title");
     const lv = row("等級", `Lv. ${c.level}`, "rpg-level");
-    hero.append(avatar("images/profile/oc.webp", `${c.name} 的 OC`), info);
+    // 寵物：點名字打開寵物視窗
+    if (c.pet) {
+      const petBtn = el("button", "rpg-class", c.pet.name);
+      petBtn.type = "button";
+      petBtn.addEventListener("click", () => {
+        showPet(c.pet);
+        say(`${c.pet.name}：${c.pet.breed}，個性是${c.pet.personality}。`);
+      });
+      row("寵物", "").append(petBtn);
+    }
+    hero.append(avatar("images/profile/oc-pixel.png", `${c.name} 的 OC`), info);
 
     const exp = el("div", "rpg-exp");
     const expHead = el("div", "rpg-exp-head");
@@ -276,6 +289,194 @@
     page.append(hint, list);
     page._intro = () => say("一路上解鎖的成就。還有一些正在努力中。");
     return page;
+  }
+
+  // ---- 寵物：小樹（長毛吉娃娃）的像素圖，一格一個字，對照 PET_PALETTE 上色 ----
+  const PET_PALETTE = {
+    o: "#3b2516", // 外框
+    t: "#d08a3c", // 毛
+    d: "#aa682a", // 毛的陰影
+    l: "#f0be78", // 毛的亮面
+    w: "#fff6e6", // 臉和胸口的白毛
+    k: "#1a1618", // 眼睛、鼻子
+    e: "#ffffff", // 眼睛反光
+    p: "#ff8ca0", // 舌頭
+  };
+  // 面向右邊：大大的蘋果頭、大眼睛、短嘴、圓身體、長毛耳朵、蓬蓬尾巴捲在背上
+  const PET_BODY = [
+    "..........oo.....oo....",
+    ".........olto...olto...",
+    ".........ollto.ottlo...",
+    "..oo.....olltttttllo...",
+    ".olto...otttttttttto...",
+    ".ollto..ottttttkkwwto..",
+    "..olto..otttttkekwwwo..",
+    "..oltlo.ottttttkkwwwko.",
+    "...olloootttttttwwwwo..",
+    "...oltttttttttttwwpo...",
+    "...otttttttttttwwwo....",
+    "...odttttttttttwwwo....",
+    "...oddttttttttwwwwo....",
+    "....odddddttttwwwo.....",
+    "....ooddddddddddoo.....",
+  ];
+  // 四隻短腿的走路循環
+  const PET_LEGS = [
+    ["....od.od....od.ow.....", "....oo..oo...oo..oo...."],
+    [".....odod.....odow.....", ".....oooo.....oooo....."],
+    ["...od.od....od.ow......", "..oo..oo...oo..oo......"],
+    [".....odod.....odow.....", ".....oooo.....oooo....."],
+  ];
+  // 趴著睡覺、眼睛閉起來
+  const PET_SLEEP = [
+    ".......................",
+    ".......................",
+    ".......................",
+    ".......................",
+    ".......................",
+    ".......................",
+    "..oo...................",
+    ".olto.........oo...oo..",
+    ".ollto.......olto.olto.",
+    "..oltooooooooolttttllo.",
+    "...ottttttttttttttttto.",
+    "...otdttttttttttooowwto",
+    "...otdddtttttttttwwwwko",
+    "...odddddddtttttwwwwwo.",
+    "....oddddddddddwwwwoo..",
+    "....ooooooooooooooo....",
+    ".......................",
+  ];
+
+  // 把字串畫成一張小 canvas（1 格 = 1 px），之後放大時不做平滑
+  function spriteCanvas(rows) {
+    const c = document.createElement("canvas");
+    c.width = Math.max(...rows.map((r) => r.length));
+    c.height = rows.length;
+    const ctx = c.getContext("2d");
+    rows.forEach((row, y) =>
+      [...row].forEach((ch, x) => {
+        if (!PET_PALETTE[ch]) return;
+        ctx.fillStyle = PET_PALETTE[ch];
+        ctx.fillRect(x, y, 1, 1);
+      })
+    );
+    return c;
+  }
+
+  // 寵物視窗：左邊小樹在草地上走來走去，走一陣子就趴下來睡覺（愛睡覺），右邊是名字、品種、個性
+  let petDialog = null;
+  function showPet(pet) {
+    if (!petDialog) petDialog = buildPetDialog(pet);
+    petDialog.showModal();
+    petDialog._start();
+  }
+
+  function buildPetDialog(pet) {
+    const dialog = el("dialog", "rpg-window rpg-pet");
+    dialog.setAttribute("aria-label", `寵物：${pet.name}`);
+    const close = el("button", "rpg-pet-close", "✕");
+    close.type = "button";
+    close.setAttribute("aria-label", "關閉");
+    close.addEventListener("click", () => dialog.close());
+    // 點視窗外面（背景）也關閉
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    const stage = el("canvas", "rpg-pet-stage");
+    stage.setAttribute("role", "img");
+    stage.setAttribute("aria-label", `${pet.name}在走路`);
+    const info = el("dl", "rpg-info rpg-pet-info");
+    [["名字", pet.name], ["品種", pet.breed], ["個性", pet.personality]].forEach(([k, v]) => {
+      info.append(el("dt", "", k), el("dd", "", v));
+    });
+    const body = el("div", "rpg-pet-body");
+    body.append(stage, info);
+    dialog.append(close, el("h3", "rpg-sub", "寵物"), body);
+    root.append(dialog);
+
+    const walk = [...PET_LEGS.map((legs) => spriteCanvas([...PET_BODY, ...legs]))];
+    const sleep = spriteCanvas(PET_SLEEP);
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const PX = 3; // 一格像素在畫面上是 3px
+    const spriteW = walk[0].width * PX;
+
+    let raf = null;
+    let x = 0, dir = 1, last = 0, stepTime = 0, step = 0;
+    let mode = "walk", modeUntil = 0;
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    function draw(now) {
+      const dpr = window.devicePixelRatio || 1;
+      const w = stage.clientWidth, h = stage.clientHeight;
+      if (stage.width !== Math.round(w * dpr)) {
+        stage.width = Math.round(w * dpr);
+        stage.height = Math.round(h * dpr);
+      }
+      const ctx = stage.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.clearRect(0, 0, w, h);
+      // 草地
+      const ground = h - 18;
+      ctx.fillStyle = "#2f7d3a";
+      ctx.fillRect(0, ground, w, h - ground);
+      ctx.fillStyle = "#49a552";
+      for (let gx = 0; gx < w; gx += 12) ctx.fillRect(gx, ground, 6, 3);
+
+      const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+      last = now;
+      if (!still && now > modeUntil) {
+        // 走 4～7 秒就睡 3～5 秒，睡醒繼續走
+        mode = mode === "walk" ? "sleep" : "walk";
+        modeUntil = now + (mode === "walk" ? rand(4000, 7000) : rand(3000, 5000));
+      }
+      if (!still && mode === "walk") {
+        x += dir * 34 * dt;
+        if (x < 0) { x = 0; dir = 1; }
+        if (x > w - spriteW) { x = w - spriteW; dir = -1; }
+        stepTime += dt;
+        if (stepTime > 0.14) { stepTime = 0; step = (step + 1) % walk.length; }
+      }
+      const img = still ? walk[0] : mode === "walk" ? walk[step] : sleep;
+      const y = ground - img.height * PX + 2;
+      ctx.save();
+      if (dir < 0) {
+        // 往左走時左右翻過來
+        ctx.translate(x + spriteW, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(img, 0, y, img.width * PX, img.height * PX);
+      } else {
+        ctx.drawImage(img, x, y, img.width * PX, img.height * PX);
+      }
+      ctx.restore();
+      // 睡覺時頭上冒 Z z
+      if (!still && mode === "sleep") {
+        const t = (now / 1000) % 1.8;
+        const headX = dir > 0 ? x + spriteW - 18 : x + 4;
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 14px DotGothic16, monospace";
+        ctx.globalAlpha = 1 - t / 1.8;
+        ctx.fillText("Z", headX + t * 8, y + 12 - t * 14);
+        ctx.font = "bold 10px DotGothic16, monospace";
+        ctx.fillText("z", headX + 12 + t * 6, y + 2 - t * 10);
+        ctx.globalAlpha = 1;
+      }
+      if (still) return; // 不要動畫：只畫一次站著的樣子
+      raf = requestAnimationFrame(draw);
+    }
+
+    dialog._start = () => {
+      cancelAnimationFrame(raf);
+      last = 0;
+      mode = "walk";
+      modeUntil = performance.now() + rand(4000, 7000);
+      x = Math.max(0, (stage.clientWidth - spriteW) / 2);
+      raf = requestAnimationFrame(draw);
+    };
+    dialog.addEventListener("close", () => cancelAnimationFrame(raf)); // 關掉就停，不浪費效能
+    return dialog;
   }
 
   // 看獎狀的彈出視窗（<dialog>：Esc、點任何地方都會關閉，關掉後焦點回到原本的按鈕）

@@ -135,7 +135,7 @@
   border: 3px solid #fff;
   border-radius: 6px;
   background: #0d1760;
-  object-fit: cover;
+  image-rendering: pixelated; /* 48×48 的像素圖放大 2 倍，保留硬邊 */
 }
 
 .rpg-info {
@@ -479,8 +479,8 @@
   }
 
   .rpg-avatar {
-    width: 72px;
-    height: 72px;
+    width: 96px; /* 像素圖要整數倍放大才不會一格大一格小 */
+    height: 96px;
   }
 
   .rpg-hero {
@@ -635,4 +635,79 @@
   .rpg-panel .rpg-heading {
     font-size: min(30px, 6.6vw) !important;
   }
+}
+
+/* ---- 寵物視窗（js/status.js 的 showPet） ---- */
+.rpg-pet {
+  position: fixed; /* 跟獎狀視窗一樣：.rpg-window 的 relative 會蓋掉 <dialog> 的 fixed */
+  inset: 0;
+  margin: auto;
+  width: min(92vw, 560px);
+  height: fit-content;
+  padding: 16px 20px 20px;
+  font-family: "DotGothic16", "Noto Sans TC", sans-serif;
+}
+
+.rpg-pet::backdrop {
+  background: rgba(5, 8, 30, 0.75);
+}
+
+.rpg-pet .rpg-sub {
+  margin-top: 0;
+}
+
+.rpg-pet-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.rpg-pet-close:hover,
+.rpg-pet-close:focus-visible {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.rpg-pet-body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* 小樹散步的小院子：上面夜空、下面草地（草地在 canvas 裡畫） */
+.rpg-pet-stage {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 120px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #24348f 0%, #3b56b8 100%);
+}
+
+.rpg-pet-info {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 600px) {
+  .rpg-pet-body {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rpg-pet-stage {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.rpg-nowrap {
+  display: inline-block;
 }

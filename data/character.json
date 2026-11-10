@@ -7,6 +7,7 @@
     { "rank": "二轉", "name": "資工所研究生", "desc": "進成大資訊所研究電腦視覺" }
   ],
   "title": "斜咖軟體人",
+  "pet": { "name": "小樹", "breed": "長毛吉娃娃", "personality": "愛睡覺" },
   "startedCoding": "2019-11",
   "githubFrom": "2026-12",
   "attributes": [

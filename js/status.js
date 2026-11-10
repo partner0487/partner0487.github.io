@@ -75,36 +75,14 @@
     }, 28);
   }
 
-  // ---- 頭像：logo 的像素小人（跟分享預覽圖 og.png 上的同一張） ----
-  // 圖本身就是像素風，不用再縮小；只把透明的留白裁掉，讓兩個角色填滿方框
-  function artAvatar(src) {
-    const canvas = el("canvas", "rpg-avatar");
-    canvas.width = canvas.height = 192; // 畫面上 96px，高解析度螢幕也清楚
-    const img = new Image();
-    img.onload = () => {
-      // 找出不透明像素的範圍
-      const probe = document.createElement("canvas");
-      probe.width = img.width;
-      probe.height = img.height;
-      const pctx = probe.getContext("2d");
-      pctx.drawImage(img, 0, 0);
-      const { data } = pctx.getImageData(0, 0, img.width, img.height);
-      let x0 = img.width, y0 = img.height, x1 = 0, y1 = 0;
-      for (let y = 0; y < img.height; y++)
-        for (let x = 0; x < img.width; x++)
-          if (data[(y * img.width + x) * 4 + 3] > 16) {
-            x0 = Math.min(x0, x); x1 = Math.max(x1, x);
-            y0 = Math.min(y0, y); y1 = Math.max(y1, y);
-          }
-      // 以角色為中心取正方形，四周留一點邊
-      const side = Math.max(x1 - x0, y1 - y0) * 1.12;
-      const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
-      const ctx = canvas.getContext("2d");
-      ctx.imageSmoothingEnabled = false; // 放大時保持像素的硬邊
-      ctx.drawImage(img, cx - side / 2, cy - side / 2, side, side, 0, 0, canvas.width, canvas.height);
-    };
+  // ---- 頭像：自己的 OC（images/profile/oc.webp，已經裁成正方形） ----
+  function avatar(src, alt) {
+    const img = el("img", "rpg-avatar");
     img.src = src;
-    return canvas;
+    img.alt = alt;
+    img.width = img.height = 96;
+    img.decoding = "async";
+    return img;
   }
 
   // ---- 三個分頁 ----
@@ -136,7 +114,7 @@
     job.append(jobBtn);
     row("稱號", `「${c.title}」`, "rpg-title");
     const lv = row("等級", `Lv. ${c.level}`, "rpg-level");
-    hero.append(artAvatar("images/profile/logo.png"), info);
+    hero.append(avatar("images/profile/oc.webp", `${c.name} 的 OC`), info);
 
     const exp = el("div", "rpg-exp");
     const expHead = el("div", "rpg-exp-head");

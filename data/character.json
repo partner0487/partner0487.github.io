@@ -41,7 +41,7 @@
     { "icon": "💡", "name": "智慧創新決賽", "desc": "大學畢業專題「突破次元：2D 圖片變成 3D 模型」（LRM、YOLACT、Blender），入圍智慧創新暨跨域整合創作競賽決賽。", "date": "2024" },
     { "icon": "🎓", "name": "海大資工畢業", "desc": "大學四年把軟體相關的課都修了一輪：軟體工程、Android、資料庫、網頁、AI。", "date": "2025", "image": "images/achievements/diploma.webp", "imageLabel": "畢業證書" },
     { "icon": "🔬", "name": "踏入研究所", "desc": "來到成大資訊所，研究電腦視覺。", "date": "2026" },
-    { "icon": "⚾", "name": "和台鋼棒球隊合作", "desc": "接手棒球打擊動作分析，用兩台相機、YOLO 和 ViTPose 分析揮棒。", "date": "2026" },
+    { "icon": "⚾", "name": "和台鋼雄鷹棒球隊合作", "desc": "接手棒球打擊動作分析，用兩台相機、YOLO 和 ViTPose 分析揮棒。", "date": "2026" },
     { "icon": "📜", "name": "碩士畢業", "desc": "預計 2028 年達成。", "locked": true }
   ]
 }

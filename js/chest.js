@@ -41,6 +41,7 @@ let openness = 0; // 0 = 關著（模型的靜止姿勢），1 = 完全套用開
 let chestVisible = false; // 寶箱是否在畫面上
 let frame = null; // requestAnimationFrame 的 id，null 代表沒在渲染
 let cameraTargetZ = CAMERA_Z;
+let cameraTargetY = 0; // 只有直式螢幕、還沒開箱時不是 0（見 idleCameraY）
 
 // ---- 掉落物 ----
 let projects = []; // 從 data/projects.json 攤平成一個陣列
@@ -108,6 +109,7 @@ function init() {
         });
       }
 
+      frameIdle(true);
       renderer.render(scene, camera);
       if (chestVisible) startLoop();
       tryAutoOpen();
@@ -159,6 +161,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     applyViewOffset();
     if (dropped) layoutItems(false); // 換到新螢幕大小的位置
+    else frameIdle();
   });
 }
 
@@ -233,6 +236,53 @@ function viewRegion() {
   return { x0: 0, x1: W * 0.55, y0: 0, y1: H };
 }
 
+// 還沒開箱時的鏡頭距離：直式手機的水平視角很窄，鏡頭固定在 CAMERA_Z 的話寶箱會比螢幕還寬，
+// 所以窄螢幕要退後，讓寶箱大約佔畫面寬度的 6 成；桌機維持原本的距離
+function idleCameraZ() {
+  if (!model) return CAMERA_Z;
+  const size = chestBox().getSize(new THREE.Vector3());
+  const viewH1 = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  return Math.max(CAMERA_Z, size.x / (0.6 * viewH1 * camera.aspect));
+}
+
+// 直式螢幕：寶箱本來偏下面，上方標題和寶箱中間空一大塊；把鏡頭上下移，讓寶箱落在標題下方空間的正中間。
+// 橫式（桌機）維持原本的構圖
+let closedCenter = null; // 關著的寶箱中心（chestBox() 量的是蓋子全開的樣子，蓋子翹起來，中心會偏高）
+function closedChestCenter() {
+  if (!closedCenter) {
+    model.updateMatrixWorld(true);
+    model.traverse((o) => {
+      if (o.isSkinnedMesh) {
+        o.skeleton.update();
+        o.computeBoundingBox();
+      }
+    });
+    closedCenter = new THREE.Box3().setFromObject(model).getCenter(new THREE.Vector3());
+  }
+  return closedCenter;
+}
+
+function idleCameraY(z) {
+  if (!model || camera.aspect >= 1) return 0;
+  const H = window.innerHeight;
+  const center = closedChestCenter();
+  const worldPerPx = (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (z - center.z)) / H;
+  const label = container.querySelector(".floating-label").getBoundingClientRect();
+  const labelBottom = label.bottom - container.getBoundingClientRect().top;
+  const want = (labelBottom + H) / 2; // 寶箱中心想要在螢幕上的 y
+  return center.y + (want - H / 2) * worldPerPx;
+}
+
+function frameIdle(immediate = false) {
+  if (model) closedChestCenter(); // 第一次要在 chestBox() 把姿勢換成開蓋之前量
+  cameraTargetZ = idleCameraZ();
+  cameraTargetY = idleCameraY(cameraTargetZ);
+  if (immediate) {
+    camera.position.z = cameraTargetZ;
+    camera.position.y = cameraTargetY;
+  }
+}
+
 function applyViewOffset() {
   const W = window.innerWidth;
   const H = window.innerHeight;
@@ -263,10 +313,12 @@ function layoutItems(fromChest) {
   const zForHeight = (size.y * H) / (0.3 * regionH * viewH(1));
   const zForWidth = (size.x * W) / (0.42 * regionW * viewH(1) * camera.aspect);
   cameraTargetZ = Math.max(CAMERA_Z, zForHeight, zForWidth);
+  cameraTargetY = 0; // 開箱後的構圖用 viewOffset 置中，鏡頭回到原本的高度
 
   // 用「退好、平移好之後」的鏡頭來算位置
   const cam = camera.clone();
   cam.position.z = cameraTargetZ;
+  cam.position.y = cameraTargetY;
   cam.setViewOffset(W, H, viewOffsetTarget.x, viewOffsetTarget.y, W, H);
   cam.updateMatrixWorld();
 
@@ -400,7 +452,7 @@ function recallItems() {
   dropped = false;
   hint.textContent = HINT_CLOSED;
   setHovered(null);
-  cameraTargetZ = CAMERA_Z;
+  frameIdle();
   const box = chestBox();
   const mouth = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, (box.min.z + box.max.z) / 2);
   items.forEach((item, i) => {
@@ -602,6 +654,7 @@ function animate() {
 
   // 鏡頭慢慢退到（或回到）目標距離，畫面慢慢平移到目標位置
   camera.position.z += (cameraTargetZ - camera.position.z) * 0.08;
+  camera.position.y += (cameraTargetY - camera.position.y) * 0.08;
   viewOffset.x += (viewOffsetTarget.x - viewOffset.x) * 0.1;
   viewOffset.y += (viewOffsetTarget.y - viewOffset.y) * 0.1;
   applyViewOffset();

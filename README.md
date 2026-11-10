@@ -15,7 +15,6 @@
 - 社群圖示列：GitHub、FB、IG、Discord、Threads、TikTok、Twitch
 
 ### 斜咖軟體人 / 學歷
-- 這兩塊是模板原本的版型，練習改 RWD：手機、平板、桌機排版不同
 - 學校 logo 可以點，連到系網站；地點連到 Google 地圖
 
 ### 個人程式能力面板

@@ -33,6 +33,12 @@ const contentData = {
         desc: '白金輔助',
         color: "blue"
     },
+    'apex': {
+        title: 'Apex 英雄',
+        subtitle: 'ID：夥伴 P4RTNER',
+        desc: '尋血犬main',
+        color: "crimson"
+    },
     'elden_ring': {
         title: '艾爾登法環',
         subtitle: 'steam：1192053283',

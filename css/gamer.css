@@ -227,13 +227,14 @@
     }
 
     .video-picker {
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
         max-width: calc(100% - 24px);
     }
 
+    /* 7 個遊戲在 390px 寬的手機上剛好排成一排 */
     .video-item {
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
     }
 }

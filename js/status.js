@@ -85,6 +85,12 @@
     return img;
   }
 
+  // 性別：♂ / ♀ 加上 U+FE0E，強制用文字樣式顯示（不然有些手機會變成彩色 emoji），再上男生藍 / 女生粉
+  function genderSign(v) {
+    const sign = v === "♂" ? "male" : v === "♀" ? "female" : "";
+    return sign ? el("span", `rpg-gender rpg-gender-${sign}`, v + "︎") : document.createTextNode(v);
+  }
+
   // ---- 三個分頁 ----
   function buildStatus(c) {
     // 角色等級 = 從開始寫程式（startedCoding）到現在的月數，每個月 1 號升一級；EXP 是這個月過了幾天
@@ -103,6 +109,7 @@
       return dd;
     };
     row("名字", c.name);
+    if (c.gender) row("性別", "").append(genderSign(c.gender));
     // 職業：轉職路線的最後一階；點了在對話框看完整的轉職紀錄
     const path = c.classPath || [];
     const job = row("職業", "");
@@ -366,10 +373,10 @@
     const info = el("dl", "rpg-info rpg-pet-info");
     [["名字", pet.name], ["品種", pet.breed], ["性別", pet.gender], ["個性", pet.personality], ["能力", pet.ability]]
       .filter(([, v]) => v) // 沒填的欄位不顯示
-      // ♂ / ♀ 加上 U+FE0E，強制用文字樣式顯示（不然有些手機會變成彩色 emoji），再上男生藍 / 女生粉
       .forEach(([k, v]) => {
-        const sign = v === "♂" ? "male" : v === "♀" ? "female" : "";
-        info.append(el("dt", "", k), el("dd", sign && `rpg-gender rpg-gender-${sign}`, sign ? v + "︎" : v));
+        const dd = el("dd");
+        dd.append(k === "性別" ? genderSign(v) : v);
+        info.append(el("dt", "", k), dd);
       });
     const body = el("div", "rpg-pet-body");
     // canvas 放在外框裡、絕對定位：大小由外框決定，不會因為 canvas 本身的解析度越撐越高

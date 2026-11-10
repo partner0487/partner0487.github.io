@@ -285,6 +285,23 @@
     const hint = el("p", "rpg-hint", `已解鎖 ${got} / ${c.achievements.length}`);
     if (c.achievements.some((a) => a.image)) hint.append("　", el("span", "rpg-proof-mark", "✦"), " 可以看獎狀");
     page.append(hint, list);
+    // 徽章名稱盡量排成一行：放不下就把字縮小（最小 10px），縮到 10px 還放不下（名字太長）才換行
+    const fitNames = () =>
+      list.querySelectorAll(".rpg-badge-name").forEach((n) => {
+        n.style.fontSize = "";
+        n.classList.add("rpg-fit");
+        let size = parseFloat(getComputedStyle(n).fontSize);
+        while (n.scrollWidth > n.clientWidth + 1 && size > 10) {
+          size -= 0.5;
+          n.style.fontSize = size + "px";
+        }
+        if (n.scrollWidth > n.clientWidth + 1) {
+          n.style.fontSize = "";
+          n.classList.remove("rpg-fit");
+        }
+      });
+    new ResizeObserver(fitNames).observe(list); // 換螢幕寬度、字型載入完都重新算一次
+    document.fonts?.ready.then(fitNames);
     page._intro = () => say("一路上解鎖的成就。還有一些正在努力中。");
     return page;
   }

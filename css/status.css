@@ -345,6 +345,17 @@
   text-wrap: balance; /* 換行時兩行差不多長，不會剩一個字掉到下一行 */
 }
 
+/* js/status.js 會把放得下的名稱縮成一行 */
+.rpg-badge-name.rpg-fit {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.rpg-badges li,
+.rpg-badge {
+  min-width: 0;
+}
+
 .rpg-badge-date {
   color: #a9c1ff;
   font-size: 0.75rem;
@@ -504,7 +515,7 @@
   }
 
   .rpg-badges {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* minmax(0)：不讓不換行的長名字把欄位撐寬 */
     gap: 6px;
   }
 

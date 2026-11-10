@@ -135,7 +135,7 @@
   border: 3px solid #fff;
   border-radius: 6px;
   background: #0d1760;
-  image-rendering: pixelated; /* 48×48 放大成 96×96，保留像素感 */
+  image-rendering: pixelated; /* 頭像是像素圖，縮放時保留硬邊 */
 }
 
 .rpg-info {

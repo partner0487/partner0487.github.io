@@ -72,7 +72,7 @@
         >
           <h2>{{ group.category }}</h2>
           <div class="card-grid">
-            <article v-for="project in group.projects" :key="project.name" class="card">
+            <article v-for="project in group.projects" :key="project.name" :id="slug(project)" class="card">
               <div class="card-head">
                 <img
                   v-if="project.icon"

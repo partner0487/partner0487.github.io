@@ -117,6 +117,20 @@ h1 {
   transition: transform 0.2s ease;
 }
 
+/* 從首頁寶箱點進來時，那張卡片閃一下 */
+.card.flash {
+  animation: cardFlash 1.6s ease-out;
+}
+
+@keyframes cardFlash {
+  0%, 40% {
+    box-shadow: 0 0 0 3px #ffcc66, 0 0 24px rgba(255, 204, 102, 0.6);
+  }
+  100% {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
 .card:hover {
   transform: scale(1.02);
 }

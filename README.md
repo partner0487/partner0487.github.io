@@ -16,11 +16,14 @@
 - **彈跳 blob 背景**：幾個模糊的彩色圓用 `requestAnimationFrame` 在畫面裡亂跑，碰到邊界就反彈。（[js/blob.js](js/blob.js)）
 - 社群圖示列：GitHub、FB、IG、Discord、Threads、TikTok、Twitch
 
-**My Project（傳送門）**
+**My Project（開箱掉寶）**
 - **3D 模型嵌入**：用 three.js 載入 Minecraft 寶箱的 GLB 模型（[js/chest.js](js/chest.js)）。three.js 是 r170，用 `importmap` 以 ES module 從 CDN 載入
-  - 滑鼠移動時寶箱會跟著轉
-  - 滑鼠移上去會播放開箱動畫
-- 點寶箱會播一段傳送門影片，再跳到作品頁
+  - 滑鼠移動時寶箱會跟著轉，移上去蓋子會打開（用動畫權重在關閉和打開的姿勢之間補間）
+- **點寶箱開箱**：讀 [data/projects.json](data/projects.json)，每個作品變成一個掉落物，從箱口沿拋物線噴出、落在寶箱周圍浮動
+  - 落點是先在螢幕上找寶箱周圍的空位，再用 raycasting 換算回 3D 座標，所以手機和桌機都排得下
+  - 滑鼠移到作品上顯示名稱，點下去跳到作品頁的那張卡片（手機第一次點顯示名稱，再點一次跳頁）
+  - 再點寶箱，作品會飛回去
+- 早期版本是點寶箱播一段傳送門影片再跳到作品頁
 
 ### 關於（[about.html](about.html)）
 
@@ -67,8 +70,8 @@ project.html        作品
 interests.html      興趣：遊戲、動漫
 css/                各區塊的樣式；base.css 是從 Nicepage 精簡下來的共用樣式，site.css 是每頁共用的 footer 等
 js/                 各區塊的程式
-images/             profile、social、schools、games、projects 五類圖片
-videos/             傳送門影片和遊戲背景影片
+images/             profile、social、schools、games、projects、lang（程式語言 icon）、favicon
+videos/             遊戲背景影片
 models/             3D 模型
 data/               作品和動漫清單的資料
 ```

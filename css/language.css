@@ -1,5 +1,5 @@
 .language-selector {
-    font-family: Arial, sans-serif;
+    font-family: Arial, "Noto Sans TC", sans-serif;
     margin: -55px auto auto 70px;
     display: flex; /* 啟用 flexbox 佈局 */
     align-items: center; /* 垂直居中 */

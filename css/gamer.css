@@ -117,11 +117,18 @@
     .video-picker {
         flex: 0 1 auto;
         /* 不 grow，只根據內容大小 */
-        flex-direction: row;
+        /* 底部的選單分兩排：上排 4 個二次元手遊、下排 5 個（HTML 裡用 .picker-row 分組） */
+        flex-direction: column;
         margin-right: 0;
-        gap: 20px;
-        padding: 20px 10px;
+        gap: 16px;
+        padding: 16px 12px;
         z-index: 1;
+    }
+
+    .video-picker .picker-row {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
     }
 
     .left-content {
@@ -135,6 +142,11 @@
     .slide-out {
         transform: translateY(100%);
     }
+}
+
+/* 電腦版：分組的外框不佔位置，9 個遊戲直接排成一直排 */
+.picker-row {
+    display: contents;
 }
 
 .video-item {
@@ -232,11 +244,13 @@
         padding: 30px 24px;
     }
 
-    /* 遊戲變多了，一排放不下：限制寬度讓它排成兩排、每排最多 5 個（5 個 44px + 4 個間距 + 左右 padding） */
     .video-picker {
         gap: 10px;
-        flex-wrap: wrap;
-        max-width: min(calc(100% - 24px), calc(5 * 44px + 4 * 10px + 22px));
+        max-width: calc(100% - 24px);
+    }
+
+    .video-picker .picker-row {
+        gap: 10px;
     }
 
     .video-item {

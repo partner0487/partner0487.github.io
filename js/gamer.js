@@ -30,7 +30,7 @@ const contentData = {
     'nte': {
         title: '異環',
         subtitle: 'UID：218014039086',
-        desc: '娜娜莉main',
+        desc: '娜娜莉單推',
         color: "mediumvioletred"
     },
     'lol': {

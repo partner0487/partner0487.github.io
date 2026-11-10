@@ -4,7 +4,7 @@
     "projects": [
       {
         "name": "棒球打擊動作分析",
-        "desc": "用兩台相機從正面和側面同步錄影，YOLO 抓打者和球棒、ViTPose 抓骨架，分析揮棒動作和 3D 姿態。從學長姐那邊接手的計畫，我負責繼續開發和優化。",
+        "desc": "用兩台相機從正面和側面同步錄影，YOLO 抓打者和球棒、ViTPose 抓骨架，分析揮棒動作和 3D 姿態。和台鋼雄鷹棒球隊合作，我負責系統的開發和優化。",
         "lang": "python",
         "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/Hitter-Skeleton" }]
       }

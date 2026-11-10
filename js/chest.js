@@ -31,6 +31,10 @@ const HINT_CLOSED = "Click to open";
 const HINT_OPEN = "Pick one!";
 const CAMERA_Z = 50; // 原本的鏡頭距離
 
+// 背景色跟著系統的深色 / 淺色主題（要跟 css/dark.css 的區塊底色一樣）
+const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+const sceneColor = () => (darkQuery.matches ? 0x181b21 : 0xf5f7fa);
+
 let scene, camera, renderer, mixer, model;
 let isHovered = false; // 滑鼠是否在寶箱區塊上
 let actions = []; // 模型的開箱動畫
@@ -60,7 +64,11 @@ const slug = (project) =>
 
 function init() {
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf5f7fa);
+  scene.background = new THREE.Color(sceneColor());
+  darkQuery.addEventListener("change", () => {
+    scene.background.setHex(sceneColor());
+    if (frame === null && model) renderer.render(scene, camera); // 沒在播動畫時也要重畫一次
+  });
 
   renderer = new THREE.WebGLRenderer({ alpha: false, antialias: true });
   renderer.outputColorSpace = THREE.LinearSRGBColorSpace; // 跟 r109 一樣，輸出時不做 sRGB 轉換

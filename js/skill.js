@@ -4,6 +4,14 @@ const ctx = canvas.getContext("2d");
 const matrixSection = canvas.closest("section");
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*";
+
+// 跟著系統的深色 / 淺色主題換顏色
+const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+const matrixColors = () =>
+  darkQuery.matches
+    ? { fade: "rgba(18, 20, 24, 0.2)", text: "#4a515c" } // 深色：深底、灰字
+    : { fade: "rgba(255, 255, 255, 0.2)", text: "#111" };
+let colors = matrixColors();
 const fontSize = 15;
 let columns, drops;
 
@@ -19,10 +27,10 @@ function resetMatrix() {
 
 
 function draw() {
-  ctx.fillStyle = "rgba(255, 255, 255, 0.2)"; // 半透明白底蓋上一層，留下拖影
+  ctx.fillStyle = colors.fade; // 半透明底色蓋上一層，留下拖影
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "#111"; // 字元顏色
+  ctx.fillStyle = colors.text; // 字元顏色
   ctx.font = fontSize + "px monospace";
 
   for (let i = 0; i < drops.length; i++) {
@@ -38,6 +46,10 @@ function draw() {
 
 resetMatrix(); // 初始設定
 window.addEventListener("resize", resetMatrix); // 視窗改變時更新
+darkQuery.addEventListener("change", () => {
+  colors = matrixColors();
+  resetMatrix(); // 重畫一次，舊顏色的字不會殘留
+});
 
 // 約每秒 15 次更新；技能面板不在畫面上時暫停
 let matrixTimer = null;

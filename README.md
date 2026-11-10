@@ -62,6 +62,7 @@
 - **Google 翻譯**：左上角 logo 旁邊可以切換繁中、簡中、英文、日文（[js/language.js](js/language.js)）
 - **手機版選單**：[js/site.js](js/site.js) 負責漢堡選單、響應式斷點、標示目前頁面。這是拿掉 Nicepage 之後自己寫的替代版
 - **footer**：社群連結和 Email
+- **深色模式**：跟著系統主題（`prefers-color-scheme`）自動切換，樣式集中在 [css/dark.css](css/dark.css)。寶箱的 3D 背景和數字雨是在 JS 裡畫的，用 `matchMedia` 監聽主題改變，切換時馬上重畫
 
 ## 專案結構
 

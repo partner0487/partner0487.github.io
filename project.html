@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>作品 | Partner0487</title>
     <link rel="stylesheet" href="css/project.css" />
-    <script src="js/project.js" defer></script>
+    <!-- type="module" 才能在 JS 裡 import Vue；module 預設就會等 HTML 解析完才執行（等同 defer） -->
+    <script type="module" src="js/project.js"></script>
   </head>
   <body>
     <nav class="top-nav">
@@ -21,12 +22,71 @@
       </div>
     </nav>
 
-    <main class="container">
+    <!--
+      Vue 只接管 #app 裡面的內容（在 js/project.js 裡 mount）。
+      v-cloak：Vue 還沒載入完之前先把這塊藏起來，避免看到 {{ }} 原始碼，樣式寫在 project.css。
+    -->
+    <main id="app" class="container" v-cloak>
       <h1>作品</h1>
       <p class="intro">課堂作業、實驗室計畫，還有一些突然想到就做的東西。</p>
 
-      <div class="filters" role="group" aria-label="作品分類"></div>
-      <div id="project-list"></div>
+      <!-- 篩選按鈕：「全部」加上每個分類各一顆 -->
+      <div class="filters" role="group" aria-label="作品分類">
+        <button
+          v-for="category in ['all', ...categories]"
+          :key="category"
+          type="button"
+          class="filter"
+          :class="{ active: current === category }"
+          :aria-pressed="current === category"
+          @click="current = category"
+        >
+          {{ category === "all" ? "全部" : category }}
+        </button>
+      </div>
+
+      <div id="project-list">
+        <p v-if="error">作品資料讀取失敗 😢</p>
+
+        <!-- visibleGroups 是 computed：current 一改，這裡就自動只剩選到的分類 -->
+        <section
+          v-for="group in visibleGroups"
+          :key="group.category"
+          class="category"
+          :data-category="group.category"
+        >
+          <h2>{{ group.category }}</h2>
+          <div class="card-grid">
+            <article v-for="project in group.projects" :key="project.name" class="card">
+              <div class="card-head">
+                <img
+                  v-if="project.icon"
+                  class="project-icon"
+                  :src="project.icon"
+                  alt=""
+                  :style="{ background: project.iconBg }"
+                />
+                <h3>{{ project.name }}</h3>
+              </div>
+              <p>{{ project.desc }}</p>
+              <div class="repo-footer">
+                <span class="language"><img :src="langIcon(project.lang)" alt="" />{{ langName(project.lang) }}</span>
+                <div class="repo-links">
+                  <a
+                    v-for="link in project.links"
+                    :key="link.url"
+                    class="repo-btn"
+                    :href="link.url"
+                    target="_blank"
+                    rel="noopener"
+                    >{{ link.label }}</a
+                  >
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
     </main>
   </body>
 </html>

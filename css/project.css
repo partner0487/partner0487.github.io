@@ -42,6 +42,11 @@ body {
   gap: 1.5rem;
 }
 
+/* Vue 載入完成前先藏起來，避免閃出 {{ }}；Vue 掛上後會自動移除 v-cloak 屬性 */
+[v-cloak] {
+  display: none;
+}
+
 /* ---- 內容 ---- */
 .container {
   padding: 1rem 2rem 3rem;

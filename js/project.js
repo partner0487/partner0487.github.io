@@ -1,8 +1,11 @@
-// 作品頁：從 data/projects.json 讀取作品，依分類顯示
-// 分類和介紹跟 GitHub profile README 一致，新增作品只要改 JSON
+// 作品頁（Vue 3 版）：從 data/projects.json 讀取作品，依分類顯示
+//
+// 原本的寫法是用 createElement 一個一個組出卡片、自己綁 click、自己切換 hidden。
+// Vue 的寫法是：畫面長什麼樣子寫在 project.html 的 template 裡，
+// 這裡只管「資料」和「狀態」，資料一變，Vue 會自己更新畫面。
 
-const filtersEl = document.querySelector(".filters");
-const listEl = document.getElementById("project-list");
+// 直接從 CDN import，不需要安裝或打包；版本固定，避免哪天 Vue 改版網站突然壞掉
+import { createApp, ref, computed, onMounted } from "https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.prod.js";
 
 const langNames = {
   python: "Python",
@@ -13,88 +16,42 @@ const langNames = {
   java: "Java",
 };
 
-function el(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text) node.textContent = text;
-  return node;
-}
+createApp({
+  setup() {
+    // ref()：會影響畫面的狀態。在 JS 裡要用 .value 讀寫，在 template 裡直接寫名字就好
+    // ≈ React 的 useState，但不用另外呼叫 setXxx
+    const groups = ref([]); // 所有分類和作品（從 JSON 讀進來）
+    const current = ref("all"); // 目前選的分類；原本是 showCategory() 裡手動切換 class
+    const error = ref(false);
 
-function createCard(project) {
-  const card = el("article", "card");
+    // computed()：由其他狀態算出來的值，groups 或 current 改變時會自動重算
+    // ≈ React 的 useMemo，但不用寫依賴陣列，Vue 會自己追蹤用到了哪些 ref
+    const categories = computed(() => groups.value.map((g) => g.category));
 
-  const head = el("div", "card-head");
-  if (project.icon) {
-    const icon = el("img", "project-icon");
-    icon.src = project.icon;
-    icon.alt = "";
-    if (project.iconBg) icon.style.background = project.iconBg;
-    head.appendChild(icon);
-  }
-  head.appendChild(el("h3", null, project.name));
-  card.appendChild(head);
+    // 原本是把每個 section 加上 hidden；現在直接算出「要顯示哪些分類」，template 只畫這些
+    const visibleGroups = computed(() =>
+      current.value === "all"
+        ? groups.value
+        : groups.value.filter((g) => g.category === current.value)
+    );
 
-  card.appendChild(el("p", null, project.desc));
+    // template 裡可以呼叫的一般函式
+    const langIcon = (lang) => `https://skillicons.dev/icons?i=${lang}`;
+    const langName = (lang) => langNames[lang] || lang;
 
-  const footer = el("div", "repo-footer");
-  const lang = el("span", "language");
-  const langIcon = el("img");
-  langIcon.src = `https://skillicons.dev/icons?i=${project.lang}`;
-  langIcon.alt = "";
-  lang.append(langIcon, langNames[project.lang] || project.lang);
-  footer.appendChild(lang);
-
-  const links = el("div", "repo-links");
-  project.links.forEach((link) => {
-    const a = el("a", "repo-btn", link.label);
-    a.href = link.url;
-    a.target = "_blank";
-    a.rel = "noopener";
-    links.appendChild(a);
-  });
-  footer.appendChild(links);
-  card.appendChild(footer);
-
-  return card;
-}
-
-function showCategory(category) {
-  filtersEl.querySelectorAll(".filter").forEach((btn) => {
-    const active = btn.dataset.category === category;
-    btn.classList.toggle("active", active);
-    btn.setAttribute("aria-pressed", active);
-  });
-  listEl.querySelectorAll(".category").forEach((section) => {
-    section.hidden = category !== "all" && section.dataset.category !== category;
-  });
-}
-
-function addFilter(label, category) {
-  const btn = el("button", "filter", label);
-  btn.type = "button";
-  btn.dataset.category = category;
-  btn.addEventListener("click", () => showCategory(category));
-  filtersEl.appendChild(btn);
-}
-
-fetch("data/projects.json")
-  .then((res) => res.json())
-  .then((groups) => {
-    addFilter("全部", "all");
-    groups.forEach((group) => {
-      addFilter(group.category, group.category);
-
-      const section = el("section", "category");
-      section.dataset.category = group.category;
-      section.appendChild(el("h2", null, group.category));
-      const grid = el("div", "card-grid");
-      group.projects.forEach((project) => grid.appendChild(createCard(project)));
-      section.appendChild(grid);
-      listEl.appendChild(section);
+    // onMounted()：畫面第一次掛上去之後執行，適合放 fetch
+    // ≈ React 的 useEffect(() => {...}, [])
+    onMounted(async () => {
+      try {
+        const res = await fetch("data/projects.json");
+        groups.value = await res.json(); // 一指定，畫面就會自動長出所有卡片
+      } catch (e) {
+        console.error("無法讀取作品資料:", e);
+        error.value = true;
+      }
     });
-    showCategory("all");
-  })
-  .catch((error) => {
-    console.error("無法讀取作品資料:", error);
-    listEl.textContent = "作品資料讀取失敗 😢";
-  });
+
+    // 回傳的東西才能在 template 裡使用
+    return { groups, current, error, categories, visibleGroups, langIcon, langName };
+  },
+}).mount("#app"); // 只接管 #app，導覽列等其他部分不受影響

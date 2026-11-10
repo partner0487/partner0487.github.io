@@ -145,7 +145,7 @@
       const name = el("span", "rpg-name");
       if (a.stat) name.append(el("span", "rpg-stat", a.stat), " ");
       name.append(a.name);
-      btn.append(name, segBar(10, `attr rpg-bar-${(a.stat || "").toLowerCase()}`), num);
+      btn.append(name, segBar(10, `attr rpg-bar-${a.color || "purple"}`), num);
       btn.addEventListener("click", () => select(btn, () => say(`${a.stat ? a.stat + "（" + a.name + "）" : a.name} ${a.value}：${a.desc}`)));
       li.append(btn);
       attrs.append(li);

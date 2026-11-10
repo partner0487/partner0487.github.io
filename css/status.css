@@ -517,7 +517,7 @@
   }
 }
 
-/* ---- 屬性：ARPG 縮寫（HP、MP、STR…）用小一號的金色字，HP 紅條、MP 藍條，其他紫條 ---- */
+/* ---- 屬性：ARPG 縮寫（HP、MP、STR…）用小一號的金色字 ---- */
 .rpg-stat {
   display: inline-block;
   min-width: 2.4em;
@@ -529,12 +529,25 @@
   background: #b9a2ff;
 }
 
-.rpg-bar-attr.rpg-bar-hp span.on {
+/* 屬性條的顏色：character.json 的 color 欄位，沒寫就是紫色 */
+.rpg-bar-attr.rpg-bar-red span.on {
   background: #ff7a7a;
 }
 
-.rpg-bar-attr.rpg-bar-mp span.on {
+.rpg-bar-attr.rpg-bar-blue span.on {
   background: #6ad1ff;
+}
+
+.rpg-bar-attr.rpg-bar-orange span.on {
+  background: #ffa94d;
+}
+
+.rpg-bar-attr.rpg-bar-green span.on {
+  background: #7ee081;
+}
+
+.rpg-bar-attr.rpg-bar-pink span.on {
+  background: #ff9ec0;
 }
 
 /* ---- 玩家屬性：三個並排的小格子，標題旁邊是玩家定位（可以點） ---- */

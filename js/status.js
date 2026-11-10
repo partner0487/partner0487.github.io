@@ -146,12 +146,40 @@
       a._num = num;
     });
 
+    attrs.style.setProperty("--rows", Math.ceil(c.attributes.length / 2)); // 桌機排兩欄，每欄幾列
     page.append(hero, exp, el("h3", "rpg-sub", "屬性"), attrs);
+
+    // 玩家屬性：三個並排的小格子（博弈、操作、準度），標題後面是玩家定位
+    const gamerStats = (c.gamer && c.gamer.stats) || [];
+    if (gamerStats.length) {
+      const head = el("h3", "rpg-sub", "玩家屬性");
+      const role = el("button", "rpg-role", c.gamer.role);
+      role.type = "button";
+      role.addEventListener("click", () => say(`【${c.gamer.role}】${c.gamer.desc}`));
+      head.append(role);
+      const grid = el("ul", "rpg-gstats");
+      gamerStats.forEach((g) => {
+        const li = el("li");
+        const btn = el("button", "rpg-gstat");
+        btn.type = "button";
+        const num = el("span", "rpg-num", "0");
+        const top = el("span", "rpg-gstat-head");
+        top.append(el("span", "rpg-stat", g.stat), el("span", "rpg-gstat-name", g.name), num);
+        btn.append(top, segBar(10, "attr rpg-bar-game"));
+        btn.addEventListener("click", () => select(btn, () => say(`${g.stat}（${g.name}）${g.value}：${g.desc}`)));
+        li.append(btn);
+        grid.append(li);
+        g._bar = btn.querySelector(".rpg-bar");
+        g._num = num;
+      });
+      page.append(head, grid);
+    }
+
     page._reveal = () => {
       fillBar(expBar, c.exp / c.nextExp);
       countUp(expNum, c.exp, (v) => `${v} / ${c.nextExp}`, 600);
-      c.attributes.forEach((a, i) => {
-        fillBar(a._bar, a.value / 100, 300 + i * 120);
+      [...c.attributes, ...gamerStats].forEach((a, i) => {
+        fillBar(a._bar, a.value / 100, 300 + i * 100);
         countUp(a._num, a.value);
       });
     };
@@ -210,6 +238,7 @@
       list.append(li);
       s._bar = btn.querySelector(".rpg-bar");
     });
+    list.style.setProperty("--rows", Math.ceil(c.skills.length / 2));
     page.append(list, el("p", "rpg-hint", "等級 = 實際有在寫的月數；GitHub 上有寫的月份會自動加上去。"));
     // 進度條：跟最高等的技能比，看得出差距
     const top = Math.max(1, ...c.skills.map((s) => s.level));
@@ -271,7 +300,7 @@
 
   // 選中某一列：加上 ▶ 游標
   function select(btn, action) {
-    root.querySelectorAll(".rpg-row.selected, .rpg-badge.selected").forEach((b) => b.classList.remove("selected"));
+    root.querySelectorAll(".rpg-row.selected, .rpg-badge.selected, .rpg-gstat.selected").forEach((b) => b.classList.remove("selected"));
     btn.classList.add("selected");
     action();
   }
@@ -332,7 +361,7 @@
     });
     pagesWrap.addEventListener("keydown", (e) => {
       if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-      const items = [...pages[current][1].querySelectorAll(".rpg-row, .rpg-badge")];
+      const items = [...pages[current][1].querySelectorAll(".rpg-row, .rpg-gstat, .rpg-badge")];
       const at = items.indexOf(document.activeElement);
       if (at < 0) return;
       e.preventDefault();

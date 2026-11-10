@@ -275,14 +275,14 @@
 
   .rpg-skills {
     grid-auto-flow: column;
-    grid-template-rows: repeat(8, auto);
+    grid-template-rows: repeat(var(--rows, 8), auto); /* --rows 由 js/status.js 依項目數量算 */
     grid-template-columns: 1fr 1fr;
     gap: 2px 18px;
   }
 
   .rpg-attrs {
     grid-auto-flow: column;
-    grid-template-rows: repeat(4, auto);
+    grid-template-rows: repeat(var(--rows, 4), auto); /* --rows 由 js/status.js 依項目數量算 */
     grid-template-columns: 1fr 1fr;
     gap: 2px 18px;
   }
@@ -497,7 +497,8 @@
     padding: 4px 8px 4px 22px;
   }
 
-  .rpg-skills .rpg-row {
+  .rpg-skills .rpg-row,
+  .rpg-attrs .rpg-row {
     padding-top: 3px;
     padding-bottom: 3px;
   }
@@ -534,4 +535,93 @@
 
 .rpg-bar-attr.rpg-bar-mp span.on {
   background: #6ad1ff;
+}
+
+/* ---- 玩家屬性：三個並排的小格子，標題旁邊是玩家定位（可以點） ---- */
+.rpg-role {
+  margin-left: 10px;
+  padding: 1px 8px;
+  border: 1px solid rgba(255, 224, 138, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 224, 138, 0.12);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.rpg-role:hover,
+.rpg-role:focus-visible {
+  outline: none;
+  background: rgba(255, 224, 138, 0.28);
+}
+
+.rpg-gstats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rpg-gstat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-radius: 6px;
+  background: rgba(10, 17, 74, 0.6);
+  text-align: left;
+  cursor: pointer;
+}
+
+.rpg-gstat:hover,
+.rpg-gstat:focus-visible,
+.rpg-gstat.selected {
+  outline: none;
+  border-color: #ffe08a;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.rpg-gstat-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.rpg-gstat-head .rpg-stat {
+  min-width: 0;
+}
+
+.rpg-gstat-head .rpg-num {
+  margin-left: auto;
+}
+
+.rpg-gstat .rpg-bar {
+  gap: 2px;
+}
+
+.rpg-gstat .rpg-bar span {
+  height: 8px;
+}
+
+.rpg-bar-attr.rpg-bar-game span.on {
+  background: #ffb35c;
+}
+
+@media (max-width: 600px) {
+  .rpg-gstats {
+    gap: 6px;
+  }
+
+  .rpg-gstat {
+    padding: 6px 7px;
+  }
+
+  .rpg-gstat-head {
+    gap: 4px;
+    font-size: 0.85rem;
+  }
 }

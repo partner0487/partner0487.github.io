@@ -16,8 +16,19 @@
     { "stat": "VIT", "name": "體力", "value": 60, "desc": "Debug 到半夜還撐得住，不過隔天要補眠。" },
     { "stat": "SPD", "name": "速度", "value": 60, "desc": "寫程式的速度普通，不追求最快寫完，寧願多花一點時間把東西弄懂。" },
     { "stat": "INT", "name": "知識", "value": 58, "desc": "知識量普通，碩士班正在練功：讀論文、做實驗。" },
+    { "stat": "PER", "name": "觀察力", "value": 88, "desc": "很會注意到別人沒發現的細節，Debug 和打遊戲都靠它。" },
+    { "stat": "CHA", "name": "口才", "value": 58, "desc": "說話普通，比較擅長用作品說話。" },
     { "stat": "LUK", "name": "幸運", "value": 30, "desc": "抽卡常常歪，所以只好靠實力。" }
   ],
+  "gamer": {
+    "role": "大腦型玩家",
+    "desc": "Apex 玩偵測位、OW 玩輔助、LOL 打野，都是隊伍裡負責看資訊、做決策的位置。",
+    "stats": [
+      { "stat": "TAC", "name": "博弈", "value": 92, "desc": "最喜歡動腦：讀對手、算時機、決定什麼時候打、什麼時候撤。" },
+      { "stat": "DEX", "name": "操作", "value": 55, "desc": "手速和操作中規中矩，靠判斷補回來。" },
+      { "stat": "ACC", "name": "準度", "value": 25, "desc": "射擊遊戲的槍法很差，所以都選不用拚槍法的角色。" }
+    ]
+  },
   "skills": [
     { "name": "C++", "base": 48, "from": "高中自學到 APCS，大學的程式設計、資料結構、演算法、圖論演算法，加上 CPE 和 LeetCode", "github": "C++", "langs": [] },
     { "name": "Git", "github": "*", "from": "用 Git 把作品推上 GitHub", "langs": [] },

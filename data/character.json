@@ -17,7 +17,7 @@
     { "stat": "MP", "name": "點子", "value": 90, "color": "blue", "desc": "腦袋裡的點子很多，常常冷不防就開始做一個新專案。" },
     { "stat": "VIT", "name": "體力", "value": 60, "color": "orange", "desc": "Debug 到半夜還撐得住，不過隔天要補眠。" },
     { "stat": "LUK", "name": "幸運", "value": 30, "color": "green", "desc": "抽卡常常歪，所以只好靠實力。" },
-    { "stat": "CHA", "name": "魅力", "value": 32, "color": "pink", "desc": "魅力值偏低，屬於要相處久了才會發現有趣的類型。" },
+    { "stat": "CHA", "name": "魅力", "value": 32, "color": "pink", "desc": "這人母胎單身。。" },
     { "stat": "STR", "name": "實作", "value": 85, "desc": "想到就做，做到能跑為止。" },
     { "stat": "INT", "name": "智力", "value": 58, "desc": "智力普通，碩士班正在練功：讀論文、做實驗。" },
     { "stat": "SPD", "name": "速度", "value": 60, "desc": "寫程式的速度普通，不追求最快寫完，寧願多花一點時間把東西弄懂。" },

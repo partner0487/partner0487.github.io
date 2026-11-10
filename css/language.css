@@ -3,7 +3,7 @@
     margin: -55px auto auto 70px;
     display: flex; /* 啟用 flexbox 佈局 */
     align-items: center; /* 垂直居中 */
-    gap: 5px; /* 設置元素之間的間距 */
+    gap: 10px; /* 設置元素之間的間距 */
     height: auto;
 }
 

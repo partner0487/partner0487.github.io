@@ -13,7 +13,8 @@ const contentData = {
         title: '原神',
         subtitle: 'UID：900498591',
         desc: '刻晴main',
-        color: "purple"
+        color: "purple",
+        detail: 'genshin_detail.png'
     },
     'star_rail': {
         title: '崩壞：星穹鐵道',
@@ -51,7 +52,7 @@ videoItems.forEach(item => {
     item.addEventListener('click', function () {
         const selectedFileName = item.getAttribute('data');
         const selectedVideoUrl = `images/${selectedFileName}.mp4`; // Dynamically generate the full path
-        const selectedImageUrl = `images/${selectedFileName}_detail.jpg`; // Dynamically generate the full path
+        const selectedImageUrl = `images/${contentData[selectedFileName].detail || `${selectedFileName}_detail.jpg`}`;
 
         // Function to check if the file exists
         async function fileExists(url) {

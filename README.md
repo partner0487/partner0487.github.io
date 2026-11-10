@@ -64,7 +64,6 @@
 - 每一列可以用滑鼠拖曳左右滑動，也可以按左右按鈕
 
 ### 每一頁都有
-- **Google 翻譯**：左上角 logo 旁邊可以切換繁中、簡中、英文、日文（[js/language.js](js/language.js)）
 - **手機版選單**：[js/site.js](js/site.js) 負責漢堡選單、響應式斷點、標示目前頁面。這是拿掉 Nicepage 之後自己寫的替代版
 - **字型**：Google Fonts 載入 Roboto、Open Sans 和 Noto Sans TC（400、700）。英文用前兩個，中文一律用 Noto Sans TC，不同電腦和手機看起來才會一樣；Google 把中文字型切成很多小塊，瀏覽器只下載頁面用到的字
 - **footer**：社群連結和 Email

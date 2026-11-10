@@ -41,13 +41,6 @@
   filter: invert(1);
 }
 
-/* Google 翻譯的下拉選單 */
-[data-theme="dark"] .goog-te-combo {
-  border-color: #3a3f47;
-  background-color: #22262d;
-  color: var(--dark-text);
-}
-
 /* ---- 興趣頁：遊戲區 ---- */
 /* 還沒選遊戲時，背景影片元素是一整片底色 */
 [data-theme="dark"] .background-video {

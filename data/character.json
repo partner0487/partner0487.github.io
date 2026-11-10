@@ -51,8 +51,10 @@
     { "name": "Dart", "base": 2, "from": "用 Flutter 做任務系統", "github": "Dart", "langs": ["dart"] }
   ],
   "achievements": [
+    { "icon": "📐", "name": "考進數理資優班", "desc": "高二考進永春高中的數理資優班，開始接觸 C++，也是後來一路寫程式的起點。", "date": "2019" },
     { "icon": "💻", "name": "APCS 4／3", "desc": "APCS 觀念題 4 級、實作題 3 級，用 C++ 應考。這是高中開始寫程式的起點。", "date": "2020", "image": "images/achievements/apcs.webp", "imageLabel": "成績證明" },
     { "icon": "🏅", "name": "旺宏科學獎", "desc": "高中用 Arduino 和感應卡做的「感應式智能登錄助手」拿下旺宏科學獎佳作，第一次體會到作品跑起來的成就感。", "date": "2020", "image": "images/achievements/macronix.webp", "imageLabel": "證書" },
+    { "icon": "🏫", "name": "考上國立大學資工系", "desc": "考上國立臺灣海洋大學資訊工程學系，正式走上資工這條路。", "date": "2021" },
     { "icon": "🧮", "name": "CPE 5／7", "desc": "大學程式能力檢定 CPE 解出 5 題，排名 131 / 2811，前 4.7%。", "date": "2023", "image": "images/achievements/cpe.webp", "imageLabel": "成績紀錄" },
     { "icon": "🏆", "name": "海洋盃佳作", "desc": "和兩位同學組成「Part-Time Coder」隊，拿下 2023 海洋盃程式設計競賽資工組佳作。", "date": "2023", "image": "images/achievements/oceancup.webp", "imageLabel": "獎狀" },
     { "icon": "💡", "name": "智慧創新注目獎", "desc": "大學畢業專題「突破次元：2D 圖片變成 3D 模型」（LRM、YOLACT、Blender），在 2024 全國大專校院智慧創新暨跨域整合創作競賽的體感互動科技組拿下值得注目獎。", "date": "2024", "image": "images/achievements/smart-innovation.webp", "imageLabel": "獎狀" },

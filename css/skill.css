@@ -187,3 +187,46 @@
   color: #f8f8f8; /* 技能名稱 & 等級文字也改亮 */
 }
 
+
+/* ---- 手機版 ---- */
+@media (max-width: 600px) {
+  /* 頭像移到上面置中，資訊放下面，避免左右硬擠 */
+  .character-card {
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem 12px;
+    padding: 1.25rem;
+  }
+
+  .character-details {
+    width: 100%;
+  }
+
+  .character-card h2 {
+    text-align: center;
+  }
+
+  .exp-text {
+    white-space: nowrap;
+  }
+
+  .skill-title h3 {
+    font-size: 1.6rem;
+  }
+
+  /* 技能名稱固定寬度、等級不換行，中間的條自己伸縮 */
+  .skill-name {
+    flex: 0 0 90px;
+    min-width: 0;
+  }
+
+  .skill-bar {
+    flex: 1;
+    margin: 0 0.75rem;
+  }
+
+  .skill-level {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}

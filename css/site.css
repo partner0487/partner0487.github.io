@@ -56,3 +56,10 @@
 #sec-6049 .u-list-1 {
   margin-bottom: 0;
 }
+
+/* 窄螢幕縮小間距，8 個圖示才排得進一行 */
+@media (max-width: 420px) {
+  .footer-social {
+    gap: 12px;
+  }
+}

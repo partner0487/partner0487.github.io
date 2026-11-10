@@ -208,3 +208,32 @@
     transition: transform 0.3s ease;
     cursor: grab;
 }
+/* ---- 手機版：卡片不超過螢幕寬，遊戲 icon 縮小才放得下 6 個 ---- */
+@media (max-width: 600px) {
+    .left-content {
+        width: 100%;
+    }
+
+    .content-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .product-card {
+        width: 100%;
+        max-width: 400px;
+        padding: 30px 24px;
+    }
+
+    .video-picker {
+        gap: 10px;
+        flex-wrap: wrap;
+        max-width: calc(100% - 24px);
+    }
+
+    .video-item {
+        width: 44px;
+        height: 44px;
+    }
+}

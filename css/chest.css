@@ -4,6 +4,7 @@
   left: 50%;
   transform: translate(-50%, -100%);
   text-align: center;
+  white-space: nowrap; /* left: 50% 只剩一半寬度，手機上會被拆成兩行 */
   pointer-events: none;
   animation: floatUpDown 2s ease-in-out infinite;
   z-index: 10;

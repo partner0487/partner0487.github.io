@@ -2,7 +2,7 @@
 // 資料在 data/character.json；這裡把它畫成「狀態 / 技能 / 成就」三個分頁，
 // 下方的對話框用打字機效果顯示說明。
 //
-// 操作：點分頁或用 ← → 切換；在列表裡用 ↑ ↓ 移動、Enter 選擇；點對話框可以直接顯示完整文字。
+// 操作：點分頁或用 ← → 切換；在列表裡用 ↑ ↓ ← → 移動、Enter 選擇；點對話框可以直接顯示完整文字。
 
 (() => {
   const root = document.getElementById("status-panel");
@@ -586,14 +586,28 @@
       show(n);
       tabButtons[n].focus();
     });
+    // 列表裡：↑ ↓ 照順序移動；← → 移到同一列的左邊 / 右邊那格，走到底就繞回另一邊
+    //（例如右欄的「智力」按左或右都會到左欄同一列的「點子」）
     pagesWrap.addEventListener("keydown", (e) => {
-      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      if (!["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(e.key)) return;
       const items = [...pages[current][1].querySelectorAll(".rpg-row, .rpg-gstat, .rpg-badge")];
       const at = items.indexOf(document.activeElement);
       if (at < 0) return;
       e.preventDefault();
-      const next = items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length];
-      next.focus();
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus();
+        return;
+      }
+      // 畫面上跟現在這格同一列（垂直中心差不到半格高）的格子，由左到右排好
+      const box = (n) => n.getBoundingClientRect();
+      const me = box(items[at]);
+      const midY = me.top + me.height / 2;
+      const row = items
+        .filter((n) => Math.abs(box(n).top + box(n).height / 2 - midY) < me.height / 2)
+        .sort((a, b) => box(a).left - box(b).left);
+      if (row.length < 2) return; // 手機只有一欄，左右沒有東西可以去
+      const i = row.indexOf(items[at]);
+      row[(i + (e.key === "ArrowRight" ? 1 : row.length - 1)) % row.length].focus();
     });
 
     const title = el("h2", "rpg-heading", "地球Online玩家屬性面板");

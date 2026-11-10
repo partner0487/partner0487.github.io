@@ -152,7 +152,7 @@
     // 玩家屬性：三個並排的小格子（博弈、操作、準度），標題後面是玩家定位
     const gamerStats = (c.gamer && c.gamer.stats) || [];
     if (gamerStats.length) {
-      const head = el("h3", "rpg-sub", "玩家屬性");
+      const head = el("h3", "rpg-sub", "遊戲屬性");
       const role = el("button", "rpg-role", c.gamer.role);
       role.type = "button";
       role.addEventListener("click", () => say(`【${c.gamer.role}】${c.gamer.desc}`));
@@ -369,7 +369,7 @@
       next.focus();
     });
 
-    const title = el("h2", "rpg-heading", "個人程式能力面板");
+    const title = el("h2", "rpg-heading", "地球Online玩家屬性面板");
     main.append(title, tabs, pagesWrap);
 
     const message = el("div", "rpg-window rpg-message");

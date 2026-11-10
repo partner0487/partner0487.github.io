@@ -625,3 +625,14 @@
     font-size: 0.85rem;
   }
 }
+
+/* 標題「地球Online玩家屬性面板」比較長：手機上跟著螢幕寬度縮小，排在同一行；真的放不下時兩行也會差不多長 */
+.rpg-panel .rpg-heading {
+  text-wrap: balance;
+}
+
+@media (max-width: 600px) {
+  .rpg-panel .rpg-heading {
+    font-size: min(30px, 6.6vw) !important;
+  }
+}

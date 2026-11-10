@@ -3,19 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>作品集</title>
+    <title>作品 | Partner0487</title>
     <link rel="stylesheet" href="css/project.css" />
-    <script class="u-script" type="text/javascript" src="js/project.js" defer=""></script>
+    <script src="js/project.js" defer></script>
   </head>
   <body>
-    <div class="container">
+    <nav class="top-nav">
+      <a class="home-link" href="./">
+        <img src="images/profile/logo.png" alt="" />
+        <span>Partner0487</span>
+      </a>
+      <div class="nav-links">
+        <a href="./">首頁</a>
+        <a href="about.html">關於</a>
+        <a href="contact.html">聯繫</a>
+      </div>
+    </nav>
+
+    <main class="container">
       <h1>作品</h1>
+      <p class="intro">課堂作業、實驗室計畫，還有一些突然想到就做的東西。</p>
 
-      <!-- 篩選按鈕 -->
-      <div class="filters"></div>
-
-      <!-- 卡片區塊 -->
-      <div class="card-grid" id="repo-grid"></div>
-    </div>
+      <div class="filters" role="group" aria-label="作品分類"></div>
+      <div id="project-list"></div>
+    </main>
   </body>
 </html>

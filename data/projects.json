@@ -1,0 +1,99 @@
+[
+  {
+    "category": "實驗室計畫",
+    "projects": [
+      {
+        "name": "棒球打擊動作分析",
+        "desc": "用兩台相機從正面和側面同步錄影，YOLO 抓打者和球棒、ViTPose 抓骨架，分析揮棒動作和 3D 姿態。從學長姐那邊接手的計畫，我負責繼續開發和優化。",
+        "lang": "python",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/Hitter-Skeleton" }]
+      }
+    ]
+  },
+  {
+    "category": "碩士課程",
+    "projects": [
+      {
+        "name": "Applying Reinforcement Learning to 2D Precision Platformer Games",
+        "desc": "自己寫的 PyGame 平台跳躍遊戲，再訓練 agent 去玩。一個讀遊戲數值的 PPO、一個只看畫面的 CNN，比較兩者的表現。",
+        "lang": "python",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/RL_Platform_Game" }]
+      }
+    ]
+  },
+  {
+    "category": "個人專案",
+    "projects": [
+      {
+        "name": "二遊更新日曆",
+        "desc": "自動抓原神、星鐵、鳴潮等遊戲官網公告，整理成日曆，可以一鍵同步到 Google 日曆。",
+        "lang": "python",
+        "icon": "images/projects/hoyo-calendar.png",
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/partner0487/hoyoCalendar" },
+          { "label": "Demo", "url": "https://hoyo-calendar.vercel.app" }
+        ]
+      },
+      {
+        "name": "hoyoTTS",
+        "desc": "用 OCR 讀遊戲劇情的文字和角色名稱，再用 AI 配音念出來。",
+        "lang": "python",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/hoyoTTS" }]
+      },
+      {
+        "name": "任務系統",
+        "desc": "Android 待辦 App，沒做完的任務會一直掛在通知欄，拉下來就能打勾。",
+        "lang": "dart",
+        "icon": "images/projects/task-system.png",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/TaskSystem" }]
+      },
+      {
+        "name": "全國雲端候診中心 自動提醒",
+        "desc": "盯著線上候診系統的看診進度，快輪到自己時提醒。",
+        "lang": "python",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/Auto_Doctor_Checker" }]
+      }
+    ]
+  },
+  {
+    "category": "大學課程",
+    "projects": [
+      {
+        "name": "海大拍賣平台 NTOU Auction",
+        "desc": "給海大師生用的二手交易平台，有直購和競標兩種模式。",
+        "lang": "react",
+        "icon": "images/projects/ntou-auction.png",
+        "iconBg": "#fff",
+        "links": [
+          { "label": "前端", "url": "https://github.com/partner0487/ntou-auction-react" },
+          { "label": "後端", "url": "https://github.com/partner0487/ntou-auction-java" }
+        ]
+      },
+      {
+        "name": "海大資工 學分計算機",
+        "desc": "海大資工學分計算 Android App。",
+        "lang": "kotlin",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/NTOU-credit-calculation" }]
+      },
+      {
+        "name": "崩鐵圖鑑",
+        "desc": "星穹鐵道角色資料查詢網站。",
+        "lang": "html",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/honkai_wiki" }]
+      },
+      {
+        "name": "Overwatch2 最佳陣容模擬器",
+        "desc": "依照敵方陣容推薦我方適合的英雄組合，另外附英雄和角色類型介紹。",
+        "lang": "html",
+        "icon": "images/projects/overwatch.png",
+        "links": [{ "label": "GitHub", "url": "https://github.com/DHugo324/Web-Programming-Project" }]
+      },
+      {
+        "name": "圖片魔法師",
+        "desc": "Java 圖片編輯器，可以套濾鏡、合成圖片、編輯 GIF。",
+        "lang": "java",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/JAVA_EndTerm_project" }]
+      }
+    ]
+  }
+]

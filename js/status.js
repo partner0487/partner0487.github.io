@@ -292,42 +292,44 @@
   }
 
   // ---- 寵物：小樹（長毛吉娃娃）的像素圖，一格一個字，對照 PET_PALETTE 上色 ----
+  // 照片上的小樹：白色為主，耳朵、臉頰兩側和背上是黃褐色，臉中間一道白，鼻子咖啡色
   const PET_PALETTE = {
-    o: "#3b2516", // 外框
-    t: "#d08a3c", // 毛
-    d: "#aa682a", // 毛的陰影
-    l: "#f0be78", // 毛的亮面
-    w: "#fff6e6", // 臉和胸口的白毛
-    k: "#1a1618", // 眼睛、鼻子
+    o: "#4a3426", // 外框
+    w: "#fffaf2", // 白毛
+    s: "#e2d6c6", // 白毛的陰影
+    t: "#d38a45", // 黃褐色的毛
+    d: "#a9652c", // 黃褐色的陰影
+    p: "#f2a7a0", // 耳朵內側、舌頭
+    k: "#1a1618", // 眼睛
     e: "#ffffff", // 眼睛反光
-    p: "#ff8ca0", // 舌頭
+    n: "#603628", // 鼻子
   };
-  // 面向右邊：大大的蘋果頭、大眼睛、短嘴、圓身體、長毛耳朵、蓬蓬尾巴捲在背上
+  // 面向右邊：大大的蘋果頭、大眼睛、短嘴、圓身體、長毛耳朵、白色蓬蓬尾巴捲在背上
   const PET_BODY = [
     "..........oo.....oo....",
-    ".........olto...olto...",
-    ".........ollto.ottlo...",
-    "..oo.....olltttttllo...",
-    ".olto...otttttttttto...",
-    ".ollto..ottttttkkwwto..",
-    "..olto..otttttkekwwwo..",
-    "..oltlo.ottttttkkwwwko.",
-    "...olloootttttttwwwwo..",
-    "...oltttttttttttwwpo...",
-    "...otttttttttttwwwo....",
-    "...odttttttttttwwwo....",
-    "...oddttttttttwwwwo....",
-    "....odddddttttwwwo.....",
-    "....ooddddddddddoo.....",
+    ".........otpo...otpo...",
+    ".........otppo.otppo...",
+    "..oo.....otttwwtttto...",
+    ".owso...ottttwwtttto...",
+    ".owwso..otttwwwkkwwto..",
+    "..owso..ottttwkekwwwo..",
+    "..owswo.otttttwkkwwwno.",
+    "...owwooottttttwwwwwo..",
+    "...owttttttttswwwwpo...",
+    "...owwtttttttwwwwwo....",
+    "...owwwttttwwwwwwwo....",
+    "...oswwwwwwwwwwwwwo....",
+    "....osswwwwwwwwwso.....",
+    "....oossssssssssoo.....",
   ];
   // 四隻短腿的走路循環
   const PET_LEGS = [
-    ["....od.od....od.ow.....", "....oo..oo...oo..oo...."],
-    [".....odod.....odow.....", ".....oooo.....oooo....."],
-    ["...od.od....od.ow......", "..oo..oo...oo..oo......"],
-    [".....odod.....odow.....", ".....oooo.....oooo....."],
+    ["....ow.ow....ow.ow.....", "....oo..oo...oo..oo...."],
+    [".....owow.....owow.....", ".....oooo.....oooo....."],
+    ["...ow.ow....ow.ow......", "..oo..oo...oo..oo......"],
+    [".....owow.....owow.....", ".....oooo.....oooo....."],
   ];
-  // 趴著睡覺、眼睛閉起來
+  // 睡覺：跟照片一樣捲成一球，頭靠在前面、眼睛閉著、尾巴圍在身體前面
   const PET_SLEEP = [
     ".......................",
     ".......................",
@@ -335,17 +337,17 @@
     ".......................",
     ".......................",
     ".......................",
-    "..oo...................",
-    ".olto.........oo...oo..",
-    ".ollto.......olto.olto.",
-    "..oltooooooooolttttllo.",
-    "...ottttttttttttttttto.",
-    "...otdttttttttttooowwto",
-    "...otdddtttttttttwwwwko",
-    "...odddddddtttttwwwwwo.",
-    "....oddddddddddwwwwoo..",
-    "....ooooooooooooooo....",
-    ".......................",
+    "............oo...oo....",
+    ".....oooooootpo..opo...",
+    "....ottttttttwoooto....",
+    "...otttttttttottwtto...",
+    "..ottttttttttottwtto...",
+    "..odddddddddwotoowwo...",
+    "..owwwwwwwwwwottwwwn...",
+    "...owwwssssswwotooo....",
+    "...ossswwwwwssso.......",
+    "...ooowwwwwwwooo.......",
+    "......ooooooo..........",
   ];
 
   // 把字串畫成一張小 canvas（1 格 = 1 px），之後放大時不做平滑

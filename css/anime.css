@@ -209,7 +209,8 @@
     padding-right: 1rem;
   }
 
-  /* 一個畫面剛好兩張卡片（原本固定 200px，只看得到一張半），滑動時會停在卡片邊緣 */
+  /* 一個畫面兩張完整的卡片（原本固定 200px，只看得到一張半），右邊再露出下一張的一小角，提示還可以往右滑；
+     滑動時會停在卡片邊緣 */
   .anime-list {
     gap: 0.75rem;
     padding: 0.75rem 0.25rem;
@@ -218,7 +219,7 @@
   }
 
   .anime-card {
-    width: calc((100% - 0.75rem) / 2);
+    width: calc((100% - 1.5rem) / 2.15); /* 2 張 + 兩個間距 + 0.15 張 */
     scroll-snap-align: start;
   }
 

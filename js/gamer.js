@@ -56,27 +56,35 @@ const contentData = {
 const isMobile = () => window.innerWidth <= 980;
 let currentClick = 0; // 連點時只讓最後一次點擊生效
 
-function showDetailImage(url) {
-    const show = () => {
-        productImage.classList.add('show');
-        productImage.classList.remove('hidden');
-    };
-    const hide = () => {
-        productImage.classList.add('hidden');
-        productImage.classList.remove('show');
-    };
-    productImage.onload = show;
-    productImage.onerror = hide;
-    productImage.src = url;
-    if (productImage.complete && productImage.naturalWidth > 0) show();
+// 詳細圖先在背景載好，卡片才彈回來；不然第一次點的時候卡片會先出現，圖片過一下才跳出來
+const detailCache = {};
+function loadDetail(game) {
+    if (!detailCache[game]) {
+        detailCache[game] = new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(() => resolve(true));
+            img.onerror = () => resolve(false); // 沒有詳細圖的遊戲
+            img.src = `images/games/${game}_detail.webp`;
+        });
+    }
+    return detailCache[game];
 }
+
+function showDetailImage(game, ok) {
+    productImage.classList.toggle('show', ok);
+    productImage.classList.toggle('hidden', !ok);
+    if (ok) productImage.src = `images/games/${game}_detail.webp`;
+    else productImage.removeAttribute('src');
+}
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function selectGame(game) {
     const data = contentData[game];
     if (!data) return;
     const clickId = ++currentClick;
     const videoUrl = `videos/games/${game}.mp4`;
-    const imageUrl = `images/games/${game}_detail.webp`; // 沒有詳細圖的遊戲會觸發 onerror，不顯示
+    const detail = loadDetail(game); // 現在就開始載詳細圖
 
     // 0ms：左側卡片往上捲、右側選單收起、背景影片淡出
     contentWrapper.style.transform = isMobile() ? 'translateY(-150%)' : 'translateY(-100%)';
@@ -94,17 +102,23 @@ function selectGame(game) {
         backgroundVideo.src = videoUrl;
     }, 300);
 
-    // 600ms：更新內容，卡片和選單回到原位
-    setTimeout(() => {
+    // 至少等 600ms（收回去的動畫跑完），而且詳細圖載好了，才更新內容、卡片和選單回到原位；
+    // 網路太慢的話最多等 3 秒，圖片之後再自己出現
+    Promise.all([wait(600), Promise.race([detail, wait(3000).then(() => null)])]).then(([, ok]) => {
         if (clickId !== currentClick) return;
         productTitle.textContent = data.title;
         productSubtitle.textContent = data.subtitle;
         productDesc.textContent = data.desc;
         productDesc.style.color = data.color;
-        showDetailImage(imageUrl);
+        if (ok === null) {
+            showDetailImage(game, false);
+            detail.then((late) => clickId === currentClick && showDetailImage(game, late));
+        } else {
+            showDetailImage(game, ok);
+        }
         contentWrapper.style.transform = 'translateY(0)';
         colorPicker.style.transform = isMobile() ? 'translateY(0)' : 'translateX(0)';
-    }, 600);
+    });
 }
 
 videoItems.forEach(item => {
@@ -113,6 +127,7 @@ videoItems.forEach(item => {
     item.setAttribute('tabindex', '0');
     item.setAttribute('aria-label', contentData[game] ? contentData[game].title : game);
     item.addEventListener('click', () => selectGame(game));
+    item.addEventListener('pointerenter', () => loadDetail(game)); // 滑鼠移上去就先載，點下去通常已經好了
     item.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();

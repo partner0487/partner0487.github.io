@@ -40,11 +40,22 @@ function initBlobs() {
   const blobEls = document.querySelectorAll(".blob");
   const blobs = Array.from(blobEls).map((blobEl) => new BouncingBlob(blobEl));
 
+  let frame = null;
   function update() {
-    requestAnimationFrame(update);
+    frame = requestAnimationFrame(update);
     blobs.forEach((blob) => blob.update());
   }
-  requestAnimationFrame(update);
+
+  // 捲出畫面時暫停動畫，回到畫面再繼續
+  const section = document.querySelector(".blobs").closest("section");
+  new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting && frame === null) {
+      frame = requestAnimationFrame(update);
+    } else if (!entry.isIntersecting && frame !== null) {
+      cancelAnimationFrame(frame);
+      frame = null;
+    }
+  }).observe(section);
 }
 
 initBlobs();

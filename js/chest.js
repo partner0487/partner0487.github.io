@@ -1,5 +1,8 @@
 let scene, camera, renderer, mixer, model;
 let isHovered = false; // 變數來記錄是否處於 hover 狀態
+let actions = []; // 模型的開箱動畫
+let chestVisible = false; // 寶箱是否在畫面上
+let frame = null; // requestAnimationFrame 的 id，null 代表沒在渲染
 
 function init() {
   const container = document.getElementById("chest-section");
@@ -39,17 +42,22 @@ function init() {
 
       if (gltf.animations && gltf.animations.length > 0) {
         mixer = new THREE.AnimationMixer(model);
-        gltf.animations.forEach((clip) => {
+        actions = gltf.animations.map((clip) => {
           const action = mixer.clipAction(clip);
+          action.setLoop(THREE.LoopOnce); // 開箱動畫一次播一輪
+          action.clampWhenFinished = true; // 播完停在打開的樣子
           action.play();
           action.paused = true; // 初始時暫停動畫
+          return action;
         });
-        console.log("✔ 模型動畫已啟用");
+        // 播完一輪時滑鼠還在寶箱上，就再播一次
+        mixer.addEventListener("finished", (e) => {
+          if (isHovered) e.action.reset().play();
+        });
       }
 
-      console.log("✔ 模型載入成功");
-
-      animate();
+      renderer.render(scene, camera);
+      if (chestVisible) startLoop();
     },
     undefined,
     function (error) {
@@ -59,45 +67,22 @@ function init() {
 
   container.addEventListener("mouseenter", () => {
     isHovered = true;
-
-    if (mixer) {
-      mixer._actions.forEach((action) => {
-        if (!action.isRunning()) {
-          action.reset(); // 只有動畫沒在跑時才重播
-          action.setLoop(THREE.LoopOnce);
-          action.clampWhenFinished = true;
-          action.play();
-        }
-
-        // 加上 finished listener
-        action._listener = {
-          onLoopFinished: () => {
-            if (isHovered) {
-              action.reset().play(); // 繼續播放下一次
-            }
-          },
-        };
-
-        action._listenerFn = (e) => {
-          if (e.action === action && e.type === "finished") {
-            action._listener.onLoopFinished();
-          }
-        };
-
-        mixer.addEventListener("finished", action._listenerFn);
-      });
-    }
+    actions.forEach((action) => {
+      if (!action.isRunning()) action.reset().play(); // 只有動畫沒在跑時才重播
+    });
   });
 
+  // 離開時不打斷動畫，讓這一輪播完
   container.addEventListener("mouseleave", () => {
     isHovered = false;
-
-    if (mixer) {
-      mixer._actions.forEach((action) => {
-        mixer.removeEventListener("finished", action._listenerFn); // 移除 listener
-      });
-    }
   });
+
+  // 寶箱不在畫面上時停止渲染
+  new IntersectionObserver(([entry]) => {
+    chestVisible = entry.isIntersecting;
+    if (chestVisible) startLoop();
+    else stopLoop();
+  }).observe(container);
 
   container.addEventListener("click", () => {
     showLoadingScreen();
@@ -121,12 +106,23 @@ function showLoadingScreen() {
   
 
 function animate() {
-  requestAnimationFrame(animate);
+  frame = requestAnimationFrame(animate);
   if (mixer) {
     mixer.update(0.02); // ✨ 無論是否 hover，都讓動畫更新
   }
 
   renderer.render(scene, camera);
+}
+
+function startLoop() {
+  if (frame === null && model) frame = requestAnimationFrame(animate);
+}
+
+function stopLoop() {
+  if (frame !== null) {
+    cancelAnimationFrame(frame);
+    frame = null;
+  }
 }
 
 init();

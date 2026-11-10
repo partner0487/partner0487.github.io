@@ -20,10 +20,10 @@ window.addEventListener("resize", resetMatrix); // 視窗改變時更新
 
 
 function draw() {
-  ctx.fillStyle = "rgba(255, 255, 255, 0.2)"; // 淡淡黑背景，創造拖影感
+  ctx.fillStyle = "rgba(255, 255, 255, 0.2)"; // 半透明白底蓋上一層，留下拖影
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "#111"; // 螢光綠
+  ctx.fillStyle = "#111"; // 字元顏色
   ctx.font = fontSize + "px monospace";
 
   for (let i = 0; i < drops.length; i++) {
@@ -37,7 +37,16 @@ function draw() {
   }
 }
 
-setInterval(draw, 66); // 每秒30次畫面更新
+// 約每秒 15 次更新；技能面板不在畫面上時暫停
+let matrixTimer = null;
+new IntersectionObserver(([entry]) => {
+  if (entry.isIntersecting && matrixTimer === null) {
+    matrixTimer = setInterval(draw, 66);
+  } else if (!entry.isIntersecting && matrixTimer !== null) {
+    clearInterval(matrixTimer);
+    matrixTimer = null;
+  }
+}).observe(canvas.closest("section"));
 
 //能力條
 function animateSkillBars() {

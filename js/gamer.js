@@ -13,8 +13,7 @@ const contentData = {
         title: '原神',
         subtitle: 'UID：900498591',
         desc: '刻晴main',
-        color: "purple",
-        detail: 'genshin_detail.png'
+        color: "purple"
     },
     'star_rail': {
         title: '崩壞：星穹鐵道',
@@ -71,7 +70,7 @@ function selectGame(game) {
     if (!data) return;
     const clickId = ++currentClick;
     const videoUrl = `videos/games/${game}.mp4`;
-    const imageUrl = `images/games/${data.detail || `${game}_detail.jpg`}`;
+    const imageUrl = `images/games/${game}_detail.webp`; // 沒有詳細圖的遊戲會觸發 onerror，不顯示
 
     // 0ms：左側卡片往上捲、右側選單收起、背景影片淡出
     contentWrapper.style.transform = isMobile() ? 'translateY(-150%)' : 'translateY(-100%)';

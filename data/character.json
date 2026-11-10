@@ -2,9 +2,8 @@
   "name": "王家騏",
   "class": "電腦視覺研究者",
   "title": "斜咖軟體人",
-  "level": 4,
-  "exp": 1760,
-  "nextExp": 2200,
+  "startedCoding": "2019-11",
+  "githubFrom": "2026-12",
   "attributes": [
     { "name": "實作力", "value": 82, "desc": "想到就做，做到能跑為止。" },
     { "name": "研究力", "value": 60, "desc": "讀論文、做實驗、把想法變成數據。碩士班正在練。" },
@@ -13,16 +12,21 @@
     { "name": "遊戲力", "value": 90, "desc": "原神、星鐵、魔物獵人……很多作品都是從遊戲裡長出來的。" }
   ],
   "skills": [
-    { "name": "C++", "since": "2019-11", "from": "高中", "langs": [] },
-    { "name": "Python", "since": "2022-09", "from": "大二 Python 程式語言", "langs": ["python"] },
-    { "name": "HTML", "since": "2022-09", "from": "大二網頁程式設計", "langs": ["html"] },
-    { "name": "JavaScript", "since": "2022-09", "from": "大二網頁程式設計", "langs": ["react", "html"] },
-    { "name": "Verilog", "since": "2022-09", "from": "大二數位系統設計", "langs": [] },
-    { "name": "Java", "since": "2023-02", "from": "大二 JAVA 程式設計", "langs": ["java"] },
-    { "name": "SQL", "since": "2023-09", "from": "大三資料庫系統", "langs": [] },
-    { "name": "PHP", "since": "2023-09", "from": "大三資料庫系統", "langs": [] },
-    { "name": "Kotlin", "since": "2024-02", "from": "大三 Android 行動裝置軟體設計", "langs": ["kotlin"] },
-    { "name": "TypeScript", "since": "2024-09", "langs": [] }
+    { "name": "C++", "base": 48, "from": "高中自學到 APCS，大學的程式設計、資料結構、演算法、圖論演算法，加上 CPE 和 LeetCode", "github": "C++", "langs": [] },
+    { "name": "Git", "github": "*", "from": "用 Git 把作品推上 GitHub", "langs": [] },
+    { "name": "Python", "base": 36, "from": "Python 程式語言、人工智慧、大數據、機器學習、畢業專題，還有現在的研究", "github": "Python", "langs": ["python"] },
+    { "name": "JavaScript", "base": 22, "from": "網頁程式設計、軟體工程的拍賣網站、資料庫的遊戲圖鑑，還有這個網站", "github": "JavaScript", "langs": ["react", "html"] },
+    { "name": "HTML", "base": 22, "from": "網頁程式設計、軟體工程的拍賣網站、資料庫的遊戲圖鑑，還有這個網站", "github": "HTML", "langs": ["html"] },
+    { "name": "CSS", "base": 22, "from": "跟 HTML 一起寫的，這個網站的樣式也是", "github": "CSS", "langs": ["html"] },
+    { "name": "SQL", "base": 12, "from": "資料庫系統，加上專案裡用到的資料庫", "github": "SQL", "langs": [] },
+    { "name": "Java", "base": 10, "from": "JAVA 程式設計和它的期末專案", "github": "Java", "langs": ["java"] },
+    { "name": "TypeScript", "base": 10, "from": "軟體工程的海大拍賣平台", "github": "TypeScript", "langs": ["react"] },
+    { "name": "C", "base": 6, "from": "大一程式設計", "github": "C", "langs": [] },
+    { "name": "Verilog", "base": 6, "from": "數位系統設計，一個學期", "github": "Verilog", "langs": [] },
+    { "name": "MIPS", "base": 6, "from": "微處理器原理與組合語言，一個學期", "github": "MIPS", "langs": [] },
+    { "name": "PHP", "base": 6, "from": "崩鐵圖鑑的後端", "github": "PHP", "langs": [] },
+    { "name": "Kotlin", "base": 6, "from": "Android 行動裝置軟體設計，做了學分計算機", "github": "Kotlin", "langs": ["kotlin"] },
+    { "name": "Dart", "base": 2, "from": "用 Flutter 做任務系統", "github": "Dart", "langs": ["dart"] }
   ],
   "achievements": [
     { "icon": "💻", "name": "APCS 4／3", "desc": "APCS 觀念題 4 級、實作題 3 級，用 C++ 應考。這是高中開始寫程式的起點。", "date": "2020", "image": "images/achievements/apcs.webp", "imageLabel": "成績證明" },

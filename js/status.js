@@ -91,6 +91,12 @@
 
   // ---- 三個分頁 ----
   function buildStatus(c) {
+    // 角色等級 = 從開始寫程式（startedCoding）到現在的月數，每個月 1 號升一級；EXP 是這個月過了幾天
+    const now = new Date();
+    const [sy, sm] = c.startedCoding.split("-").map(Number);
+    c.level = (now.getFullYear() - sy) * 12 + (now.getMonth() + 1 - sm);
+    c.nextExp = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    c.exp = now.getDate() - 1;
     const page = el("div", "rpg-page");
     const hero = el("div", "rpg-hero");
     const info = el("dl", "rpg-info");
@@ -112,7 +118,7 @@
     const expNum = el("span", "rpg-num", `0 / ${c.nextExp}`);
     expHead.append(expNum);
     const expBar = segBar(20, "exp");
-    exp.append(expHead, expBar, el("p", "rpg-hint", `距離 Lv. ${c.level + 1} 還差 ${c.nextExp - c.exp} EXP`));
+    exp.append(expHead, expBar, el("p", "rpg-hint", `從 ${sy} 年 ${sm} 月開始寫程式，每個月升一級；再 ${c.nextExp - c.exp} 天升到 Lv. ${c.level + 1}`));
 
     const attrs = el("ul", "rpg-list rpg-attrs");
     c.attributes.forEach((a) => {
@@ -131,7 +137,7 @@
     page.append(hero, exp, el("h3", "rpg-sub", "屬性"), attrs);
     page._reveal = () => {
       fillBar(expBar, c.exp / c.nextExp);
-      countUp(expNum, c.exp, (v) => `${v} / ${c.nextExp}`);
+      countUp(expNum, c.exp, (v) => `${v} / ${c.nextExp}`, 600);
       c.attributes.forEach((a, i) => {
         fillBar(a._bar, a.value / 100, 300 + i * 120);
         countUp(a._num, a.value);
@@ -141,19 +147,26 @@
     return page;
   }
 
-  // 技能等級 = 從開始學（since: "YYYY-MM"）到現在過了幾個月，每個月 1 號自動升一級
-  function skillLevel(since, now = new Date()) {
-    const [y, m] = since.split("-").map(Number);
-    const level = Math.max(0, (now.getFullYear() - y) * 12 + (now.getMonth() + 1 - m));
-    const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    return { level, left: days - now.getDate() + 1 };
+  // 技能等級 = 實際有在寫的月數：
+  //   base：到 githubFrom 為止累積的月數（手動填，一學期的課算 6）
+  //   + GitHub 上 githubFrom 之後有 commit 改到這個語言的月份（data/github-activity.json，每週自動更新）
+  // Git 比較特別：有 commit 的月份全部都算。
+  function skillLevels(c, activity) {
+    c.skills.forEach((s) => {
+      if (s.github === "*") {
+        s.gh = activity.commitMonths.length;
+        s.level = s.gh;
+      } else {
+        s.gh = (activity.languages[s.github] || []).filter((m) => m >= c.githubFrom).length;
+        s.level = (s.base || 0) + s.gh;
+      }
+    });
+    c.skills.sort((a, b) => b.level - a.level);
   }
 
   function buildSkills(c, projects) {
     const page = el("div", "rpg-page");
     const list = el("ul", "rpg-list rpg-skills");
-    c.skills.forEach((s) => Object.assign(s, skillLevel(s.since)));
-    c.skills.sort((a, b) => b.level - a.level);
     c.skills.forEach((s) => {
       const li = el("li");
       const btn = el("button", "rpg-row");
@@ -162,14 +175,11 @@
       btn.addEventListener("click", () =>
         select(btn, () => {
           const used = projects.filter((p) => s.langs.includes(p.lang));
-          const [y, m] = s.since.split("-").map(Number);
-          const years = Math.floor(s.level / 12);
-          const months = s.level % 12;
-          const span = [years && `${years} 年`, months && `${months} 個月`].filter(Boolean).join(" ") || "不到一個月";
-          const when = `${y} 年 ${m} 月`;
-          const text = `${s.name} Lv. ${s.level}：${s.from ? `從${s.from}（${when}）` : when}開始，學了 ${span}。` +
-            `再 ${s.left} 天升到 Lv. ${s.level + 1}。` +
-            (used.length ? `用它做過 ${used.length} 個作品：` : "還沒有放上來的作品。");
+          const how = s.github === "*"
+            ? `有 ${s.gh} 個月有 commit。`
+            : `${s.from}，累積 ${s.base} 個月` + (s.gh ? `，之後 GitHub 上又寫了 ${s.gh} 個月。` : "。");
+          const text = `${s.name} Lv. ${s.level}：${s.github === "*" ? `${s.from}，` : ""}${how}` +
+            (used.length ? `用它做過 ${used.length} 個作品：` : "");
           let extra = null;
           if (used.length) {
             extra = el("ul", "rpg-links");
@@ -188,10 +198,10 @@
       list.append(li);
       s._bar = btn.querySelector(".rpg-bar");
     });
-    page.append(list, el("p", "rpg-hint", "等級 = 學了幾個月，每個月 1 號自動升一級。"));
+    page.append(list, el("p", "rpg-hint", "等級 = 實際有在寫的月數；GitHub 上有寫的月份會自動加上去。"));
     // 進度條：跟最高等的技能比，看得出差距
     const top = Math.max(1, ...c.skills.map((s) => s.level));
-    page._reveal = () => c.skills.forEach((s, i) => fillBar(s._bar, s.level / top, i * 80));
+    page._reveal = () => c.skills.forEach((s, i) => fillBar(s._bar, s.level ? Math.max(0.1, s.level / top) : 0, i * 60)); // 有等級就至少亮一格
     page._intro = () => say("選一個技能，看看它的等級和用它做過的作品。");
     return page;
   }
@@ -355,8 +365,14 @@
       .then((r) => r.json())
       .then((groups) => groups.flatMap((g) => g.projects))
       .catch(() => []),
+    fetch("data/github-activity.json")
+      .then((r) => r.json())
+      .catch(() => ({ commitMonths: [], languages: {} })),
   ])
-    .then(([character, projects]) => render(character, projects))
+    .then(([character, projects, activity]) => {
+      skillLevels(character, activity);
+      render(character, projects);
+    })
     .catch((e) => {
       console.error("無法讀取角色資料:", e);
       root.textContent = "角色資料讀取失敗 😢";

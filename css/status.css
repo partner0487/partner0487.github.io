@@ -250,6 +250,25 @@
   white-space: nowrap;
 }
 
+/* 技能比較多，桌機排成兩欄（由上往下排，第二欄接著第一欄），面板才不會太高 */
+@media (min-width: 761px) {
+  .rpg-panel {
+    max-width: 780px;
+  }
+
+  .rpg-skills {
+    grid-auto-flow: column;
+    grid-template-rows: repeat(8, auto);
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 18px;
+  }
+
+  .rpg-skills .rpg-row {
+    grid-template-columns: 6.4em 1fr 3.8em;
+    gap: 10px;
+  }
+}
+
 /* ---- 成就 ---- */
 .rpg-badges {
   display: grid;
@@ -446,6 +465,11 @@
 
   .rpg-tab {
     padding: 4px 8px 4px 22px;
+  }
+
+  .rpg-skills .rpg-row {
+    padding-top: 3px;
+    padding-bottom: 3px;
   }
 
   .rpg-badges {

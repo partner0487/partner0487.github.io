@@ -35,8 +35,8 @@
 
 **RPG 角色面板**
 - 做成經典 JRPG 的視窗（深藍漸層、白框、像素字型 DotGothic16），資料在 [data/character.json](data/character.json)（[js/status.js](js/status.js)）
-  - **角色**：像素化的頭像（照片縮成 48×48 再放大）、職業、稱號、等級、分格的 EXP 條和屬性值
-  - **技能**：等級 = 從 `since`（開始學的年月）到現在過了幾個月，網頁自己算、每個月自動升一級，依等級排序；進度條是跟最高等技能的比例；選一個技能，下方對話框會用打字機效果說明，並列出用它做過的作品，點了打開首頁寶箱的那張卡片
+  - **角色**：像素化的頭像（照片縮成 48×48 再放大）、職業、稱號、屬性值；等級 = 從 `startedCoding` 開始寫程式到現在的月數，EXP 條是這個月過了幾天
+  - **技能**：等級 = 實際有在寫的月數 = `base`（到 `githubFrom` 為止手動估的月數，一學期的課算 6）＋ 之後 GitHub 上有 commit 改到這個語言檔案的月份；Git 則是有 commit 的月份數。GitHub 的部分由 [scripts/github_activity.py](scripts/github_activity.py) 統計成 [data/github-activity.json](data/github-activity.json)，GitHub Action（[.github/workflows/github-activity.yml](.github/workflows/github-activity.yml)）每週一自動跑一次，有變化才 commit。依等級排序，進度條是跟最高等技能的比例；選一個技能，下方對話框會用打字機效果說明，並列出用它做過的作品，點了打開首頁寶箱的那張卡片
   - **成就**：徽章，還沒達成的顯示「???」；有 `image` 的成就（右上角 ✦）可以點開看獎狀或證書，圖放在 images/achievements（上傳前先遮掉身分證字號、生日、學號等個資）
   - 可以用鍵盤操作：← → 換分頁、↑ ↓ 移動、Enter 選擇；點對話框直接顯示完整文字
   - 捲到面板才開始跑數字和進度條（`IntersectionObserver`）
@@ -81,7 +81,8 @@ js/                 各區塊的程式
 images/             profile、social、schools、games、projects、lang（程式語言 icon）、achievements（獎狀）、favicon
 videos/             遊戲背景影片
 models/             3D 模型
-data/               作品和動漫清單的資料
+data/               作品、動漫清單、角色面板、GitHub 活動的資料
+scripts/            github_activity.py：統計 GitHub 上各語言有寫的月份
 ```
 
 ## 在本機執行

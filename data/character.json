@@ -19,7 +19,7 @@
     { "stat": "LUK", "name": "幸運", "value": 30, "color": "green", "desc": "小保底必歪QAQ" },
     { "stat": "CHA", "name": "魅力", "value": 32, "color": "pink", "desc": "這人母胎單身。。" },
     { "stat": "STR", "name": "實作", "value": 85, "desc": "想到就做，做到能跑為止。" },
-    { "stat": "INT", "name": "智力", "value": 67, "desc": "智力普通，碩士班正在練功：讀論文、做實驗。" },
+    { "stat": "INT", "name": "智力", "value": 67, "desc": "智力中上，碩士班正在練功：讀論文、做實驗。" },
     { "stat": "SPD", "name": "速度", "value": 60, "desc": "deadline 前一天才是我的最高速度。" },
     { "stat": "PER", "name": "眼力", "value": 88, "desc": "很會注意到別人沒發現的細節，Debug 和打遊戲都靠它。" },
     { "stat": "ELO", "name": "口才", "value": 45, "desc": "報告時最常說的是：呃⋯⋯我直接 demo 好了。" }

@@ -5,7 +5,7 @@
   transform: translate(-50%, -50%);
   text-align: center;
   pointer-events: none;
-  animation: floatUpDown 2.5s ease-in-out infinite;
+  animation: animeFloat 2.5s ease-in-out infinite;
   z-index: 100;
 }
 
@@ -25,7 +25,7 @@
 }
 
 /* 浮動畫 */
-@keyframes floatUpDown {
+@keyframes animeFloat {
   0%,
   100% {
     transform: translate(-50%, -50%) translateY(0px);

@@ -1,0 +1,48 @@
+/* 每一頁共用的樣式：footer 社群連結、研究方向段落 */
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 30px auto 0;
+}
+
+.footer-social a {
+  display: block;
+  width: 28px;
+  height: 28px;
+  opacity: 0.75;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.footer-social a:hover,
+.footer-social a:focus-visible {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.footer-social img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: invert(1); /* 圖示是黑色的，在深色 footer 上反白 */
+}
+
+#footer .u-text-1 {
+  margin: 16px auto 30px;
+}
+
+/* 研究方向沿用學歷的版型，但不需要學歷那麼高的最小高度 */
+.research-section .u-sheet-1 {
+  min-height: auto;
+  padding-bottom: 40px;
+}
+
+.research-section .research-text {
+  max-width: 760px;
+  margin: 40px auto 0;
+  text-align: left;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}

@@ -69,10 +69,13 @@
   });
 
   // ---- 3. 目前頁面 ----
+  // "/" 和 "/index.html" 視為同一頁
+  const normalize = (path) => path.replace(/\/index\.html$/, "/");
+  const here = normalize(location.pathname);
   document.querySelectorAll(".u-nav-link[href]").forEach((link) => {
     const href = link.getAttribute("href");
     if (!href || href === "#") return;
-    if (new URL(href, location.href).pathname === location.pathname) {
+    if (normalize(new URL(href, location.href).pathname) === here) {
       link.classList.add("active");
     }
   });

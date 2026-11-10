@@ -63,3 +63,42 @@
     gap: 12px;
   }
 }
+
+/* ---- 手機的側邊選單（漢堡選單打開後）：Nicepage 預設 250px 寬、字 20px，太小，加寬並放大 ---- */
+.u-menu-1 {
+  --sidenav-width: min(78vw, 320px);
+}
+
+.u-sidenav .u-menu-close {
+  width: 44px;
+  height: 44px;
+  margin: 16px 16px 0 auto;
+  line-height: 44px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.u-sidenav .u-menu-close:before {
+  font-size: 32px !important;
+}
+
+.u-header .u-sidenav .u-nav-2 {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  font-size: 1.75rem;
+}
+
+.u-sidenav .u-nav-2 .u-nav-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.u-sidenav .u-nav-2 .u-nav-link {
+  display: block;
+  padding: 18px 0 !important;
+  letter-spacing: 0.15em;
+}
+
+.u-sidenav .u-nav-2 .u-nav-link.active {
+  color: #6fb6ff !important;
+}

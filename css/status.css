@@ -692,3 +692,19 @@
 .rpg-nowrap {
   display: inline-block;
 }
+
+/* 寵物性別的 ♂ / ♀：用 Noto Sans TC（像素字型沒有這兩個符號），大一點、上色 */
+.rpg-gender {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 1.25em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rpg-gender-male {
+  color: #6ad1ff;
+}
+
+.rpg-gender-female {
+  color: #ff9ec0;
+}

@@ -366,7 +366,11 @@
     const info = el("dl", "rpg-info rpg-pet-info");
     [["名字", pet.name], ["品種", pet.breed], ["性別", pet.gender], ["個性", pet.personality], ["能力", pet.ability]]
       .filter(([, v]) => v) // 沒填的欄位不顯示
-      .forEach(([k, v]) => info.append(el("dt", "", k), el("dd", "", v)));
+      // ♂ / ♀ 加上 U+FE0E，強制用文字樣式顯示（不然有些手機會變成彩色 emoji），再上男生藍 / 女生粉
+      .forEach(([k, v]) => {
+        const sign = v === "♂" ? "male" : v === "♀" ? "female" : "";
+        info.append(el("dt", "", k), el("dd", sign && `rpg-gender rpg-gender-${sign}`, sign ? v + "︎" : v));
+      });
     const body = el("div", "rpg-pet-body");
     // canvas 放在外框裡、絕對定位：大小由外框決定，不會因為 canvas 本身的解析度越撐越高
     const yard = el("div", "rpg-pet-yard");

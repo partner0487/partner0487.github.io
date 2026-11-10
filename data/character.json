@@ -10,11 +10,13 @@
   "startedCoding": "2019-11",
   "githubFrom": "2026-12",
   "attributes": [
-    { "name": "實作力", "value": 82, "desc": "想到就做，做到能跑為止。" },
-    { "name": "研究力", "value": 60, "desc": "讀論文、做實驗、把想法變成數據。碩士班正在練。" },
-    { "name": "Debug 耐性", "value": 88, "desc": "Debug 到半夜也撐得住，跑起來的那一刻就值得了。" },
-    { "name": "點子量", "value": 95, "desc": "腦袋裡的點子很多，常常冷不防就開始做一個新專案。" },
-    { "name": "遊戲力", "value": 90, "desc": "原神、星鐵、魔物獵人……很多作品都是從遊戲裡長出來的。" }
+    { "stat": "HP", "name": "熱情", "value": 95, "desc": "開發熱情就是我的血量，做喜歡的東西怎麼做都不會累。" },
+    { "stat": "MP", "name": "點子", "value": 90, "desc": "腦袋裡的點子很多，常常冷不防就開始做一個新專案。" },
+    { "stat": "STR", "name": "實作力", "value": 85, "desc": "想到就做，做到能跑為止。" },
+    { "stat": "VIT", "name": "體力", "value": 60, "desc": "Debug 到半夜還撐得住，不過隔天要補眠。" },
+    { "stat": "SPD", "name": "速度", "value": 60, "desc": "寫程式的速度普通，不追求最快寫完，寧願多花一點時間把東西弄懂。" },
+    { "stat": "INT", "name": "知識", "value": 58, "desc": "知識量普通，碩士班正在練功：讀論文、做實驗。" },
+    { "stat": "LUK", "name": "幸運", "value": 30, "desc": "抽卡常常歪，所以只好靠實力。" }
   ],
   "skills": [
     { "name": "C++", "base": 48, "from": "高中自學到 APCS，大學的程式設計、資料結構、演算法、圖論演算法，加上 CPE 和 LeetCode", "github": "C++", "langs": [] },

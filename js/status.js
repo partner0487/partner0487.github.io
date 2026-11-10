@@ -134,8 +134,12 @@
       const btn = el("button", "rpg-row");
       btn.type = "button";
       const num = el("span", "rpg-num", "0");
-      btn.append(el("span", "rpg-name", a.name), segBar(10, "attr"), num);
-      btn.addEventListener("click", () => select(btn, () => say(`${a.name} ${a.value}：${a.desc}`)));
+      // ARPG 的屬性名稱（HP、MP、STR…）+ 對應到我身上的意思（熱情、點子、實作力…）
+      const name = el("span", "rpg-name");
+      if (a.stat) name.append(el("span", "rpg-stat", a.stat), " ");
+      name.append(a.name);
+      btn.append(name, segBar(10, `attr rpg-bar-${(a.stat || "").toLowerCase()}`), num);
+      btn.addEventListener("click", () => select(btn, () => say(`${a.stat ? a.stat + "（" + a.name + "）" : a.name} ${a.value}：${a.desc}`)));
       li.append(btn);
       attrs.append(li);
       a._bar = btn.querySelector(".rpg-bar");

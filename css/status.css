@@ -280,7 +280,15 @@
     gap: 2px 18px;
   }
 
-  .rpg-skills .rpg-row {
+  .rpg-attrs {
+    grid-auto-flow: column;
+    grid-template-rows: repeat(4, auto);
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 18px;
+  }
+
+  .rpg-skills .rpg-row,
+  .rpg-attrs .rpg-row {
     grid-template-columns: 6.4em 1fr 3.8em;
     gap: 10px;
   }
@@ -506,4 +514,24 @@
   .rpg-badge-name {
     font-size: 0.78rem;
   }
+}
+
+/* ---- 屬性：ARPG 縮寫（HP、MP、STR…）用小一號的金色字，HP 紅條、MP 藍條，其他紫條 ---- */
+.rpg-stat {
+  display: inline-block;
+  min-width: 2.4em;
+  color: #ffe08a;
+  font-size: 0.85em;
+}
+
+.rpg-bar-attr span.on {
+  background: #b9a2ff;
+}
+
+.rpg-bar-attr.rpg-bar-hp span.on {
+  background: #ff7a7a;
+}
+
+.rpg-bar-attr.rpg-bar-mp span.on {
+  background: #6ad1ff;
 }

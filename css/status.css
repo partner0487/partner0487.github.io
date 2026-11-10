@@ -708,3 +708,8 @@
 .rpg-gender-female {
   color: #ff9ec0;
 }
+
+/* 角色 UID：像遊戲裡的玩家編號，字距拉開一點 */
+.rpg-info .rpg-uid {
+  letter-spacing: 0.08em;
+}

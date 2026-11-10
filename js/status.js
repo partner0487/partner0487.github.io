@@ -109,6 +109,7 @@
       return dd;
     };
     row("名字", c.name);
+    if (c.uid) row("UID", c.uid, "rpg-uid");
     if (c.gender) row("性別", "").append(genderSign(c.gender));
     // 職業：轉職路線的最後一階；點了在對話框看完整的轉職紀錄
     const path = c.classPath || [];

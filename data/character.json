@@ -1,5 +1,6 @@
 {
   "name": "王家騏",
+  "uid": "TW20030314",
   "class": "資工所研究生",
   "classPath": [
     { "rank": "初心者", "name": "高中生", "desc": "在永春高中自學 C++、考 APCS，用 Arduino 做出第一個作品" },

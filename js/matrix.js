@@ -1,4 +1,4 @@
-//數字雨
+// 關於頁面板後面的數字雨背景
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 const matrixSection = canvas.closest("section");
@@ -43,8 +43,8 @@ function draw() {
   }
 }
 
-resetMatrix(); // 初始設定
-window.addEventListener("resize", resetMatrix); // 視窗改變時更新
+// 區塊大小改變時重設（面板是讀完 JSON 才畫出來的，高度會變；視窗大小改變也會觸發）
+new ResizeObserver(resetMatrix).observe(matrixSection);
 window.addEventListener("themechange", () => {
   colors = matrixColors();
   resetMatrix(); // 重畫一次，舊顏色的字不會殘留
@@ -60,66 +60,3 @@ new IntersectionObserver(([entry]) => {
     matrixTimer = null;
   }
 }).observe(matrixSection);
-
-//能力條
-function animateSkillBars() {
-  const bars = document.querySelectorAll(".skill-progress");
-  bars.forEach((bar) => {
-    const percent = bar.getAttribute("data-percent");
-    const percentText = bar.querySelector(".skill-percent");
-    let current = 0;
-
-    bar.style.width = percent + "%";
-
-    const stepTime = 20;
-    const interval = setInterval(() => {
-      if (current < percent && percent >= 15) {
-        current++;
-        percentText.textContent = current + "%";
-      } else {
-        clearInterval(interval);
-      }
-    }, stepTime);
-  });
-}
-
-function animateEXPBars() {
-  const bars = document.querySelectorAll(".exp-progress");
-  bars.forEach((bar) => {
-    const percent = bar.getAttribute("data-percent");
-    const container = bar.closest(".character-stats");
-    const currentExp = container.querySelector(".current-exp");
-    const expText = container.querySelector(".exp-text");
-    let current = 0;
-
-    bar.style.width = percent + "%";
-
-    const stepTime = 20;
-    const interval = setInterval(() => {
-      if (current < percent) {
-        current++;
-        currentExp.innerHTML = "<strong>Total Experience:</strong> " + current*2200*0.01 + " exp";
-        expText.textContent = "Lv. 4 → Lv. 5 (" + current*2200*0.01 + " / 2200 exp)";;
-
-    } else {
-        clearInterval(interval);
-      }
-    }, stepTime);
-  });
-}
-
-// 使用 IntersectionObserver 監聽滑入
-const observer = new IntersectionObserver(
-  (entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        animateSkillBars();
-        animateEXPBars();
-        observer.disconnect(); // 執行一次後就不再監聽
-      }
-    });
-  },
-  { threshold: 0.7 }
-);
-
-observer.observe(document.querySelector(".character-card")); // 監聽技能條的容器

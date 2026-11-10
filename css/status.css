@@ -1,0 +1,392 @@
+/* 關於頁：數字雨背景 + RPG 角色面板（經典 JRPG 視窗風格） */
+
+/* ---- 數字雨（js/matrix.js） ---- */
+.matrix {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  z-index: 0;
+  border: whitesmoke 1px solid;
+}
+
+/* ---- 面板 ---- */
+.rpg-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 640px;
+  margin: 2.5rem auto;
+  padding: 0 12px;
+  font-family: "DotGothic16", "Noto Sans TC", sans-serif;
+  text-align: left;
+}
+
+/* 深藍漸層 + 白色外框：FF / 勇者鬥惡龍那種視窗 */
+.rpg-window {
+  position: relative;
+  padding: 18px 22px;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #3554c8 0%, #1a2a8a 55%, #0d1760 100%);
+  box-shadow:
+    0 0 0 3px #10123a,
+    inset 0 0 0 2px #0d1760,
+    0 10px 0 rgba(0, 0, 0, 0.25);
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  letter-spacing: 0.04em;
+}
+
+.rpg-panel button {
+  font: inherit;
+  color: inherit;
+  text-shadow: inherit;
+  letter-spacing: inherit;
+}
+
+.rpg-heading {
+  margin: 0 0 10px;
+  color: #ffe08a;
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+
+/* ---- 分頁 ---- */
+.rpg-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.rpg-tab {
+  position: relative;
+  padding: 4px 14px 4px 26px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 1.05rem;
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.rpg-tab:hover,
+.rpg-tab:focus-visible {
+  opacity: 1;
+  outline: none;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.rpg-tab[aria-selected="true"] {
+  opacity: 1;
+  color: #ffe08a;
+}
+
+/* ▶ 游標（一閃一閃） */
+.rpg-tab[aria-selected="true"]::before,
+.rpg-row.selected::before,
+.rpg-badge.selected::before {
+  content: "▶";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75em;
+  animation: rpgBlink 0.8s steps(2, start) infinite;
+}
+
+@keyframes rpgBlink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* 三個分頁疊在同一格，面板高度取最高的那頁，切換時不會跳 */
+.rpg-pages {
+  display: grid;
+}
+
+.rpg-page {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.rpg-page.active {
+  visibility: visible;
+}
+
+/* ---- 狀態 ---- */
+.rpg-hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.rpg-avatar {
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+  border: 3px solid #fff;
+  border-radius: 6px;
+  background: #0d1760;
+  image-rendering: pixelated; /* 48×48 放大成 96×96，保留像素感 */
+}
+
+.rpg-info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  margin: 0;
+}
+
+.rpg-info dt {
+  color: #a9c1ff;
+}
+
+.rpg-info dd {
+  margin: 0;
+}
+
+.rpg-info .rpg-title {
+  color: #ffe08a;
+}
+
+.rpg-info .rpg-level {
+  font-size: 1.15rem;
+}
+
+.rpg-exp {
+  margin: 16px 0 4px;
+}
+
+.rpg-exp-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.rpg-label {
+  color: #ffe08a;
+}
+
+.rpg-hint {
+  margin: 6px 0 0;
+  color: #a9c1ff;
+  font-size: 0.85rem;
+}
+
+.rpg-sub {
+  margin: 16px 0 6px;
+  color: #ffe08a;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+/* ---- 分格的進度條 ---- */
+.rpg-bar {
+  display: flex;
+  gap: 3px;
+}
+
+.rpg-bar span {
+  flex: 1;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: #0a114a;
+  transition: background-color 0.15s;
+}
+
+.rpg-bar-exp span.on {
+  background: #ffd84d;
+}
+
+.rpg-bar-attr span.on {
+  background: #6ad1ff;
+}
+
+.rpg-bar-skill span.on {
+  background: #6fdc6f;
+}
+
+/* ---- 列表（屬性、技能） ---- */
+.rpg-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rpg-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 7.5em 1fr 4.2em;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 5px 8px 5px 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rpg-row:hover,
+.rpg-row:focus-visible,
+.rpg-row.selected {
+  outline: none;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.rpg-num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ---- 成就 ---- */
+.rpg-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rpg-badge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 12px 8px 10px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  background: rgba(10, 17, 74, 0.6);
+  cursor: pointer;
+}
+
+.rpg-badge:hover,
+.rpg-badge:focus-visible,
+.rpg-badge.selected {
+  outline: none;
+  border-color: #ffe08a;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.rpg-badge.selected::before {
+  left: 8px;
+  top: 14px;
+  transform: none;
+}
+
+.rpg-badge-icon {
+  font-size: 1.8rem;
+  line-height: 1.2;
+  text-shadow: none;
+}
+
+.rpg-badge-name {
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.rpg-badge-date {
+  color: #a9c1ff;
+  font-size: 0.75rem;
+}
+
+.rpg-badge.locked {
+  border-style: dashed;
+  opacity: 0.55;
+}
+
+/* ---- 下方對話框 ---- */
+.rpg-message {
+  min-height: 5.5em;
+  padding-bottom: 22px;
+  cursor: pointer;
+}
+
+.rpg-message-text {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.rpg-message-extra[hidden] {
+  display: none;
+}
+
+.rpg-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rpg-links a {
+  color: #ffe08a;
+}
+
+.rpg-links a::before {
+  content: "◆ ";
+}
+
+/* 文字打完之後右下角的 ▼ 會跳動 */
+.rpg-message-next {
+  position: absolute;
+  right: 14px;
+  bottom: 6px;
+  font-size: 0.8rem;
+  animation: rpgBounce 0.8s ease-in-out infinite;
+}
+
+.rpg-typing .rpg-message-next {
+  visibility: hidden;
+}
+
+@keyframes rpgBounce {
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* ---- 手機 ---- */
+@media (max-width: 600px) {
+  .rpg-window {
+    padding: 14px 14px;
+  }
+
+  .rpg-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .rpg-hero {
+    gap: 12px;
+  }
+
+  .rpg-row {
+    grid-template-columns: 6.2em 1fr 3.6em;
+    gap: 8px;
+    padding-left: 20px;
+  }
+
+  .rpg-tab {
+    padding: 4px 8px 4px 22px;
+  }
+
+  .rpg-badges {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

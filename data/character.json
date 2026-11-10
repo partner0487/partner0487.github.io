@@ -1,0 +1,35 @@
+{
+  "name": "王家騏",
+  "class": "電腦視覺研究者",
+  "title": "斜咖軟體人",
+  "level": 4,
+  "exp": 1760,
+  "nextExp": 2200,
+  "attributes": [
+    { "name": "實作力", "value": 82, "desc": "想到就做，做到能跑為止。" },
+    { "name": "研究力", "value": 60, "desc": "讀論文、做實驗、把想法變成數據。碩士班正在練。" },
+    { "name": "Debug 耐性", "value": 88, "desc": "Debug 到半夜也撐得住，跑起來的那一刻就值得了。" },
+    { "name": "點子量", "value": 95, "desc": "腦袋裡的點子很多，常常冷不防就開始做一個新專案。" },
+    { "name": "遊戲力", "value": 90, "desc": "原神、星鐵、魔物獵人……很多作品都是從遊戲裡長出來的。" }
+  ],
+  "skills": [
+    { "name": "HTML", "level": 4, "progress": 70, "langs": ["html"] },
+    { "name": "JavaScript", "level": 4, "progress": 50, "langs": ["react", "html"] },
+    { "name": "C++", "level": 4, "progress": 40, "langs": [] },
+    { "name": "Python", "level": 4, "progress": 7, "langs": ["python"] },
+    { "name": "TypeScript", "level": 3, "progress": 80, "langs": [] },
+    { "name": "Verilog", "level": 2, "progress": 37, "langs": [] },
+    { "name": "SQL", "level": 1, "progress": 78, "langs": [] },
+    { "name": "Java", "level": 1, "progress": 73, "langs": ["java"] },
+    { "name": "PHP", "level": 1, "progress": 43, "langs": [] },
+    { "name": "Kotlin", "level": 1, "progress": 10, "langs": ["kotlin"] }
+  ],
+  "achievements": [
+    { "icon": "🔌", "name": "第一個硬體專案", "desc": "高中用 Arduino 和感應卡做出 RFID 系統，第一次體會到作品跑起來的成就感。", "date": "2018" },
+    { "icon": "🎓", "name": "海大資工畢業", "desc": "大學四年把軟體相關的課都修了一輪：軟體工程、Android、資料庫、網頁、AI。", "date": "2025" },
+    { "icon": "📱", "name": "做出自己的 App", "desc": "任務系統：沒做完的任務會一直掛在通知欄，拉下來就能打勾。" },
+    { "icon": "🔬", "name": "踏入研究所", "desc": "來到成大資訊所，研究電腦視覺。", "date": "2026" },
+    { "icon": "⚾", "name": "接下學長姐的計畫", "desc": "接手棒球打擊動作分析，用兩台相機、YOLO 和 ViTPose 分析揮棒。", "date": "2026" },
+    { "icon": "📜", "name": "碩士畢業", "desc": "預計 2028 年達成。", "locked": true }
+  ]
+}

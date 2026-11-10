@@ -27,16 +27,19 @@
   <link rel="stylesheet" href="css/index.css" media="screen">
   <link rel="stylesheet" href="css/language.css" media="screen">
   <link rel="stylesheet" href="css/site.css" media="screen">
-  <link rel="stylesheet" href="css/skill.css" media="screen">
+  <link rel="stylesheet" href="css/status.css" media="screen">
   <link rel="stylesheet" href="css/dark.css">
 
   <script src="js/site.js" defer></script>
   <script src="js/language.js" defer></script>
-  <script src="js/skill.js" defer></script>
+  <script src="js/matrix.js" defer></script>
+  <script src="js/status.js" defer></script>
   <!-- 只載入實際用到的字重：Roboto 400、Open Sans 400/700（中文用系統字型） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400|Open+Sans:400,700&display=swap">
+  <!-- RPG 面板用的像素字型（有漢字） -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
   <meta name="theme-color" content="#478ac9">
 </head>
 
@@ -204,125 +207,9 @@
   </section>
   <section class="u-clearfix u-section-2 block-4" id="block-4">
     <canvas id="matrix" class="matrix"></canvas>
-
-    <!-- <div class="u-clearfix u-sheet u-sheet-1"></div> -->
-    <div class="character-card">
-      <!-- 頭像區 -->
-      <div class="avatar-border">
-        <div class="avatar">
-          <img src="images/profile/me.jpg" alt="Avatar">
-        </div>
-      </div>      
-      
-      <!-- 角色資訊 & 技能樹 -->
-      <div class="character-details">
-        <h2>個人程式能力面板</h2>
-        <div class="character-stats">
-          <p class="current-exp"><strong>Total Experience:</strong> 0 exp</p>
-          <div class="exp-bar">
-            <div class="exp-progress" data-percent="80"></div>
-            <span class="exp-text">Lv. 4 → Lv. 5 (1083 / 2200 exp)</span>
-          </div>
-        </div>
-    
-        <div class="skill-title">
-          <img src="images/profile/code.png" alt="code">
-          <h3>My Skills:</h3>
-        </div>
-        <ul class="skill-list">
-          <li>
-            <span class="skill-name">HTML</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="70">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 4</span>
-          </li>
-          <li>
-            <span class="skill-name">Javascript</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="50">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 4</span>
-          </li>
-          <li>
-            <span class="skill-name">C++</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="40">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 4</span>
-          </li>
-          <li>
-            <span class="skill-name">Python</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="7">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 4</span>
-          </li>
-          <li>
-            <span class="skill-name">TypeScript</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="80">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 3</span>
-          </li>
-          <li>
-            <span class="skill-name">Verilog</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="37">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 2</span>
-          </li>
-          <li>
-            <span class="skill-name">SQL</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="78">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 1</span>
-          </li>
-          <li>
-            <span class="skill-name">Java</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="73">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 1</span>
-          </li>
-          <li>
-            <span class="skill-name">PHP</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="43">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 1</span>
-          </li>
-          <li>
-            <span class="skill-name">Kotlin</span>
-            <div class="skill-bar">
-              <div class="skill-progress" data-percent="10">
-                <span class="skill-percent"></span>
-              </div>
-            </div>
-            <span class="skill-level">Lv. 1</span>
-          </li>
-          <!-- 依需求加入更多技能 -->
-        </ul>
-      </div>
+    <!-- RPG 角色面板：由 js/status.js 讀 data/character.json 畫出來 -->
+    <div id="status-panel" class="rpg-panel">
+      <noscript>需要 JavaScript 才能顯示角色面板。</noscript>
     </div>
   </section>
 

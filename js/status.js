@@ -390,7 +390,9 @@
     stage.setAttribute("role", "img");
     stage.setAttribute("aria-label", `${pet.name}在走路`);
     const info = el("dl", "rpg-info rpg-pet-info");
-    [["名字", pet.name], ["品種", pet.breed], ["個性", pet.personality]].forEach(([k, v]) => {
+    [["名字", pet.name], ["品種", pet.breed], ["性別", pet.gender], ["個性", pet.personality], ["能力", pet.ability]]
+      .filter(([, v]) => v) // 沒填的欄位不顯示
+      .forEach(([k, v]) => {
       info.append(el("dt", "", k), el("dd", "", v));
     });
     const body = el("div", "rpg-pet-body");

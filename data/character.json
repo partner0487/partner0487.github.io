@@ -19,7 +19,7 @@
     { "stat": "LUK", "name": "幸運", "value": 30, "color": "green", "desc": "抽卡常常歪，所以只好靠實力。" },
     { "stat": "CHA", "name": "魅力", "value": 32, "color": "pink", "desc": "這人母胎單身。。" },
     { "stat": "STR", "name": "實作", "value": 85, "desc": "想到就做，做到能跑為止。" },
-    { "stat": "INT", "name": "智力", "value": 58, "desc": "智力普通，碩士班正在練功：讀論文、做實驗。" },
+    { "stat": "INT", "name": "智力", "value": 67, "desc": "智力普通，碩士班正在練功：讀論文、做實驗。" },
     { "stat": "SPD", "name": "速度", "value": 60, "desc": "寫程式的速度普通，不追求最快寫完，寧願多花一點時間把東西弄懂。" },
     { "stat": "PER", "name": "眼力", "value": 88, "desc": "很會注意到別人沒發現的細節，Debug 和打遊戲都靠它。" },
     { "stat": "ELO", "name": "口才", "value": 45, "desc": "口才中下，比較擅長用作品說話。" }

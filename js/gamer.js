@@ -80,7 +80,7 @@ function selectGame(game) {
 
     // 0ms：左側卡片往上捲、右側選單收起、背景影片淡出
     contentWrapper.style.transform = isMobile() ? 'translateY(-150%)' : 'translateY(-100%)';
-    colorPicker.style.transform = isMobile() ? 'translateY(100%)' : 'translateX(100%)';
+    colorPicker.style.transform = isMobile() ? 'translateY(100%)' : 'translateX(calc(100% + 40px))'; // 40px = 右邊的 margin，整條收到畫面外
     backgroundVideo.classList.add('hidden');
 
     // 300ms：淡出結束後換影片，載入完成再淡入

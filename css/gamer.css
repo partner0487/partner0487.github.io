@@ -93,18 +93,17 @@
     /* Fade-in effect */
 }
 
-/* 右側選擇區 */
+/* 右側選擇區：電腦是貼右邊的直排，手機（980px 以下）是底部的橫排 */
 .video-picker {
-    flex: 1;
-    width: auto;
-    right: 0;
+    flex: 0 0 auto;
+    margin-right: 40px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: clamp(10px, 1.3vw, 20px); /* 螢幕窄一點就縮小間距，才不會蓋到左邊的卡片 */
+    gap: clamp(10px, 2vh, 18px); /* 螢幕矮一點就縮小間距，7 個才放得下 */
     transition: transform 0.6s;
-    padding: 20px 10px;
+    padding: 16px 14px;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     background: rgba(255, 255, 255, 0.1);
@@ -118,6 +117,10 @@
     .video-picker {
         flex: 0 1 auto;
         /* 不 grow，只根據內容大小 */
+        flex-direction: row;
+        margin-right: 0;
+        gap: 20px;
+        padding: 20px 10px;
         z-index: 1;
     }
 
@@ -135,8 +138,9 @@
 }
 
 .video-item {
-    width: clamp(44px, 4vw, 60px);
-    height: clamp(44px, 4vw, 60px);
+    flex-shrink: 0;
+    width: clamp(44px, 6.5vh, 60px);
+    height: clamp(44px, 6.5vh, 60px);
     border-radius: 50%;
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
@@ -144,7 +148,9 @@
     background-position: center;
 }
 
-.image-item:hover {
+.video-item:hover,
+.video-item:focus-visible {
+    outline: none;
     transform: scale(1.1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }

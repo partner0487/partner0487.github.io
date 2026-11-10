@@ -205,5 +205,25 @@
 
   .anime-board {
     padding-top: 160px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* 一個畫面剛好兩張卡片（原本固定 200px，只看得到一張半），滑動時會停在卡片邊緣 */
+  .anime-list {
+    gap: 0.75rem;
+    padding: 0.75rem 0.25rem;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 0.25rem;
+  }
+
+  .anime-card {
+    width: calc((100% - 0.75rem) / 2);
+    scroll-snap-align: start;
+  }
+
+  /* 手機用手指滑就好，左右箭頭會蓋到卡片 */
+  .scroll-btn {
+    display: none;
   }
 }

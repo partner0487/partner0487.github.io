@@ -183,20 +183,50 @@
     const list = el("ul", "rpg-badges");
     c.achievements.forEach((a) => {
       const li = el("li");
-      const btn = el("button", "rpg-badge" + (a.locked ? " locked" : ""));
+      const btn = el("button", "rpg-badge" + (a.locked ? " locked" : "") + (a.image ? " has-proof" : ""));
       btn.type = "button";
       btn.append(el("span", "rpg-badge-icon", a.locked ? "？" : a.icon), el("span", "rpg-badge-name", a.locked ? "???" : a.name));
       if (a.date && !a.locked) btn.append(el("span", "rpg-badge-date", a.date));
       btn.addEventListener("click", () =>
-        select(btn, () => say(a.locked ? `尚未解鎖。提示：${a.name}，${a.desc}` : `【${a.name}】${a.date ? `（${a.date}）` : ""}${a.desc}`))
+        select(btn, () => {
+          if (a.locked) return say(`尚未解鎖。提示：${a.name}，${a.desc}`);
+          let extra = null;
+          if (a.image) {
+            // 有附圖的成就：對話框下面多一個按鈕，點了用彈出視窗看圖
+            const label = a.imageLabel || "圖片";
+            const open = el("button", "rpg-proof-open", `◆ 查看${label}`);
+            open.type = "button";
+            open.addEventListener("click", () => showProof(a.image, `${a.name}・${label}`));
+            extra = open;
+          }
+          say(`【${a.name}】${a.date ? `（${a.date}）` : ""}${a.desc}`, extra);
+        })
       );
       li.append(btn);
       list.append(li);
     });
     const got = c.achievements.filter((a) => !a.locked).length;
-    page.append(el("p", "rpg-hint", `已解鎖 ${got} / ${c.achievements.length}`), list);
+    const hint = el("p", "rpg-hint", `已解鎖 ${got} / ${c.achievements.length}`);
+    if (c.achievements.some((a) => a.image)) hint.append("　", el("span", "rpg-proof-mark", "✦"), " 可以看獎狀");
+    page.append(hint, list);
     page._intro = () => say("一路上解鎖的成就。還有一些正在努力中。");
     return page;
+  }
+
+  // 看獎狀的彈出視窗（<dialog>：Esc、點任何地方都會關閉，關掉後焦點回到原本的按鈕）
+  let proofDialog = null;
+  function showProof(src, caption) {
+    if (!proofDialog) {
+      proofDialog = el("dialog", "rpg-window rpg-proof");
+      proofDialog.append(el("img"), el("p", "rpg-proof-caption"), el("span", "rpg-proof-hint", "點一下關閉"));
+      proofDialog.addEventListener("click", () => proofDialog.close());
+      root.append(proofDialog);
+    }
+    const img = proofDialog.querySelector("img");
+    img.src = src;
+    img.alt = caption;
+    proofDialog.querySelector(".rpg-proof-caption").textContent = caption;
+    proofDialog.showModal();
   }
 
   // 選中某一列：加上 ▶ 游標
@@ -277,7 +307,7 @@
     message.setAttribute("aria-live", "polite");
     message.append(el("p", "rpg-message-text"), el("div", "rpg-message-extra"), el("span", "rpg-message-next", "▼"));
     message.addEventListener("click", (e) => {
-      if (e.target.closest("a")) return;
+      if (e.target.closest("a, button")) return;
       if (typingTimer && typingFull) typingFull(); // 點一下直接顯示完整文字
     });
 

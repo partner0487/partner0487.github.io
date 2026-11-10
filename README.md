@@ -37,7 +37,7 @@
 - 做成經典 JRPG 的視窗（深藍漸層、白框、像素字型 DotGothic16），資料在 [data/character.json](data/character.json)（[js/status.js](js/status.js)）
   - **角色**：像素化的頭像（照片縮成 48×48 再放大）、職業、稱號、等級、分格的 EXP 條和屬性值
   - **技能**：等級優先，進度條是升到下一級的進度；選一個技能，下方對話框會用打字機效果說明，並列出用它做過的作品，點了打開首頁寶箱的那張卡片
-  - **成就**：徽章，還沒達成的顯示「???」
+  - **成就**：徽章，還沒達成的顯示「???」；有 `image` 的成就（右上角 ✦）可以點開看獎狀或證書，圖放在 images/achievements（上傳前先遮掉身分證字號、生日、學號等個資）
   - 可以用鍵盤操作：← → 換分頁、↑ ↓ 移動、Enter 選擇；點對話框直接顯示完整文字
   - 捲到面板才開始跑數字和進度條（`IntersectionObserver`）
 - **數字雨背景**：用 canvas 畫駭客任務那種往下掉的字元，用 `ResizeObserver` 跟著面板大小重設（[js/matrix.js](js/matrix.js)）
@@ -78,7 +78,7 @@ project.html        舊作品頁，轉到首頁的寶箱
 interests.html      興趣：遊戲、動漫
 css/                各區塊的樣式；base.css 是從 Nicepage 精簡下來的共用樣式，site.css 是每頁共用的 footer 等
 js/                 各區塊的程式
-images/             profile、social、schools、games、projects、lang（程式語言 icon）、favicon
+images/             profile、social、schools、games、projects、lang（程式語言 icon）、achievements（獎狀）、favicon
 videos/             遊戲背景影片
 models/             3D 模型
 data/               作品和動漫清單的資料

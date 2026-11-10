@@ -253,8 +253,8 @@
 /* ---- 成就 ---- */
 .rpg-badges {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 8px;
   margin: 10px 0 0;
   padding: 0;
   list-style: none;
@@ -265,9 +265,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   width: 100%;
-  padding: 12px 8px 10px;
+  height: 100%;
+  padding: 10px 6px 8px;
   border: 2px solid rgba(255, 255, 255, 0.6);
   border-radius: 6px;
   background: rgba(10, 17, 74, 0.6);
@@ -297,6 +298,7 @@
 .rpg-badge-name {
   font-size: 0.9rem;
   text-align: center;
+  text-wrap: balance; /* 換行時兩行差不多長，不會剩一個字掉到下一行 */
 }
 
 .rpg-badge-date {
@@ -307,6 +309,66 @@
 .rpg-badge.locked {
   border-style: dashed;
   opacity: 0.55;
+}
+
+/* 有附獎狀 / 證書的成就：右上角一顆金色 ✦ */
+.rpg-badge.has-proof::after,
+.rpg-proof-mark {
+  color: #ffd84d;
+}
+
+.rpg-badge.has-proof::after {
+  content: "✦";
+  position: absolute;
+  top: 3px;
+  right: 7px;
+  font-size: 0.85rem;
+}
+
+/* ---- 看獎狀的彈出視窗 ---- */
+.rpg-proof-open {
+  padding: 2px 0;
+  border: none;
+  background: none;
+  color: #ffe08a !important;
+  cursor: pointer;
+}
+
+.rpg-proof-open:hover,
+.rpg-proof-open:focus-visible {
+  text-decoration: underline;
+}
+
+.rpg-proof {
+  max-width: min(92vw, 900px);
+  padding: 14px;
+  font-family: "DotGothic16", "Noto Sans TC", sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.rpg-proof::backdrop {
+  background: rgba(5, 8, 30, 0.75);
+}
+
+.rpg-proof img {
+  display: block;
+  max-width: 100%;
+  max-height: 72vh;
+  margin: 0 auto;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.rpg-proof-caption {
+  margin: 10px 0 0;
+  color: #ffe08a;
+}
+
+.rpg-proof-hint {
+  color: #a9c1ff;
+  font-size: 0.75rem;
 }
 
 /* ---- 下方對話框 ---- */
@@ -387,6 +449,15 @@
   }
 
   .rpg-badges {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .rpg-badge-icon {
+    font-size: 1.5rem;
+  }
+
+  .rpg-badge-name {
+    font-size: 0.78rem;
   }
 }

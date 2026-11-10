@@ -31,12 +31,17 @@
   <script src="js/site.js" defer></script>
   <script src="js/language.js" defer></script>
   <script src="js/blob.js" defer></script>
-  <script src="js/chest.js" defer></script>
 
-  <!-- three.js CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
-  <!-- GLTFLoader（非模組版本） -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.109/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- three.js（ES module）：importmap 讓 chest.js 可以直接寫 import "three"，版本固定在 r170 -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="js/chest.js"></script>
   <!-- 只載入實際用到的字重：Roboto 400、Open Sans 400/700（中文用系統字型） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

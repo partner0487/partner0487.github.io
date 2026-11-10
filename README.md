@@ -17,7 +17,7 @@
 - 社群圖示列：GitHub、FB、IG、Discord、Threads、TikTok、Twitch
 
 **My Project（傳送門）**
-- **3D 模型嵌入**：用 three.js 載入 Minecraft 寶箱的 GLB 模型（[js/chest.js](js/chest.js)）
+- **3D 模型嵌入**：用 three.js 載入 Minecraft 寶箱的 GLB 模型（[js/chest.js](js/chest.js)）。three.js 是 r170，用 `importmap` 以 ES module 從 CDN 載入
   - 滑鼠移動時寶箱會跟著轉
   - 滑鼠移上去會播放開箱動畫
 - 點寶箱會播一段傳送門影片，再跳到作品頁

@@ -1,3 +1,12 @@
+// 首頁的 Minecraft 寶箱（three.js r170，ES module）
+// three 和 GLTFLoader 的實際網址寫在 index.html 的 importmap 裡
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+// 從 r109 升級時，為了讓寶箱看起來跟原本一樣：
+// 1. 關掉 r152 之後預設開啟的色彩管理（原本的顏色是照舊版的方式算的）
+THREE.ColorManagement.enabled = false;
+
 let scene, camera, renderer, mixer, model;
 let isHovered = false; // 變數來記錄是否處於 hover 狀態
 let actions = []; // 模型的開箱動畫
@@ -11,6 +20,7 @@ function init() {
   scene.background = new THREE.Color(0xf5f7fa);
 
   renderer = new THREE.WebGLRenderer({ alpha: false, antialias: true });
+  renderer.outputColorSpace = THREE.LinearSRGBColorSpace; // 跟 r109 一樣，輸出時不做 sRGB 轉換
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
@@ -22,14 +32,15 @@ function init() {
   );
   camera.position.z = 50;
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
+  // 2. r155 之後光源改成物理單位，強度乘上 π 才會跟原本一樣亮
+  const light = new THREE.DirectionalLight(0xffffff, 1 * Math.PI);
   light.position.set(2, 2, 2);
   scene.add(light);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+  const ambient = new THREE.AmbientLight(0xffffff, 0.5 * Math.PI);
   scene.add(ambient);
 
-  const loader = new THREE.GLTFLoader();
+  const loader = new GLTFLoader();
   loader.load(
     "models/minecraft_chest.glb",
     function (gltf) {
@@ -126,10 +137,6 @@ function stopLoop() {
 }
 
 init();
-
-// 新增這段變數
-let mouseX = 0,
-  mouseY = 0;
 
 // 監聽滑鼠移動事件
 document.body.addEventListener("mousemove", (event) => {

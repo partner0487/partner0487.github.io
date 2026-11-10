@@ -4,11 +4,11 @@
 
 這裡除了放自我介紹，也是我試各種網頁想法的地方。想到什麼新東西就做成一個區塊塞進來，所以每一塊背後幾乎都有一個想試的功能。
 
-一開始是用 Nicepage 模板搭出外框（2025/02），之後的區塊都是自己加的。2026/11 把 Nicepage 的 JS 和 CSS 拿掉，現在整個網站是純 HTML / CSS / JavaScript，除了作品頁用 Vue 練習以外，沒有用框架。
+一開始是用 Nicepage 模板搭出外框（2025/02），之後的區塊都是自己加的。2026/11 把 Nicepage 的 JS 和 CSS 拿掉，現在整個網站是純 HTML / CSS / JavaScript，沒有用框架。
 
 ## 各區塊做了什麼
 
-網站分成四頁：首頁、關於、作品、興趣。
+網站分成三頁：首頁、關於、興趣。導覽列的「作品」會連到首頁的寶箱。
 
 ### 首頁（[index.html](index.html)）
 
@@ -21,9 +21,12 @@
   - 滑鼠移動時寶箱會跟著轉，移上去蓋子會打開（用動畫權重在關閉和打開的姿勢之間補間）
 - **點寶箱開箱**：讀 [data/projects.json](data/projects.json)，每個作品變成一個掉落物，從箱口沿拋物線噴出、落在寶箱周圍浮動
   - 落點是先在螢幕上找寶箱周圍的空位，再用 raycasting 換算回 3D 座標，所以手機和桌機都排得下
-  - 滑鼠移到作品上顯示名稱，點下去跳到作品頁的那張卡片（手機第一次點顯示名稱，再點一次跳頁）
+  - 滑鼠移到作品上顯示名稱
+  - **點作品**：用 `camera.setViewOffset` 把寶箱和掉落物整個平移到左邊，右邊滑出那個作品的卡片（手機改成卡片從下面滑上來）。點空白處、按 Esc 或 × 收起
   - 再點寶箱，作品會飛回去
-- 早期版本是點寶箱播一段傳送門影片再跳到作品頁
+  - 網址 `#projects` 會自動開箱，`#projects/<repo>` 會再打開那個作品的卡片
+- 新增作品只要改 [data/projects.json](data/projects.json)
+- 演變：一開始點寶箱是播傳送門影片再跳到作品頁；後來作品頁整個合併進寶箱
 
 ### 關於（[about.html](about.html)）
 
@@ -35,11 +38,10 @@
 - **數字雨背景**：用 canvas 畫駭客任務那種往下掉的字元。（[js/skill.js](js/skill.js)）
 - **捲到才播動畫**：用 `IntersectionObserver` 偵測面板進入畫面，經驗條和技能條才開始跑數字
 
-### 作品（[project.html](project.html)）
-- 從 [data/projects.json](data/projects.json) 讀取作品，依「實驗室計畫、碩士課程、個人專案、大學課程」分類，上方按鈕可以篩選
-- 新增作品只要改 JSON
-- **用 Vue 3 寫的**（從 CDN 載入，不用打包）：卡片和篩選按鈕是 [project.html](project.html) 裡的 template，[js/project.js](js/project.js) 只管資料和目前選的分類。這是我第一次用 Vue，程式裡有註解每個用法對應原本的哪種寫法
-- 早期版本是用 GitHub API 抓所有 repo、依程式語言篩選。後來改成自己整理，因為 API 有次數限制，也會抓到不想放的 repo
+### 以前的作品頁
+- 一開始用 GitHub API 抓所有 repo、依程式語言篩選。後來改成自己整理在 JSON，因為 API 有次數限制，也會抓到不想放的 repo
+- 之後用 **Vue 3**（CDN）改寫過一次，練習 `ref`、`computed`、`v-for`。現在作品都放進首頁的寶箱了，那個版本留在 git 歷史裡
+- [project.html](project.html) 現在只負責把舊連結轉到首頁的寶箱
 
 ### 興趣（[interests.html](interests.html)）
 
@@ -66,7 +68,7 @@
 ```
 index.html          首頁
 about.html          關於：研究方向、學歷、能力面板
-project.html        作品
+project.html        舊作品頁，轉到首頁的寶箱
 interests.html      興趣：遊戲、動漫
 css/                各區塊的樣式；base.css 是從 Nicepage 精簡下來的共用樣式，site.css 是每頁共用的 footer 等
 js/                 各區塊的程式

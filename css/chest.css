@@ -66,3 +66,168 @@
 .chest-item-label.show {
   opacity: 1;
 }
+
+/* ---- 點作品後從右邊滑出來的卡片（手機從下面滑上來） ---- */
+.floating-label {
+  transition: left 0.6s ease, opacity 0.3s;
+}
+
+/* 打開卡片時寶箱移到左邊，標題跟著過去 */
+#chest-section.focused .floating-label {
+  left: 27.5%;
+}
+
+.chest-card {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  z-index: 30;
+  width: min(420px, 38%);
+  padding: 28px 24px 22px;
+  box-sizing: border-box;
+  border: 2px solid #ffcc66;
+  border-radius: 16px;
+  background: #2c2c2c;
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(calc(100% + 10vw), -50%);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s;
+}
+
+.chest-card.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, -50%);
+}
+
+.chest-card-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #aaa;
+  font-size: 22px;
+  line-height: 32px;
+  cursor: pointer;
+}
+
+.chest-card-close:hover,
+.chest-card-close:focus-visible {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.chest-card .chest-card-category {
+  margin: 0 0 10px;
+  color: #ffcc66;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.chest-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chest-card-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.chest-card h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1.4;
+}
+
+.chest-card .chest-card-desc {
+  margin: 14px 0 20px;
+  color: #ccc;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.chest-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.chest-card-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #999;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.chest-card-lang img {
+  width: 18px;
+  height: 18px;
+}
+
+.chest-card-links {
+  display: flex;
+  gap: 8px;
+}
+
+.chest-card-links a {
+  padding: 6px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.chest-card-links a:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  /* 手機：標題淡出，卡片從下面滑上來 */
+  #chest-section.focused .floating-label {
+    left: 50%;
+    opacity: 0;
+  }
+
+  .chest-card {
+    top: auto;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+    max-height: 48%;
+    overflow-y: auto;
+    padding: 22px 18px 18px;
+    transform: translateY(calc(100% + 24px));
+  }
+
+  .chest-card.open {
+    transform: translateY(0);
+  }
+
+  .chest-card .chest-card-desc {
+    margin: 10px 0 14px;
+    font-size: 0.9rem;
+  }
+}

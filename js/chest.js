@@ -1,8 +1,10 @@
 // 首頁的 Minecraft 寶箱（three.js r170，ES module）
 // three 和 GLTFLoader 的實際網址寫在 index.html 的 importmap 裡
 //
-// 玩法：滑鼠移上去寶箱會打開；點一下，作品會像掉落物一樣噴出來散在寶箱周圍，
-// 點作品會跳到作品頁的那張卡片；再點寶箱本身，作品會飛回去、蓋子關上。
+// 玩法：滑鼠移上去寶箱會打開；點一下，作品會像掉落物一樣噴出來散在寶箱周圍。
+// 點某個作品，寶箱和掉落物滑到左邊、右邊滑出那個作品的卡片（手機是從下面滑上來）；
+// 點空白處 / 按 Esc / 按 × 收起卡片；再點寶箱本身，作品會飛回去、蓋子關上。
+// 網址 #projects 會自動開箱，#projects/<repo> 會再打開那個作品的卡片。
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
@@ -15,6 +17,15 @@ const hint = container.querySelector(".floating-label .line2");
 const itemLabel = document.createElement("div");
 itemLabel.className = "chest-item-label";
 container.appendChild(itemLabel);
+
+// 右邊（手機是下面）滑出來的作品卡片
+const card = document.createElement("aside");
+card.className = "chest-card";
+card.setAttribute("aria-live", "polite");
+card.innerHTML = '<button type="button" class="chest-card-close" aria-label="關閉">×</button><div class="chest-card-body"></div>';
+container.appendChild(card);
+
+const langNames = { python: "Python", dart: "Dart", react: "React", kotlin: "Kotlin", html: "HTML", java: "Java" };
 
 const HINT_CLOSED = "Click to open";
 const HINT_OPEN = "Pick one!";
@@ -33,13 +44,17 @@ let projects = []; // 從 data/projects.json 攤平成一個陣列
 let items = []; // { mesh, project, from, to, start, duration, phase, state }
 let dropped = false; // 作品是不是已經噴出來了
 let hoveredItem = null;
-let tappedItem = null; // 手機：第一次點顯示名稱，第二次點才跳頁
+let selected = null; // 目前打開卡片的作品
+let pending = null; // 網址要求自動開箱：{ slug }
 const now = () => performance.now() / 1000; // 秒；不用 THREE.Clock，因為停止渲染再開始時它會歸零
-let lastPointerType = "mouse";
+
+// 選了作品時，畫面要往左（手機往上）讓出位置給卡片：用 camera.setViewOffset 平移整個畫面
+const viewOffset = { x: 0, y: 0 };
+const viewOffsetTarget = { x: 0, y: 0 };
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
-// 作品頁的卡片 id 用 repo 名稱，跟 js/project.js 的 slug() 一樣
+// 每個作品用 repo 名稱當代號，網址 #projects/<repo> 會用到
 const slug = (project) =>
   project.links[0].url.replace(/\/+$/, "").split("/").pop().toLowerCase();
 
@@ -88,6 +103,7 @@ function init() {
 
       renderer.render(scene, camera);
       if (chestVisible) startLoop();
+      tryAutoOpen();
     },
     undefined,
     function (error) {
@@ -117,13 +133,24 @@ function init() {
   }).observe(container);
 
   renderer.domElement.addEventListener("pointermove", onPointerMove);
-  renderer.domElement.addEventListener("pointerdown", (e) => (lastPointerType = e.pointerType));
   renderer.domElement.addEventListener("click", onClick);
+  card.querySelector(".chest-card-close").addEventListener("click", () => deselect());
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") deselect();
+  });
+
+  // 導覽列的「作品」連到 ./#projects；在首頁點也要有反應
+  readHash();
+  window.addEventListener("hashchange", () => {
+    readHash();
+    tryAutoOpen();
+  });
 
   window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    applyViewOffset();
     if (dropped) layoutItems(false); // 換到新螢幕大小的位置
   });
 }
@@ -132,10 +159,28 @@ function init() {
 async function loadProjects() {
   try {
     const groups = await (await fetch("data/projects.json")).json();
-    projects = groups.flatMap((g) => g.projects);
+    projects = groups.flatMap((g) => g.projects.map((p) => ({ ...p, category: g.category })));
   } catch (e) {
     console.error("無法讀取作品資料:", e);
   }
+  tryAutoOpen();
+}
+
+// ---- 網址 #projects / #projects/<repo> ----
+function readHash() {
+  const m = decodeURIComponent(location.hash).match(/^#projects(?:\/(.+))?$/);
+  if (m) pending = { slug: m[1] ? m[1].toLowerCase() : null };
+}
+
+function tryAutoOpen() {
+  if (!pending || !model || !projects.length) return;
+  const want = pending.slug;
+  pending = null;
+  container.scrollIntoView();
+  const wasDropped = dropped;
+  if (!dropped) dropItems();
+  const item = want && items.find((i) => slug(i.project) === want);
+  if (item) setTimeout(() => selectItem(item), wasDropped ? 0 : 900); // 等掉落物落地再打開卡片
 }
 
 // 每個作品畫成一塊深色圓角方塊，中間放作品 icon（沒有的話放程式語言 icon）
@@ -171,25 +216,52 @@ function makeTexture(project) {
 }
 
 // ---- 排版：在螢幕上找寶箱周圍的空位，再換算成 3D 座標 ----
+// 寶箱和掉落物可以用的範圍：平常是整個畫面；打開卡片時桌機剩左邊、手機剩卡片上面
+function viewRegion() {
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  if (!selected) return { x0: 0, x1: W, y0: 0, y1: H };
+  // 手機：固定預留卡片的最大高度（CSS 的 max-height: 48%），換作品時掉落物才不會因為卡片高度不同而整個重排
+  if (W < 600) return { x0: 0, x1: W, y0: 0, y1: H * 0.52 - 24 };
+  return { x0: 0, x1: W * 0.55, y0: 0, y1: H };
+}
+
+function applyViewOffset() {
+  const W = window.innerWidth;
+  const H = window.innerHeight;
+  const idle = Math.abs(viewOffset.x) < 0.5 && Math.abs(viewOffset.y) < 0.5 && !viewOffsetTarget.x && !viewOffsetTarget.y;
+  if (idle) {
+    if (camera.view) camera.clearViewOffset();
+  } else {
+    camera.setViewOffset(W, H, viewOffset.x, viewOffset.y, W, H);
+  }
+}
+
 function layoutItems(fromChest) {
   const W = window.innerWidth;
   const H = window.innerHeight;
   const mobile = W < 600;
-  const itemPx = mobile ? 54 : 78; // 掉落物在螢幕上的大小
+  const region = viewRegion();
+  const regionW = region.x1 - region.x0;
+  const regionH = region.y1 - region.y0;
 
-  // 1. 決定鏡頭要退多遠：讓寶箱縮到畫面高度的 3 成左右，手機還要看寬度
+  // 把整個畫面平移，讓寶箱出現在可用範圍的正中間
+  viewOffsetTarget.x = W / 2 - (region.x0 + region.x1) / 2;
+  viewOffsetTarget.y = H / 2 - (region.y0 + region.y1) / 2;
+
+  // 1. 決定鏡頭要退多遠：讓寶箱縮到可用範圍高度的 3 成左右，窄的時候還要看寬度
   const box = chestBox();
   const size = box.getSize(new THREE.Vector3());
   const viewH = (z) => 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * z;
-  const zForHeight = (size.y / 0.3) / viewH(1);
-  const zForWidth = (size.x / 0.42) / (viewH(1) * camera.aspect);
+  const zForHeight = (size.y * H) / (0.3 * regionH * viewH(1));
+  const zForWidth = (size.x * W) / (0.42 * regionW * viewH(1) * camera.aspect);
   cameraTargetZ = Math.max(CAMERA_Z, zForHeight, zForWidth);
 
-  // 用「退好之後」的鏡頭來算位置
+  // 用「退好、平移好之後」的鏡頭來算位置
   const cam = camera.clone();
   cam.position.z = cameraTargetZ;
+  cam.setViewOffset(W, H, viewOffsetTarget.x, viewOffsetTarget.y, W, H);
   cam.updateMatrixWorld();
-  cam.updateProjectionMatrix();
 
   // 2. 寶箱和標題在螢幕上佔的範圍，掉落物要避開
   const toScreen = (v) => {
@@ -200,37 +272,47 @@ function layoutItems(fromChest) {
   for (const x of [box.min.x, box.max.x])
     for (const y of [box.min.y, box.max.y])
       for (const z of [box.min.z, box.max.z]) corners.push(toScreen(new THREE.Vector3(x, y, z)));
-  const pad = itemPx * 0.4;
-  const chestRect = {
-    left: Math.min(...corners.map((c) => c.x)) - pad,
-    right: Math.max(...corners.map((c) => c.x)) + pad,
-    top: Math.min(...corners.map((c) => c.y)) - pad,
-    bottom: Math.max(...corners.map((c) => c.y)) + pad,
+  const chestScreen = {
+    left: Math.min(...corners.map((c) => c.x)),
+    right: Math.max(...corners.map((c) => c.x)),
+    top: Math.min(...corners.map((c) => c.y)),
+    bottom: Math.max(...corners.map((c) => c.y)),
   };
+  // 手機打開卡片時標題會淡出，不用避開
   const label = container.querySelector(".floating-label").getBoundingClientRect();
   const sectionTop = container.getBoundingClientRect().top;
-  const topLimit = label.bottom - sectionTop + itemPx * 0.4;
-  const center = { x: (chestRect.left + chestRect.right) / 2, y: (chestRect.top + chestRect.bottom) / 2 };
+  const labelBottom = mobile && selected ? region.y0 : label.bottom - sectionTop;
+  const center = { x: (chestScreen.left + chestScreen.right) / 2, y: (chestScreen.top + chestScreen.bottom) / 2 };
 
-  // 3. 以寶箱為中心往外鋪一張對稱的格子，挑離寶箱最近的格子；不夠放就把間距縮小再試
+  // 3. 以寶箱為中心往外鋪一張對稱的格子，挑離寶箱最近的格子；
+  //    不夠放就先縮小間距、再縮小掉落物
+  const basePx = mobile ? 54 : 78; // 掉落物在螢幕上的大小
   let spots = [];
-  for (let gap = 1.6; gap >= 1.05 && spots.length < projects.length; gap -= 0.1) {
-    const step = itemPx * gap;
+  let itemPx = basePx;
+  for (const shrink of [1, 0.85, 0.7, 0.6]) {
+    itemPx = basePx * shrink;
+    const pad = itemPx * 0.4;
+    const topLimit = Math.max(region.y0, labelBottom) + pad;
     spots = [];
-    const nx = Math.ceil(W / step);
-    const ny = Math.ceil(H / step);
-    for (let j = -ny; j <= ny; j++) {
-      const y = center.y + j * step;
-      if (y - itemPx / 2 < topLimit || y + itemPx / 2 > H - 8) continue;
-      for (let k = -nx; k <= nx; k++) {
-        const x = center.x + k * step;
-        if (x - itemPx / 2 < 8 || x + itemPx / 2 > W - 8) continue;
-        const inside = x + itemPx / 2 > chestRect.left && x - itemPx / 2 < chestRect.right &&
-          y + itemPx / 2 > chestRect.top && y - itemPx / 2 < chestRect.bottom;
-        // 距離相同時讓左右交替，兩邊才會一樣多
-        if (!inside) spots.push({ x, y, d: Math.hypot((x - center.x) * 0.8, y - center.y) + (k > 0 ? 0.01 : 0) });
+    for (let gap = 1.6; gap >= 1.05 && spots.length < projects.length; gap -= 0.1) {
+      const step = itemPx * gap;
+      spots = [];
+      const nx = Math.ceil(W / step);
+      const ny = Math.ceil(H / step);
+      for (let j = -ny; j <= ny; j++) {
+        const y = center.y + j * step;
+        if (y - itemPx / 2 < topLimit || y + itemPx / 2 > region.y1 - 8) continue;
+        for (let k = -nx; k <= nx; k++) {
+          const x = center.x + k * step;
+          if (x - itemPx / 2 < region.x0 + 8 || x + itemPx / 2 > region.x1 - 8) continue;
+          const inside = x + itemPx / 2 > chestScreen.left - pad && x - itemPx / 2 < chestScreen.right + pad &&
+            y + itemPx / 2 > chestScreen.top - pad && y - itemPx / 2 < chestScreen.bottom + pad;
+          // 距離相同時讓左右交替，兩邊才會一樣多
+          if (!inside) spots.push({ x, y, d: Math.hypot((x - center.x) * 0.8, y - center.y) + (k > 0 ? 0.01 : 0) });
+        }
       }
     }
+    if (spots.length >= projects.length) break;
   }
   spots.sort((a, b) => a.d - b.d);
   spots = spots.slice(0, projects.length).sort((a, b) => a.y - b.y || a.x - b.x);
@@ -307,6 +389,7 @@ function dropItems() {
 }
 
 function recallItems() {
+  deselect(false);
   dropped = false;
   hint.textContent = HINT_CLOSED;
   setHovered(null);
@@ -354,9 +437,10 @@ function updateItems() {
       mesh.position.y += Math.sin(t0 * 2 + item.phase) * item.size * 0.08;
     }
 
-    if (item === hoveredItem) scale *= 1.2;
+    const focus = item === hoveredItem || item === selected;
+    if (focus) scale *= item === selected ? 1.3 : 1.2;
     mesh.scale.setScalar(scale);
-    mesh.rotation.y = item === hoveredItem ? 0 : Math.sin(t0 * 1.2 + item.phase) * 0.6; // 像掉落物一樣左右轉
+    mesh.rotation.y = focus ? 0 : Math.sin(t0 * 1.2 + item.phase) * 0.6; // 像掉落物一樣左右轉
   }
 }
 
@@ -380,7 +464,8 @@ function pickChest(event) {
 function setHovered(item) {
   hoveredItem = item;
   renderer.domElement.style.cursor = item ? "pointer" : "";
-  if (!item) {
+  if (!item || item === selected) {
+    // 已經打開卡片的作品不用再顯示名稱
     itemLabel.classList.remove("show");
     return;
   }
@@ -406,18 +491,78 @@ function onClick(event) {
   }
   const item = pickItem(event);
   if (item) {
-    // 手機沒有 hover：第一次點先顯示名稱，再點一次才跳頁
-    if (lastPointerType === "touch" && tappedItem !== item) {
-      tappedItem = item;
-      setHovered(item);
-      return;
-    }
-    window.location.href = `project.html#${slug(item.project)}`;
+    if (item !== selected) selectItem(item);
     return;
   }
-  tappedItem = null;
   if (pickChest(event)) recallItems();
-  else setHovered(null);
+  else deselect();
+}
+
+// ---- 作品卡片 ----
+function el(tag, className, text) {
+  const e = document.createElement(tag);
+  if (className) e.className = className;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function fillCard(project) {
+  const body = card.querySelector(".chest-card-body");
+  body.replaceChildren();
+  body.append(el("p", "chest-card-category", project.category));
+
+  const head = el("div", "chest-card-head");
+  if (project.icon) {
+    const icon = el("img", "chest-card-icon");
+    icon.src = project.icon;
+    icon.alt = "";
+    if (project.iconBg) icon.style.background = project.iconBg;
+    head.append(icon);
+  }
+  head.append(el("h3", "", project.name));
+  body.append(head, el("p", "chest-card-desc", project.desc));
+
+  const footer = el("div", "chest-card-footer");
+  const lang = el("span", "chest-card-lang");
+  const langIcon = el("img");
+  langIcon.src = `images/lang/${project.lang}.svg`;
+  langIcon.alt = "";
+  lang.append(langIcon, langNames[project.lang] || project.lang);
+  const links = el("div", "chest-card-links");
+  for (const link of project.links) {
+    const a = el("a", "", link.label);
+    a.href = link.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    links.append(a);
+  }
+  footer.append(lang, links);
+  body.append(footer);
+}
+
+function selectItem(item) {
+  const switching = !!selected;
+  selected = item;
+  fillCard(item.project);
+  if (switching) {
+    // 換作品時內容淡入一下
+    card.querySelector(".chest-card-body").animate(
+      [{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }],
+      { duration: 250, easing: "ease-out" }
+    );
+  }
+  card.classList.add("open");
+  container.classList.add("focused");
+  layoutItems(false);
+}
+
+function deselect(relayout = true) {
+  if (!selected) return;
+  selected = null;
+  card.classList.remove("open");
+  container.classList.remove("focused");
+  viewOffsetTarget.x = viewOffsetTarget.y = 0;
+  if (relayout && dropped) layoutItems(false);
 }
 
 // 名稱標籤跟著作品走
@@ -448,8 +593,11 @@ function animate() {
     mixer.update(0.02);
   }
 
-  // 鏡頭慢慢退到（或回到）目標距離
+  // 鏡頭慢慢退到（或回到）目標距離，畫面慢慢平移到目標位置
   camera.position.z += (cameraTargetZ - camera.position.z) * 0.08;
+  viewOffset.x += (viewOffsetTarget.x - viewOffset.x) * 0.1;
+  viewOffset.y += (viewOffsetTarget.y - viewOffset.y) * 0.1;
+  applyViewOffset();
 
   updateItems();
   updateLabel();

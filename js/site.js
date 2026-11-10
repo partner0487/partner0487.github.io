@@ -74,7 +74,7 @@
   const here = normalize(location.pathname);
   document.querySelectorAll(".u-nav-link[href]").forEach((link) => {
     const href = link.getAttribute("href");
-    if (!href || href === "#") return;
+    if (!href || href.includes("#")) return; // 「作品」是 ./#projects，不要跟首頁一起被標成目前頁面
     if (normalize(new URL(href, location.href).pathname) === here) {
       link.classList.add("active");
     }

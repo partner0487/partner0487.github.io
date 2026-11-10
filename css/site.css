@@ -46,3 +46,13 @@
   font-size: 1.05rem;
   line-height: 1.9;
 }
+
+/* 學歷：Nicepage 把高度寫死（1496px / 手機 1679px），學校數量變了就會多出一片空白，改成跟著內容長 */
+#sec-6049 .u-sheet-1 {
+  min-height: auto;
+  padding-bottom: 60px;
+}
+
+#sec-6049 .u-list-1 {
+  margin-bottom: 0;
+}

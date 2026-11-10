@@ -1,22 +1,21 @@
 //數字雨
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const matrixSection = canvas.closest("section");
 
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*";
 const fontSize = 15;
 let columns, drops;
 
+// canvas 跟著面板區塊的大小（原本用視窗大小，手機上區塊比視窗高，底部會留一條白邊）
 function resetMatrix() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = matrixSection.clientWidth;
+  canvas.height = matrixSection.clientHeight;
   columns = Math.floor(canvas.width / fontSize);
   drops = Array(columns).fill(1);
+  // 先快轉一段，捲到這裡時數字雨已經鋪滿，不會從一片空白開始往下長
+  for (let i = 0; i < 150; i++) draw();
 }
-resetMatrix(); // 初始設定
-window.addEventListener("resize", resetMatrix); // 視窗改變時更新
 
 
 function draw() {
@@ -37,6 +36,9 @@ function draw() {
   }
 }
 
+resetMatrix(); // 初始設定
+window.addEventListener("resize", resetMatrix); // 視窗改變時更新
+
 // 約每秒 15 次更新；技能面板不在畫面上時暫停
 let matrixTimer = null;
 new IntersectionObserver(([entry]) => {
@@ -46,7 +48,7 @@ new IntersectionObserver(([entry]) => {
     clearInterval(matrixTimer);
     matrixTimer = null;
   }
-}).observe(canvas.closest("section"));
+}).observe(matrixSection);
 
 //能力條
 function animateSkillBars() {

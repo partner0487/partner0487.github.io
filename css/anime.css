@@ -1,7 +1,8 @@
 .anime-label {
   position: absolute;
-  top: 3%; /* 浮在頁面上方 */
+  top: 60px; /* 用固定 px：原本用 %，清單變長之後位置會一直往下跑 */
   left: 50%;
+  white-space: nowrap;
   transform: translate(-50%, -50%);
   text-align: center;
   pointer-events: none;
@@ -54,10 +55,10 @@
 
 .search-container {
   position: absolute;
-  top: 6%; /* 浮在頁面上方 */
-  left: 50%;
-  text-align: center;
-  transform: translate(-50%, -50%);
+  top: 60px; /* 跟標題同一列，靠右 */
+  right: 2rem;
+  width: 220px;
+  transform: translateY(-50%);
   z-index: 10; /* 確保搜尋框在最上層 */
   border-radius: 8px; /* 邊框圓角 */
 }
@@ -192,4 +193,17 @@
 
 .right-btn {
   right: -25px;
+}
+
+/* 手機：標題佔滿一列，搜尋框移到標題下面、靠右 */
+@media (max-width: 600px) {
+  .search-container {
+    top: 120px;
+    right: 1rem;
+    width: 180px;
+  }
+
+  .anime-board {
+    padding-top: 160px;
+  }
 }

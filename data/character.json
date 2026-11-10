@@ -52,7 +52,7 @@
     { "icon": "🏅", "name": "旺宏科學獎", "desc": "高中用 Arduino 和感應卡做的「感應式智能登錄助手」拿下旺宏科學獎佳作，第一次體會到作品跑起來的成就感。", "date": "2020", "image": "images/achievements/macronix.webp", "imageLabel": "證書" },
     { "icon": "🧮", "name": "CPE 5／7", "desc": "大學程式能力檢定 CPE 解出 5 題，排名 131 / 2811，前 4.7%。", "date": "2023", "image": "images/achievements/cpe.webp", "imageLabel": "成績紀錄" },
     { "icon": "🏆", "name": "海洋盃佳作", "desc": "和兩位同學組成「Part-Time Coder」隊，拿下 2023 海洋盃程式設計競賽資工組佳作。", "date": "2023", "image": "images/achievements/oceancup.webp", "imageLabel": "獎狀" },
-    { "icon": "💡", "name": "智慧創新決賽", "desc": "大學畢業專題「突破次元：2D 圖片變成 3D 模型」（LRM、YOLACT、Blender），入圍智慧創新暨跨域整合創作競賽決賽。", "date": "2024", "image": "images/achievements/smart-innovation.webp", "imageLabel": "參賽證明" },
+    { "icon": "💡", "name": "智慧創新注目獎", "desc": "大學畢業專題「突破次元：2D 圖片變成 3D 模型」（LRM、YOLACT、Blender），在 2024 全國大專校院智慧創新暨跨域整合創作競賽的體感互動科技組拿下值得注目獎。", "date": "2024", "image": "images/achievements/smart-innovation.webp", "imageLabel": "獎狀" },
     { "icon": "🎓", "name": "海大資工畢業", "desc": "大學四年把軟體相關的課都修了一輪：軟體工程、Android、資料庫、網頁、AI。", "date": "2025", "image": "images/achievements/diploma.webp", "imageLabel": "畢業證書" },
     { "icon": "🔬", "name": "踏入研究所", "desc": "來到成大資訊所，研究電腦視覺。", "date": "2026" },
     { "icon": "⚾", "name": "和台鋼雄鷹棒球隊合作", "desc": "和台鋼雄鷹合作做打擊動作分析，用兩台相機、YOLO 和 ViTPose 分析打者的揮棒。", "date": "2026" },

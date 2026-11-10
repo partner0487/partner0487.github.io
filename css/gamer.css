@@ -232,15 +232,15 @@
         padding: 30px 24px;
     }
 
+    /* 遊戲變多了，一排放不下：限制寬度讓它排成兩排、每排最多 5 個（5 個 44px + 4 個間距 + 左右 padding） */
     .video-picker {
-        gap: 8px;
+        gap: 10px;
         flex-wrap: wrap;
-        max-width: calc(100% - 24px);
+        max-width: min(calc(100% - 24px), calc(5 * 44px + 4 * 10px + 22px));
     }
 
-    /* 7 個遊戲在 390px 寬的手機上剛好排成一排 */
     .video-item {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
     }
 }

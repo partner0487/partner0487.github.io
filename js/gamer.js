@@ -21,6 +21,18 @@ const contentData = {
         desc: '雀門',
         color: "lightgreen"
     },
+    'wuwa': {
+        title: '鳴潮',
+        subtitle: 'UID：700693702',
+        desc: '珂萊塔我婆',
+        color: "#b03050"
+    },
+    'nte': {
+        title: '異環',
+        subtitle: 'UID：218014039086',
+        desc: '娜娜莉main',
+        color: "mediumvioletred"
+    },
     'lol': {
         title: '英雄聯盟',
         subtitle: 'ID：夥伴 Partnero#0487',

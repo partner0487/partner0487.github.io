@@ -48,123 +48,71 @@ const contentData = {
     }
 };
 
+const isMobile = () => window.innerWidth <= 980;
+let currentClick = 0; // 連點時只讓最後一次點擊生效
+
+function showDetailImage(url) {
+    const show = () => {
+        productImage.classList.add('show');
+        productImage.classList.remove('hidden');
+    };
+    const hide = () => {
+        productImage.classList.add('hidden');
+        productImage.classList.remove('show');
+    };
+    productImage.onload = show;
+    productImage.onerror = hide;
+    productImage.src = url;
+    if (productImage.complete && productImage.naturalWidth > 0) show();
+}
+
+function selectGame(game) {
+    const data = contentData[game];
+    if (!data) return;
+    const clickId = ++currentClick;
+    const videoUrl = `videos/games/${game}.mp4`;
+    const imageUrl = `images/games/${data.detail || `${game}_detail.jpg`}`;
+
+    // 0ms：左側卡片往上捲、右側選單收起、背景影片淡出
+    contentWrapper.style.transform = isMobile() ? 'translateY(-150%)' : 'translateY(-100%)';
+    colorPicker.style.transform = isMobile() ? 'translateY(100%)' : 'translateX(100%)';
+    backgroundVideo.classList.add('hidden');
+
+    // 300ms：淡出結束後換影片，載入完成再淡入
+    setTimeout(() => {
+        if (clickId !== currentClick) return;
+        backgroundVideo.addEventListener('loadeddata', () => {
+            if (clickId !== currentClick) return;
+            backgroundVideo.classList.remove('hidden');
+            backgroundVideo.play();
+        }, { once: true });
+        backgroundVideo.src = videoUrl;
+    }, 300);
+
+    // 600ms：更新內容，卡片和選單回到原位
+    setTimeout(() => {
+        if (clickId !== currentClick) return;
+        productTitle.textContent = data.title;
+        productSubtitle.textContent = data.subtitle;
+        productDesc.textContent = data.desc;
+        productDesc.style.color = data.color;
+        showDetailImage(imageUrl);
+        contentWrapper.style.transform = 'translateY(0)';
+        colorPicker.style.transform = isMobile() ? 'translateY(0)' : 'translateX(0)';
+    }, 600);
+}
+
 videoItems.forEach(item => {
-    item.addEventListener('click', function () {
-        const selectedFileName = item.getAttribute('data');
-        const selectedVideoUrl = `videos/games/${selectedFileName}.mp4`;
-        const selectedImageUrl = `images/games/${contentData[selectedFileName].detail || `${selectedFileName}_detail.jpg`}`;
-
-        // Function to check if the file exists
-        async function fileExists(url) {
-            try {
-                const response = await fetch(url, { method: 'HEAD' }); // Make a HEAD request to check the file
-                return response.ok; // If the response is OK (status 200-299), the file exists
-            } catch (error) {
-                console.error('Error checking file existence:', error);
-                return false;
-            }
+    const game = item.dataset.game;
+    item.setAttribute('role', 'button');
+    item.setAttribute('tabindex', '0');
+    item.setAttribute('aria-label', contentData[game] ? contentData[game].title : game);
+    item.addEventListener('click', () => selectGame(game));
+    item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectGame(game);
         }
-
-        // Ensure your function is asynchronous
-        async function updateContentAndAnimate() {
-            // Start the upward animation
-            contentWrapper.style.transform = 'translateY(-100%)';
-
-            // Wait for the animation duration (600ms)
-            await new Promise((resolve) => setTimeout(resolve, 600));
-
-            // Proceed to update the content
-            productTitle.textContent = contentData[selectedFileName].title;
-            productSubtitle.textContent = contentData[selectedFileName].subtitle;
-            productDesc.textContent = contentData[selectedFileName].desc;
-            productDesc.style.color = contentData[selectedFileName].color;
-
-            // Check if the image exists
-            const exists = await fileExists(selectedImageUrl);
-
-            if (exists) {
-                // If the file exists, update the image source and show it
-                if (productImage) {
-                    productImage.src = selectedImageUrl;
-                    productImage.classList.add('show'); // Show the image
-                    productImage.classList.remove('hidden'); // Ensure it's not hidden
-                }
-            } else {
-                // If the file does not exist, hide the image
-                if (productImage) {
-                    productImage.classList.add('hidden'); // Hide the image
-                    productImage.classList.remove('show'); // Ensure it's not visible
-                }
-            }
-
-            // Finally, execute the downward animation
-            contentWrapper.style.transform = 'translateY(0)';
-        }
-
-        // Call the asynchronous function
-        updateContentAndAnimate();
-
-        // 將背景影片設為隱藏 (淡出)
-        backgroundVideo.classList.add('hidden');
-
-        // 左側滾輪動畫
-        if (window.innerWidth <= 980) {
-            contentWrapper.style.transform = 'translateY(-150%)';
-        } else {
-            contentWrapper.style.transform = 'translateY(-100%)';
-        }
-        setTimeout(() => {
-            contentWrapper.style.transform = 'translateY(0)'; // 更新內容 
-
-            productTitle.textContent = contentData[selectedFileName].title;
-            productSubtitle.textContent = contentData[selectedFileName].subtitle;
-            productDesc.textContent = contentData[selectedFileName].desc;
-            productDesc.style.color = contentData[selectedFileName].color;
-
-            productImage.src = selectedImageUrl; // Update the source
-            fileExists(selectedImageUrl).then((exists) => {
-                if (exists) {
-                    // If the file exists, update the image source and show it
-                    if (productImage) {
-                        productImage.classList.add('show'); // Show the image
-                        productImage.classList.remove('hidden'); // Ensure it's not hidden
-                    }
-                } else {
-                    // If the file does not exist, hide the image
-                    if (productImage) {
-                        productImage.classList.add('hidden'); // Hide the image
-                        productImage.classList.remove('show'); // Ensure it's not visible
-                    }
-                }
-            });
-        }, 600);
-
-        // 右側收起動畫
-        if (window.innerWidth <= 980) {
-            // 螢幕小於等於 980px（行動版）：往下收起
-            colorPicker.style.transform = 'translateY(100%)';
-            setTimeout(() => {
-                colorPicker.style.transform = 'translateY(0)';
-            }, 600);
-        } else {
-            // 螢幕大於 980px（桌機版）：往右收起
-            colorPicker.style.transform = 'translateX(100%)';
-            setTimeout(() => {
-                colorPicker.style.transform = 'translateX(0)';
-            }, 600);
-        }
-        
-
-        // 等待淡出動畫結束後更新影片並播放
-        setTimeout(() => {
-            backgroundVideo.src = selectedVideoUrl;
-
-            // 確保影片已加載完成後再淡入
-            backgroundVideo.addEventListener('loadeddata', () => {
-                backgroundVideo.classList.remove('hidden');
-                backgroundVideo.play();
-            }, { once: true });
-        }, 300); // 與 CSS 過渡時間一致
     });
 });
 
@@ -184,4 +132,8 @@ zoomables.forEach(img => {
 // 點 overlay 任意區域時關閉
 overlay.addEventListener('click', () => {
   overlay.classList.remove('show');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') overlay.classList.remove('show');
 });

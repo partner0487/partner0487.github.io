@@ -48,17 +48,20 @@
 }
 
 /* 卡片文字原本是黑字白框（為了疊在亮色影片上），深色改成白字黑框 */
+[data-theme="dark"] .product-card {
+  background: rgba(20, 22, 28, 0.55);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
 [data-theme="dark"] .product-title {
   color: #fff;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 [data-theme="dark"] .product-subtitle {
-  color: #c8ccd2;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  color: #d0d4da;
 }
 
-[data-theme="dark"] .product-desc {
+[data-theme="dark"] .product-desc:not(.is-tag) {
   color: var(--dark-text);
 }
 

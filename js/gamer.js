@@ -67,6 +67,7 @@ const contentData = {
 
 const isMobile = () => window.innerWidth <= 980;
 let currentClick = 0; // 連點時只讓最後一次點擊生效
+let currentGame = null; // 現在顯示的遊戲：再點同一款就不用重新載入
 
 // 詳細圖先在背景載好，卡片才彈回來；不然第一次點的時候卡片會先出現，圖片過一下才跳出來
 const detailCache = {};
@@ -91,9 +92,22 @@ function showDetailImage(game, ok) {
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// 標籤的字用黑或白：看代表色夠不夠亮（相對亮度）
+function tagTextColor(color) {
+    const probe = document.createElement('span');
+    probe.style.color = color;
+    document.body.append(probe);
+    const [r, g, b] = getComputedStyle(probe).color.match(/\d+/g).map(Number);
+    probe.remove();
+    const lin = (v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+    const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+    return L > 0.4 ? '#111' : '#fff';
+}
+
 function selectGame(game) {
     const data = contentData[game];
-    if (!data) return;
+    if (!data || game === currentGame) return; // 點的是正在看的那款：什麼都不做
+    currentGame = game;
     const clickId = ++currentClick;
     const videoUrl = `videos/games/${game}.mp4`;
     const detail = loadDetail(game); // 現在就開始載詳細圖
@@ -121,7 +135,9 @@ function selectGame(game) {
         productTitle.textContent = data.title;
         productSubtitle.textContent = data.subtitle;
         productDesc.textContent = data.desc;
-        productDesc.style.color = data.color;
+        productDesc.classList.add('is-tag');
+        productDesc.style.setProperty('--tag-bg', data.color);
+        productDesc.style.setProperty('--tag-fg', tagTextColor(data.color));
         if (ok === null) {
             showDetailImage(game, false);
             detail.then((late) => clickId === currentClick && showDetailImage(game, late));

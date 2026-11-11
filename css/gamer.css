@@ -36,8 +36,9 @@
     width: 400px;
     border-radius: 15px;
     padding: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* 霧面玻璃再白一點，背景影片太亮太花時字才看得清楚 */
+    background: rgba(255, 255, 255, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
@@ -48,28 +49,32 @@
 
 .product-title {
     font-size: 2.5rem !important;
-    color: #000;
-    text-shadow: -1px -1px 0 #fff,
-        1px -1px 0 #fff,
-        -1px 1px 0 #fff,
-        1px 1px 0 #fff;
+    color: #111;
     margin-bottom: 20px;
     transition: color 0.3s;
 }
 
 .product-subtitle {
     font-size: 1.8rem !important;
-    color: #666;
-    text-shadow: -1px -1px 0 #fff,
-        1px -1px 0 #fff,
-        -1px 1px 0 #fff,
-        1px 1px 0 #fff;
+    color: #333;
     margin-bottom: 15px;
 }
 
 .product-desc {
-    color: black;
+    color: #222;
     line-height: 1.6;
+}
+
+/* 選了遊戲之後，說明變成遊戲代表色的標籤：底色是代表色，字自動選黑或白（js/gamer.js 算的） */
+.product-desc.is-tag {
+    align-self: center;
+    padding: 4px 16px;
+    border-radius: 999px;
+    background: var(--tag-bg);
+    color: var(--tag-fg);
+    font-size: 1.1rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .product-image {

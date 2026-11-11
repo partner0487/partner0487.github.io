@@ -74,6 +74,16 @@
   text-decoration: underline;
 }
 
+/* 淺色主題的文字對比度（Lighthouse 無障礙檢查要 4.5:1）：
+   選單「目前頁面」原本 #478ac9、學歷的地圖連結原本 #e68387，在白底上都太淡 */
+:root:not([data-theme="dark"]) .u-menu a.u-button-style.u-nav-link.u-text-active-palette-1-base.active {
+  color: #2d6aa8 !important;
+}
+
+:root:not([data-theme="dark"]) #sec-6049 a.u-text-palette-2-light-1 {
+  color: #b8434a !important;
+}
+
 /* 窄螢幕縮小間距，8 個圖示才排得進一行 */
 @media (max-width: 420px) {
   .footer-social {

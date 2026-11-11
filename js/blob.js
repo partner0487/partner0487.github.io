@@ -13,8 +13,8 @@ class BouncingBlob {
     // 初始位置與速度...
     this.initialX = randomNumber(0, window.innerWidth - this.size);
     this.initialY = randomNumber(0, window.innerHeight - this.size);
-    this.el.style.top = `${this.initialY}px`;
-    this.el.style.left = `${this.initialX}px`;
+    // 位置全部用 transform 移動：改 top / left 會被瀏覽器當成「版面跳動」（Lighthouse 的 CLS 會扣很多分）
+    this.el.style.transform = `translate(${this.initialX}px, ${this.initialY}px)`;
     this.vx = randomNumber(MIN_SPEED, MAX_SPEED) * (Math.random() > 0.5 ? 1 : -1);
     this.vy = randomNumber(MIN_SPEED, MAX_SPEED) * (Math.random() > 0.5 ? 1 : -1);
     this.x = this.initialX;
@@ -32,7 +32,7 @@ class BouncingBlob {
     this.x = Math.max(0, Math.min(this.x, window.innerWidth - this.size));
     this.y = Math.max(0, Math.min(this.y, window.innerHeight - this.size));
 
-    this.el.style.transform = `translate(${this.x - this.initialX}px, ${this.y - this.initialY}px)`;
+    this.el.style.transform = `translate(${this.x}px, ${this.y}px)`;
   }
 }
 

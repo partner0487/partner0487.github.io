@@ -673,20 +673,34 @@
   flex-direction: column;
 }
 
-.rpg-pet-body {
+/* 一隻寵物一欄，桌機排三欄；第三欄留空 */
+.rpg-pets {
   flex: 1;
-  display: flex;
-  align-items: stretch;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
   padding-top: 6px;
 }
 
-/* 小樹散步的小院子：上面夜空、下面草地（草地和星星在 canvas 裡畫） */
+.rpg-pets {
+  grid-template-rows: 1fr auto;
+}
+
+/* 每一欄的院子和資料各佔一列（subgrid），資料行數不一樣時院子還是一樣高 */
+.rpg-pet {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* 寵物散步的小院子：上面夜空、下面草地（草地和星星在 canvas 裡畫） */
 .rpg-pet-yard {
   position: relative;
   flex: 1 1 auto;
-  min-width: 0;
-  min-height: 150px;
+  min-height: 160px;
+  cursor: pointer;
 }
 
 .rpg-pet-stage {
@@ -700,21 +714,24 @@
 }
 
 .rpg-pet-info {
-  flex: 0 0 auto;
-  align-self: center;
+  align-self: start;
+  align-content: start;
 }
 
+/* 手機：一隻一列往下排，空的那欄不佔位置 */
 @media (max-width: 600px) {
-  .rpg-pet-body {
+  .rpg-pets {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  .rpg-pet {
+    display: flex;
     flex-direction: column;
   }
 
-  .rpg-pet-yard {
-    width: 100%;
-  }
-
-  .rpg-pet-info {
-    align-self: flex-start;
+  .rpg-pet-empty {
+    display: none;
   }
 }
 

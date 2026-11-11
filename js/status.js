@@ -328,64 +328,111 @@
     return page;
   }
 
-  // ---- 寵物：小樹（長毛吉娃娃）的像素圖，一格一個字，對照 PET_PALETTE 上色 ----
-  // 照片上的小樹：白色為主，耳朵、臉頰兩側和背上是黃褐色，臉中間一道白，鼻子咖啡色
+  // ---- 寵物的像素圖：一格一個字，對照 PET_PALETTE 上色 ----
+  // 照片上的小樹和小奈：白色為主，耳朵、臉頰兩側和背上是黃褐色，臉中間一道白，鼻子咖啡色
   const PET_PALETTE = {
     o: "#4a3426", // 外框
     w: "#fffaf2", // 白毛
     s: "#e2d6c6", // 白毛的陰影
     t: "#d38a45", // 黃褐色的毛
     d: "#a9652c", // 黃褐色的陰影
-    p: "#f2a7a0", // 耳朵內側、舌頭
+    p: "#f2a7a0", // 耳朵內側、肚子
+    P: "#e65a78", // 吐出來的舌頭
     k: "#1a1618", // 眼睛
     e: "#ffffff", // 眼睛反光
     n: "#603628", // 鼻子
+    r: "#ff6996", // 小奈的蝴蝶結
+    R: "#c83c6e", // 蝴蝶結的結
   };
-  // 面向右邊：大大的蘋果頭、大眼睛、短嘴、圓身體、長毛耳朵、白色蓬蓬尾巴捲在背上
-  const PET_BODY = [
-    "..........oo.....oo....",
-    ".........otpo...otpo...",
-    ".........otppo.otppo...",
-    "..oo.....otttwwtttto...",
-    ".owso...ottttwwtttto...",
-    ".owwso..otttwwwkkwwto..",
-    "..owso..ottttwkekwwwo..",
-    "..owswo.otttttwkkwwwno.",
-    "...owwooottttttwwwwwo..",
-    "...owttttttttswwwwpo...",
-    "...owwtttttttwwwwwo....",
-    "...owwwttttwwwwwwwo....",
-    "...oswwwwwwwwwwwwwo....",
-    "....osswwwwwwwwwso.....",
-    "....oossssssssssoo.....",
-  ];
-  // 四隻短腿的走路循環
+  // 四隻短腿的走路循環（兩隻共用）
   const PET_LEGS = [
     ["....ow.ow....ow.ow.....", "....oo..oo...oo..oo...."],
     [".....owow.....owow.....", ".....oooo.....oooo....."],
     ["...ow.ow....ow.ow......", "..oo..oo...oo..oo......"],
     [".....owow.....owow.....", ".....oooo.....oooo....."],
   ];
-  // 睡覺：跟照片一樣捲成一球，頭靠在前面、眼睛閉著、尾巴圍在身體前面
-  const PET_SLEEP = [
-    ".......................",
-    ".......................",
-    ".......................",
-    ".......................",
-    ".......................",
-    ".......................",
-    "............oo...oo....",
-    ".....oooooootpo..opo...",
-    "....ottttttttwoooto....",
-    "...otttttttttottwtto...",
-    "..ottttttttttottwtto...",
-    "..odddddddddwotoowwo...",
-    "..owwwwwwwwwwottwwwn...",
-    "...owwwssssswwotooo....",
-    "...ossswwwwwssso.......",
-    "...ooowwwwwwwooo.......",
-    "......ooooooo..........",
-  ];
+  const PET_SPRITES = {
+    // 小樹：面向右邊，大大的蘋果頭、大眼睛、長毛耳朵、白色蓬蓬尾巴捲在背上；休息時捲成一球睡覺，頭上冒 Z z
+    shu: {
+      body: [
+        "..........oo.....oo....",
+        ".........otpo...otpo...",
+        ".........otppo.otppo...",
+        "..oo.....otttwwtttto...",
+        ".owso...ottttwwtttto...",
+        ".owwso..otttwwwkkwwto..",
+        "..owso..ottttwkekwwwo..",
+        "..owswo.otttttwkkwwwno.",
+        "...owwooottttttwwwwwo..",
+        "...owttttttttswwwwpo...",
+        "...owwtttttttwwwwwo....",
+        "...owwwttttwwwwwwwo....",
+        "...oswwwwwwwwwwwwwo....",
+        "....osswwwwwwwwwso.....",
+        "....oossssssssssoo.....",
+      ],
+      rest: [[
+        ".......................",
+        ".......................",
+        ".......................",
+        ".......................",
+        ".......................",
+        ".......................",
+        "............oo...oo....",
+        ".....oooooootpo..opo...",
+        "....ottttttttwoooto....",
+        "...otttttttttottwtto...",
+        "..ottttttttttottwtto...",
+        "..odddddddddwotoowwo...",
+        "..owwwwwwwwwwottwwwn...",
+        "...owwwssssswwotooo....",
+        "...ossswwwwwssso.......",
+        "...ooowwwwwwwooo.......",
+        "......ooooooo..........",
+      ]],
+      fx: "zzz",
+    },
+    // 小奈：跟小樹差不多的配色，頭上綁粉紅蝴蝶結、舌頭吐出來；休息時翻肚子討摸、四腳朝天踢呀踢，冒愛心
+    nai: {
+      body: [
+        "..........oo.....oo....",
+        ".........otpo.rr.otpo..",
+        ".........otppoRrotppo..",
+        "..oo.....otttwwrtttto..",
+        ".owso...ottttwwtttto...",
+        ".owwso..otttwwwkkwwto..",
+        "..owso..ottttwkekwwwo..",
+        "..owswo.otttttwkkwwwno.",
+        "...owwooottttttwwwwwo..",
+        "...owttttttttswwwwPo...",
+        "...owwtttttttwwwwwoPo..",
+        "...owwwttttwwwwwwwoPo..",
+        "...oswwwwwwwwwwwwwo....",
+        "....osswwwwwwwwwso.....",
+        "....oossssssssssoo.....",
+      ],
+      rest: [0, 1].map((k) => [
+        ".......................",
+        ".......................",
+        ".......................",
+        ".......................",
+        ".......................",
+        k ? "...oo.......oo........." : "....oo.....oo..........",
+        k ? "..owwo.....owwo........" : "...owwo...owwo.........",
+        k ? "..owso......owso......." : "...owso...owso.........",
+        "...owwo...owwo.........",
+        "..oowwooooowwoooooo....",
+        ".owwwwwwwwwwwwwwwtto...",
+        "owswwwwwwwwwwwwwtwwtoo.",
+        "owwwwwwwwpwwwwwwkkwwto.",
+        "oswwwwwwwwwwwwwwkekwwno",
+        ".otttttttttttttwkkwwwPo",
+        "..oddddddddddddotoooPPo",
+        "...oooooooooooootpo.oo.",
+      ]),
+      fx: "hearts",
+    },
+  };
 
   // 把字串畫成一張小 canvas（1 格 = 1 px），之後放大時不做平滑
   function spriteCanvas(rows) {
@@ -403,13 +450,19 @@
     return c;
   }
 
-  // 寵物分頁：左邊小樹在草地上走來走去，走一陣子就趴下來睡覺（愛睡覺），右邊是名字、品種、性別、個性、能力
-  function buildPet(c) {
-    const pet = c.pet;
-    const page = el("div", "rpg-page rpg-pet-page");
+  const petLine = (pet) =>
+    `${pet.name}：${pet.breed}，個性是${pet.personality}` + (pet.ability ? `，能力是${pet.ability}` : "") + "。";
+
+  // 一隻寵物一欄：上面是牠在草地上走來走去的小院子，下面是名字、品種、性別、個性、能力
+  function petCard(pet) {
+    const card = el("div", "rpg-pet");
+    const sprite = PET_SPRITES[pet.sprite];
     const stage = el("canvas", "rpg-pet-stage");
     stage.setAttribute("role", "img");
-    stage.setAttribute("aria-label", `${pet.name}在草地上走來走去，累了就趴下睡覺`);
+    stage.setAttribute(
+      "aria-label",
+      sprite.fx === "zzz" ? `${pet.name}在草地上走來走去，累了就趴下睡覺` : `${pet.name}在草地上走來走去，走一走就翻肚子討摸`
+    );
     const info = el("dl", "rpg-info rpg-pet-info");
     [["名字", pet.name], ["品種", pet.breed], ["性別", pet.gender], ["個性", pet.personality], ["能力", pet.ability]]
       .filter(([, v]) => v) // 沒填的欄位不顯示
@@ -418,25 +471,36 @@
         dd.append(k === "性別" ? genderSign(v) : v);
         info.append(el("dt", "", k), dd);
       });
-    const body = el("div", "rpg-pet-body");
     // canvas 放在外框裡、絕對定位：大小由外框決定，不會因為 canvas 本身的解析度越撐越高
     const yard = el("div", "rpg-pet-yard");
     yard.append(stage);
-    body.append(yard, info);
-    page.append(body);
+    yard.addEventListener("click", () => say(petLine(pet)));
+    card.append(yard, info);
 
-    const walk = [...PET_LEGS.map((legs) => spriteCanvas([...PET_BODY, ...legs]))];
-    const sleep = spriteCanvas(PET_SLEEP);
+    const walk = PET_LEGS.map((legs) => spriteCanvas([...sprite.body, ...legs]));
+    const rest = sprite.rest.map(spriteCanvas);
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let PX = 3; // 一格像素在畫面上幾 px：院子大的時候放大成 4
+    let PX = 3; // 一格像素在畫面上幾 px：院子大的時候放大
     let spriteW = walk[0].width * PX;
-    // 夜空的星星：位置固定（用簡單的亂數種子），亮度慢慢閃
-    const stars = Array.from({ length: 26 }, (_, i) => ({ x: ((i * 7919) % 997) / 997, y: ((i * 104729) % 991) / 991, p: i * 0.7 }));
+    // 夜空的星星：位置固定（用簡單的亂數種子），亮度慢慢閃；每隻的院子星星位置不一樣
+    const seed = pet.sprite.length * 13 + pet.sprite.charCodeAt(0);
+    const stars = Array.from({ length: 18 }, (_, i) => ({
+      x: (((i + seed) * 7919) % 997) / 997,
+      y: (((i + seed) * 104729) % 991) / 991,
+      p: i * 0.7,
+    }));
 
     let raf = null;
     let x = 0, dir = 1, last = 0, stepTime = 0, step = 0;
     let mode = "walk", modeUntil = 0;
     const rand = (a, b) => a + Math.random() * (b - a);
+
+    // 像素愛心：5×4 格，每格 u px
+    function heart(ctx, cx, cy, u) {
+      [".o.o.", "ooooo", ".ooo.", "..o.."].forEach((row, j) =>
+        [...row].forEach((ch, i) => ch === "o" && ctx.fillRect(Math.round(cx + i * u), Math.round(cy + j * u), u, u))
+      );
+    }
 
     function draw(now) {
       const dpr = window.devicePixelRatio || 1;
@@ -449,7 +513,7 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = false;
       ctx.clearRect(0, 0, w, h);
-      PX = Math.max(3, Math.min(5, Math.round(h / 120))); // 院子越大，小樹畫得越大（3～5 倍）
+      PX = Math.max(3, Math.min(5, Math.round(Math.min(h / 120, w / 50)))); // 院子越大，畫得越大（3～5 倍）
       spriteW = walk[0].width * PX;
       // 草地（院子越高，草地越厚）
       const ground = h - Math.max(18, Math.round(h * 0.16));
@@ -477,10 +541,11 @@
       const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
       last = now;
       if (!still && now > modeUntil) {
-        // 走 4～7 秒就睡 3～5 秒，睡醒繼續走
-        mode = mode === "walk" ? "sleep" : "walk";
+        // 走 4～7 秒就休息 3～5 秒（小樹睡覺、小奈翻肚子），休息完繼續走
+        mode = mode === "walk" ? "rest" : "walk";
         modeUntil = now + (mode === "walk" ? rand(4000, 7000) : rand(3000, 5000));
       }
+      if (x > w - spriteW) x = Math.max(0, w - spriteW); // 院子變窄時不要跑出去
       if (!still && mode === "walk") {
         x += dir * PX * 11 * dt; // 畫得越大走得越快，看起來速度一樣
         if (x < 0) { x = 0; dir = 1; }
@@ -488,7 +553,7 @@
         stepTime += dt;
         if (stepTime > 0.14) { stepTime = 0; step = (step + 1) % walk.length; }
       }
-      const img = still ? walk[0] : mode === "walk" ? walk[step] : sleep;
+      const img = still ? walk[0] : mode === "walk" ? walk[step] : rest[Math.floor(now / 350) % rest.length];
       const y = ground - img.height * PX + 2;
       ctx.save();
       if (dir < 0) {
@@ -500,23 +565,33 @@
         ctx.drawImage(img, x, y, img.width * PX, img.height * PX);
       }
       ctx.restore();
-      // 睡覺時頭上冒 Z z
-      if (!still && mode === "sleep") {
-        const t = (now / 1000) % 1.8;
+      if (!still && mode === "rest") {
         const headX = dir > 0 ? x + spriteW - PX * 6 : x + PX;
-        ctx.fillStyle = "#ffffff";
-        ctx.font = `bold ${PX * 5}px DotGothic16, monospace`;
-        ctx.globalAlpha = 1 - t / 1.8;
-        ctx.fillText("Z", headX + t * PX * 3, y + PX * 4 - t * PX * 5);
-        ctx.font = `bold ${PX * 3.4}px DotGothic16, monospace`;
-        ctx.fillText("z", headX + PX * 4 + t * PX * 2, y - t * PX * 3.4);
+        if (sprite.fx === "zzz") {
+          // 睡覺時頭上冒 Z z
+          const t = (now / 1000) % 1.8;
+          ctx.fillStyle = "#ffffff";
+          ctx.font = `bold ${PX * 5}px DotGothic16, monospace`;
+          ctx.globalAlpha = 1 - t / 1.8;
+          ctx.fillText("Z", headX + t * PX * 3, y + PX * 4 - t * PX * 5);
+          ctx.font = `bold ${PX * 3.4}px DotGothic16, monospace`;
+          ctx.fillText("z", headX + PX * 4 + t * PX * 2, y - t * PX * 3.4);
+        } else {
+          // 翻肚子時冒愛心
+          ctx.fillStyle = "#ff6996";
+          [0, 0.9].forEach((off, i) => {
+            const t = (now / 1000 + off) % 1.8;
+            ctx.globalAlpha = 1 - t / 1.8;
+            heart(ctx, headX - PX * 2 + i * PX * 5 + Math.sin(t * 4) * PX, y + PX * 6 - t * PX * 6, Math.max(2, PX - 1));
+          });
+        }
         ctx.globalAlpha = 1;
       }
       if (still) return; // 不要動畫：只畫一次站著的樣子
       raf = requestAnimationFrame(draw);
     }
 
-    // 只有在寵物分頁打開、而且面板在畫面上的時候才跑動畫
+    // 只有在寵物分頁打開、而且院子在畫面上的時候才跑動畫
     let active = false;
     let onScreen = false;
     function update() {
@@ -532,16 +607,35 @@
       onScreen = entry.isIntersecting;
       update();
     }).observe(stage);
-    page._onShow = () => {
-      if (!x) x = Math.max(0, (stage.clientWidth - spriteW) / 2); // 第一次打開時站在中間
-      active = true;
-      update();
+    return {
+      card,
+      show() {
+        if (!x) x = Math.max(0, (stage.clientWidth - spriteW) / 2); // 第一次打開時站在中間
+        active = true;
+        update();
+      },
+      hide() {
+        active = false;
+        update();
+      },
     };
-    page._onHide = () => {
-      active = false;
-      update();
-    };
-    page._intro = () => say(`${pet.name}：${pet.breed}，個性是${pet.personality}，能力是${pet.ability}。`);
+  }
+
+  // 寵物分頁：一隻一欄。資料裡 null 的位置留一欄空白（給已經不在的那隻）
+  function buildPet(c) {
+    const page = el("div", "rpg-page rpg-pet-page");
+    const grid = el("div", "rpg-pets");
+    const cards = [];
+    c.pets.forEach((pet) => {
+      if (!pet) return grid.append(el("div", "rpg-pet rpg-pet-empty"));
+      const card = petCard(pet);
+      cards.push(card);
+      grid.append(card.card);
+    });
+    page.append(grid);
+    page._onShow = () => cards.forEach((k) => k.show());
+    page._onHide = () => cards.forEach((k) => k.hide());
+    page._intro = () => say(c.pets.filter(Boolean).map(petLine).join("　"));
     return page;
   }
 
@@ -587,7 +681,7 @@
     const pagesWrap = el("div", "rpg-pages");
     const pages = [
       ["角色", buildStatus(c)], // 「狀態」的「狀」像素字型裡沒有（日文是「状」），所以叫「角色」
-      c.pet && ["寵物", buildPet(c)],
+      c.pets?.length && ["寵物", buildPet(c)],
       ["技能", buildSkills(c, projects)],
       ["成就", buildAchievements(c)],
     ].filter(Boolean);

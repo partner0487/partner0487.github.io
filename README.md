@@ -36,7 +36,7 @@
 **RPG 角色面板**
 - 做成經典 JRPG 的視窗（深藍漸層、白框、像素字型 DotGothic16），資料在 [data/character.json](data/character.json)（[js/status.js](js/status.js)）
   - **角色**：像素頭像（自己的 OC 轉成 48×48 的像素圖，images/profile/oc-pixel.png）、職業（`classPath` 轉職路線：初心者 → 一轉 → 二轉，點職業可以看轉職紀錄）、稱號、ARPG 屬性（左欄有顏色：HP 熱情、MP 點子、VIT 體力、LUK 幸運、CHA 魅力；右欄紫色：STR 實作、INT 智力、SPD 速度、PER 眼力、ELO 口才；條的顏色寫在 `color`）和遊戲屬性（`gamer`：定位「大腦型玩家」，TAC 博弈、DEX 操作、ACC 準度）；等級 = 從 `startedCoding` 開始寫程式到現在的月數，EXP 條是這個月過了幾天
-  - **寵物**：小樹（`pet`），像素吉娃娃在有星星和月亮的院子裡走來走去、累了就捲成一球睡覺；圖是照片照著畫的，在 js/status.js 裡用字串一格一格畫。只有切到這一頁、而且面板在畫面上時才跑動畫
+  - **寵物**：`pets` 一隻一欄，桌機排三欄（`null` 的位置留空）。小樹累了就捲成一球睡覺，小奈會翻肚子討摸、冒愛心；`sprite` 對到 js/status.js 裡的 `PET_SPRITES`；圖是照片照著畫的，在 js/status.js 裡用字串一格一格畫。只有切到這一頁、而且面板在畫面上時才跑動畫
   - **技能**：等級 = 實際有在寫的月數 = `base`（到 `githubFrom` 為止手動估的月數，一學期的課算 6）＋ 之後 GitHub 上有 commit 改到這個語言檔案的月份；Git 則是有 commit 的月份數。GitHub 的部分由 [scripts/github_activity.py](scripts/github_activity.py) 統計成 [data/github-activity.json](data/github-activity.json)，GitHub Action（[.github/workflows/github-activity.yml](.github/workflows/github-activity.yml)）每週一自動跑一次，有變化才 commit。依等級排序，進度條是跟最高等技能的比例；選一個技能，下方對話框會用打字機效果說明，並列出用它做過的作品，點了打開首頁寶箱的那張卡片
   - **成就**：徽章，還沒達成的顯示「???」；有 `image` 的成就（右上角 ✦）可以點開看獎狀或證書，圖放在 images/achievements（上傳前先遮掉身分證字號、生日、學號等個資）
   - 可以用鍵盤操作：← → 換分頁、↑ ↓ 移動、Enter 選擇；點對話框直接顯示完整文字

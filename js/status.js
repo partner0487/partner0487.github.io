@@ -363,13 +363,13 @@
         ".........otppo.otppo...",
         "..oo.....otttwwtttto...",
         ".owso...ottttwwtttto...",
-        ".owwso..otttwwwkkwwto..",
-        "..owso..ottttwkekwwwo..",
-        "..owswo.otttttwkkwwwno.",
-        "...owwooottttttwwwwwo..",
-        "...owttttttttswwwwpo...",
-        "...owwtttttttwwwwwo....",
-        "...owwwttttwwwwwwwo....",
+        ".owwso..otttwwtkktwto..",
+        "..owso..otttttkektwwo..",
+        "..owswo.ottttttkktwwno.",
+        "...owwooottttttttwwwo..",
+        "...owwwtttwwwswwwwpo...",
+        "...owwwwtwwttwwwwwo....",
+        "...owwwwwwwwwwwwwwo....",
         "...oswwwwwwwwwwwwwo....",
         "....osswwwwwwwwwso.....",
         "....oossssssssssoo.....",
@@ -383,10 +383,10 @@
         ".......................",
         "............oo...oo....",
         ".....oooooootpo..opo...",
-        "....ottttttttwoooto....",
-        "...otttttttttottwtto...",
-        "..ottttttttttottwtto...",
-        "..odddddddddwotoowwo...",
+        "....owwwwwttwwoooto....",
+        "...owwtttwwwwottwtto...",
+        "..owwwwtwwwwwottwtto...",
+        "..ossssssssswotoowwo...",
         "..owwwwwwwwwwottwwwn...",
         "...owwwssssswwotooo....",
         "...ossswwwwwssso.......",
@@ -416,13 +416,13 @@
         ".........otppo.otppo...",
         "..oo.....otttwwtttto...",
         ".owso...ottttwwtttto...",
-        ".owwso..otttwwwkkwwto..",
-        "..owso..ottttwkekwwwo..",
-        "..owswo.otttttwkkwwwno.",
-        "...owwooottttttwwwwwo..",
-        "...owttttttttswwwwPo...",
-        "...owwtttttttwwwwwoPo..",
-        "...owwwttttwwwwwwwoPo..",
+        ".owwso..otttwwtkktwto..",
+        "..owso..otttttkektwwo..",
+        "..owswo.ottttttkktwwno.",
+        "...owwooottttttttwwwo..",
+        "...owwwwwwwwwswwwwPo...",
+        "...owwwwwwwwwwwwwwoPo..",
+        "...owwwwwwwwwwwwwwoPo..",
         "...oswwwwwwwwwwwwwo....",
         "....osswwwwwwwwwso.....",
         "....oossssssssssoo.....",
@@ -442,11 +442,12 @@
         "owswwwwwwwwwwwwwtwwtoo.",
         "owwwwwwwwpwwwwwwkkwwto.",
         "oswwwwwwwwwwwwwwkekwwno",
-        ".otttttttttttttwkkwwwPo",
-        "..oddddddddddddotoooPPo",
+        ".owwwwwwwwwwwwwwkkwwwPo",
+        "..ossssssssssssotoooPPo",
         "...oooooooooooootpo.oo.",
       ]),
       fx: "hearts",
+      small: true, // 畫的時候每格少 1px
       // 粉紅色鋪棉外套：身體換成粉紅色，加幾個深一點的點點當鋪棉的紋路
       clothes: {
         walk: [
@@ -508,7 +509,7 @@
   const petLine = (pet) =>
     `${pet.name}：${pet.breed}，個性是${pet.personality}` + (pet.ability ? `，能力是${pet.ability}` : "") + "。";
 
-  // 一隻寵物一欄：上面是牠在草地上走來走去的小院子，下面是名字、品種、性別、個性、能力
+  // 一隻寵物一列：左邊是牠在草地上走來走去的小院子，右邊是名字、品種、性別、個性、能力
   function petCard(pet) {
     const card = el("div", "rpg-pet");
     const sprite = PET_SPRITES[pet.sprite];
@@ -598,7 +599,8 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = false;
       ctx.clearRect(0, 0, w, h);
-      PX = Math.max(3, Math.min(5, Math.round(Math.min(h / 120, w / 50)))); // 院子越大，畫得越大（3～5 倍）
+      PX = Math.max(3, Math.min(5, Math.round(Math.min(h / 45, w / 50)))); // 院子越大，畫得越大（3～5 倍）
+      if (sprite.small) PX -= 1; // 小奈比小樹小一號
       spriteW = walk[0].width * PX;
       // 草地（院子越高，草地越厚）
       const ground = h - Math.max(18, Math.round(h * 0.16));
@@ -707,7 +709,7 @@
     };
   }
 
-  // 寵物分頁：一隻一欄。資料裡 null 的位置留一欄空白（給已經不在的那隻）
+  // 寵物分頁：一隻一列。資料裡 null 的位置留一列空白（給已經不在的那隻）
   function buildPet(c) {
     const page = el("div", "rpg-page rpg-pet-page");
     const grid = el("div", "rpg-pets");

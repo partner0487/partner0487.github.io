@@ -749,6 +749,22 @@
   outline-offset: 1px;
 }
 
+/* 空位：虛線框，中間一個 + */
+.rpg-pet-slot {
+  display: grid;
+  place-items: center;
+  border: 2px dashed rgba(255, 255, 255, 0.45);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 2.6rem;
+  line-height: 1;
+  cursor: default;
+}
+
+.rpg-pet-empty .rpg-pet-info dd {
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .rpg-pet-info {
   align-self: center;
   min-width: 9em;
@@ -770,9 +786,6 @@
     align-self: flex-start;
   }
 
-  .rpg-pet-empty {
-    display: none;
-  }
 }
 
 .rpg-nowrap {

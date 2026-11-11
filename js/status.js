@@ -770,13 +770,23 @@
     };
   }
 
-  // 寵物分頁：一隻一列。資料裡 null 的位置留一列空白（給已經不在的那隻）
+  // 寵物分頁：一隻一列。資料裡 null 的位置是一個空位：虛線框 + 空白欄位（給已經不在的那隻）
   function buildPet(c) {
     const page = el("div", "rpg-page rpg-pet-page");
     const grid = el("div", "rpg-pets");
     const cards = [];
     c.pets.forEach((pet) => {
-      if (!pet) return grid.append(el("div", "rpg-pet rpg-pet-empty"));
+      if (!pet) {
+        // 空位：左邊虛線框中間一個 +，右邊欄位都是空白底線
+        const slot = el("div", "rpg-pet rpg-pet-empty");
+        const box = el("div", "rpg-pet-yard rpg-pet-slot", "+");
+        box.setAttribute("aria-hidden", "true");
+        const info = el("dl", "rpg-info rpg-pet-info");
+        ["名字", "品種", "性別", "個性", "能力"].forEach((k) => info.append(el("dt", "", k), el("dd", "", "＿＿")));
+        info.setAttribute("aria-label", "空的寵物欄位");
+        slot.append(box, info);
+        return grid.append(slot);
+      }
       const card = petCard(pet);
       cards.push(card);
       grid.append(card.card);

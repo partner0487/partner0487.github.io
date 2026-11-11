@@ -51,17 +51,16 @@
     { "name": "Dart", "base": 2, "from": "用 Flutter 做任務系統", "github": "Dart", "langs": ["dart"] }
   ],
   "lifeSkills": [
-    { "name": "睡覺", "rank": "高", "desc": "跟寵物小樹一樣愛睡覺。" },
-    { "name": "英文", "rank": "中", "desc": "2024 年多益 650 分。" },
-    { "name": "簡報", "rank": "中" },
-    { "name": "文書", "rank": "中" },
-    { "name": "剪輯", "rank": "中", "desc": "自學 CapCut。" },
-    { "name": "健身", "rank": "中" },
-    { "name": "籃球", "rank": "中" },
-    { "name": "攝影", "rank": "中低" },
-    { "name": "料理", "rank": "低" },
-    { "name": "游泳", "rank": "低" },
-    { "name": "社交", "rank": "低" }
+    { "name": "睡覺", "value": 96, "desc": "哪裡都能睡，旁邊在施工、在打仗都照睡，跟寵物小樹一樣。" },
+    { "name": "剪輯", "value": 68, "desc": "2022 年開始自學 CapCut，主要剪遊戲：TikTok 的特效精華、YouTube 的遊戲實況都剪過。" },
+    { "name": "英文", "value": 65, "desc": "2024 年多益 650 分。" },
+    { "name": "文書", "value": 63, "desc": "報告、簡報都做得出來，排版整齊。" },
+    { "name": "籃球", "value": 61, "desc": "左手特化的控球後衛。" },
+    { "name": "健身", "value": 57, "desc": "有在練的普通人。" },
+    { "name": "攝影", "value": 42, "desc": "稱不上會拍，但也不是直男那種超爛構圖。" },
+    { "name": "社交", "value": 34, "desc": "漫展上是 E 人，現實中是 I 人。" },
+    { "name": "游泳", "value": 27, "desc": "會游自由式，但不會換氣。" },
+    { "name": "料理", "value": 18, "desc": "只會煮水餃和泡麵。" }
   ],
   "achievements": [
     { "icon": "📐", "name": "考進數理資優班", "desc": "高二考進永春高中的數理資優班，開始接觸 C++，也是後來一路寫程式的起點。", "date": "2019" },

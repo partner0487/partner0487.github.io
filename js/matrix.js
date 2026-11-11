@@ -43,8 +43,25 @@ function draw() {
   }
 }
 
-// 區塊大小改變時重設（面板是讀完 JSON 才畫出來的，高度會變；視窗大小改變也會觸發）
-new ResizeObserver(resetMatrix).observe(matrixSection);
+// 區塊大小改變時（面板讀完 JSON 才畫出來、對話框文字變長變短、視窗大小改變）：
+// 第一次整個重設；之後把已經畫好的字留著，只補上 / 切掉多出來的邊，數字雨不會整片刷新
+function resizeMatrix() {
+  const w = matrixSection.clientWidth;
+  const h = matrixSection.clientHeight;
+  if (w === canvas.width && h === canvas.height) return;
+  if (!drops) return resetMatrix();
+  const old = document.createElement("canvas");
+  old.width = canvas.width;
+  old.height = canvas.height;
+  old.getContext("2d").drawImage(canvas, 0, 0);
+  canvas.width = w; // 改寬高會清空 canvas，再把舊的畫回去
+  canvas.height = h;
+  ctx.drawImage(old, 0, 0);
+  columns = Math.floor(w / fontSize);
+  // 變寬：新的欄從隨機高度開始下；變窄：多的欄拿掉
+  drops = Array.from({ length: columns }, (_, i) => drops[i] ?? Math.floor((Math.random() * h) / fontSize));
+}
+new ResizeObserver(resizeMatrix).observe(matrixSection);
 window.addEventListener("themechange", () => {
   colors = matrixColors();
   resetMatrix(); // 重畫一次，舊顏色的字不會殘留

@@ -506,6 +506,23 @@
     return g.map((r) => r.join(""));
   }
 
+  // 院子的天空跟著看的人當地的時間換：早上、中午、傍晚、晚上
+  const SKIES = {
+    morning: { name: "早上", top: "#78bfee", bottom: "#ffe2ad", sun: { x: 0.18, y: 0.62, r: 0.05, color: "#ffe066" }, clouds: true },
+    noon: { name: "中午", top: "#3c8ae0", bottom: "#a9dcff", sun: { x: 0.8, y: 0.2, r: 0.055, color: "#fff27a" }, clouds: true },
+    evening: { name: "傍晚", top: "#3a2a6e", mid: "#e9764a", bottom: "#ffd27a", sun: { x: 0.14, y: 0.86, r: 0.075, color: "#ff9a3d" }, clouds: false },
+    night: { name: "晚上", top: "#16206a", bottom: "#3b56b8", moon: true, stars: true },
+  };
+  function skyNow(d = new Date()) {
+    const h = d.getHours() + d.getMinutes() / 60;
+    if (h >= 6 && h < 10.5) return SKIES.morning;
+    if (h >= 10.5 && h < 16) return SKIES.noon;
+    if (h >= 16 && h < 18.5) return SKIES.evening;
+    return SKIES.night;
+  }
+  // 像素雲：一格 u px
+  const CLOUD = ["..oooo....", ".oooooo.o.", "oooooooooo", ".oooooooo."];
+
   const petLine = (pet) =>
     `${pet.name}：${pet.breed}，個性是${pet.personality}` + (pet.ability ? `，能力是${pet.ability}` : "") + "。";
 
@@ -576,6 +593,8 @@
       p: i * 0.7,
     }));
 
+    let sky = null, skyCheck = 0;
+    const baseLabel = stage.getAttribute("aria-label");
     let raf = null;
     let x = 0, dir = 1, last = 0, stepTime = 0, step = 0;
     let mode = "walk", modeUntil = 0;
@@ -604,25 +623,67 @@
       spriteW = walk[0].width * PX;
       // 草地（院子越高，草地越厚）
       const ground = h - Math.max(18, Math.round(h * 0.16));
-      // 星星
-      ctx.fillStyle = "#ffffff";
-      stars.forEach((st) => {
-        ctx.globalAlpha = still ? 0.6 : 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(now / 900 + st.p));
-        ctx.fillRect(Math.round(st.x * w), Math.round(st.y * (ground - 30)) + 6, 2, 2);
-      });
-      ctx.globalAlpha = 1;
-      // 月亮：像素風的圓，右上角，有一個淡淡的坑
-      const mr = Math.max(9, Math.round(Math.min(w, h) * 0.055));
-      const mx = w - mr * 2.6, my = mr * 2.4;
-      for (let yy = -mr; yy <= mr; yy += 3)
-        for (let xx = -mr; xx <= mr; xx += 3) {
-          if (Math.hypot(xx, yy) > mr) continue;
-          ctx.fillStyle = Math.hypot(xx + mr * 0.4, yy - mr * 0.25) < mr * 0.3 ? "#e6d79c" : "#fff3c2";
-          ctx.fillRect(Math.round(mx + xx), Math.round(my + yy), 3, 3);
-        }
-      ctx.fillStyle = "#2f7d3a";
+      // 天空：每 30 秒看一次時間，跨過時段就換
+      if (!sky || now - skyCheck > 30000) {
+        sky = skyNow();
+        skyCheck = now;
+        stage.setAttribute("aria-label", `${baseLabel}（${sky.name}）`);
+      }
+      const grad = ctx.createLinearGradient(0, 0, 0, ground);
+      grad.addColorStop(0, sky.top);
+      if (sky.mid) grad.addColorStop(0.6, sky.mid);
+      grad.addColorStop(1, sky.bottom);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, ground);
+      // 像素風的圓（太陽、月亮）：一格 3px
+      const disc = (cx, cy, r, color, crater) => {
+        for (let yy = -r; yy <= r; yy += 3)
+          for (let xx = -r; xx <= r; xx += 3) {
+            if (Math.hypot(xx, yy) > r) continue;
+            ctx.fillStyle = crater && Math.hypot(xx + r * 0.4, yy - r * 0.25) < r * 0.3 ? "#e6d79c" : color;
+            ctx.fillRect(Math.round(cx + xx), Math.round(cy + yy), 3, 3);
+          }
+      };
+      const unit = Math.min(w, h);
+      if (sky.stars) {
+        // 星星
+        ctx.fillStyle = "#ffffff";
+        stars.forEach((st) => {
+          ctx.globalAlpha = still ? 0.6 : 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(now / 900 + st.p));
+          ctx.fillRect(Math.round(st.x * w), Math.round(st.y * (ground - 30)) + 6, 2, 2);
+        });
+        ctx.globalAlpha = 1;
+      }
+      if (sky.moon) {
+        // 月亮：右上角，有一個淡淡的坑
+        const mr = Math.max(9, Math.round(unit * 0.055));
+        disc(w - mr * 2.6, mr * 2.4, mr, "#fff3c2", true);
+      }
+      if (sky.sun) {
+        // 太陽：外面一圈淡淡的光暈
+        const r = Math.max(9, Math.round(unit * sky.sun.r));
+        const sx = w * sky.sun.x, sy = ground * sky.sun.y;
+        ctx.globalAlpha = 0.25;
+        disc(sx, sy, r + 6, sky.sun.color);
+        ctx.globalAlpha = 1;
+        disc(sx, sy, r, sky.sun.color);
+      }
+      if (sky.clouds) {
+        // 白天的雲：慢慢往右飄，飄出去從左邊回來
+        const u = Math.max(2, Math.round(unit / 70));
+        const cw = CLOUD[0].length * u;
+        ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
+        [[0.1, 0.18, 1], [0.55, 0.32, 0.7]].forEach(([fx, fy, speed]) => {
+          const cx = ((fx * (w + cw) + (still ? 0 : now / 1000) * 6 * speed) % (w + cw)) - cw;
+          CLOUD.forEach((row, j) =>
+            [...row].forEach((ch, i) => ch === "o" && ctx.fillRect(Math.round(cx + i * u), Math.round(fy * ground + j * u), u, u))
+          );
+        });
+      }
+      // 草地：晚上暗一點
+      ctx.fillStyle = sky.stars ? "#2f7d3a" : "#3f9a46";
       ctx.fillRect(0, ground, w, h - ground);
-      ctx.fillStyle = "#49a552";
+      ctx.fillStyle = sky.stars ? "#49a552" : "#5cc163";
       for (let gx = 0; gx < w; gx += 12) ctx.fillRect(gx, ground, 6, 3);
 
       const dt = last ? Math.min(0.05, (now - last) / 1000) : 0;

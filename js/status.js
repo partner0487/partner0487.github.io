@@ -248,9 +248,9 @@
     list.style.setProperty("--rows", Math.ceil(c.skills.length / 2));
     page.append(el("h3", "rpg-sub", "職業技能"), list);
 
-    // 基礎技能：生活上的技能，沒辦法算月數，用「初／中／中上／高」表示
+    // 基礎技能：生活上的技能，沒辦法算月數，用「低／中低／中／中上／高」表示
     const life = c.lifeSkills || [];
-    const RANK = { 初: 0.3, 中: 0.5, 中上: 0.7, 高: 0.9 };
+    const RANK = { 低: 0.2, 中低: 0.35, 中: 0.5, 中上: 0.7, 高: 0.9 };
     if (life.length) {
       const lifeList = el("ul", "rpg-list rpg-skills");
       life.forEach((s) => {

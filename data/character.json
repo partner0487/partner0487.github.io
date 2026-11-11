@@ -1,5 +1,5 @@
 {
-  "name": "王家騏",
+  "name": "夥伴",
   "uid": "TW20030314",
   "class": "資工所研究生",
   "classPath": [
@@ -51,10 +51,17 @@
     { "name": "Dart", "base": 2, "from": "用 Flutter 做任務系統", "github": "Dart", "langs": ["dart"] }
   ],
   "lifeSkills": [
+    { "name": "睡覺", "rank": "高", "desc": "跟寵物小樹一樣愛睡覺。" },
+    { "name": "英文", "rank": "中", "desc": "2024 年多益 650 分。" },
+    { "name": "簡報", "rank": "中" },
+    { "name": "文書", "rank": "中" },
+    { "name": "剪輯", "rank": "中", "desc": "自學 CapCut。" },
     { "name": "健身", "rank": "中" },
     { "name": "籃球", "rank": "中" },
-    { "name": "剪輯", "rank": "中" },
-    { "name": "文書", "rank": "中" }
+    { "name": "攝影", "rank": "中低" },
+    { "name": "料理", "rank": "低" },
+    { "name": "游泳", "rank": "低" },
+    { "name": "社交", "rank": "低" }
   ],
   "achievements": [
     { "icon": "📐", "name": "考進數理資優班", "desc": "高二考進永春高中的數理資優班，開始接觸 C++，也是後來一路寫程式的起點。", "date": "2019" },

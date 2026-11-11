@@ -427,25 +427,47 @@
         "....osswwwwwwwwwso.....",
         "....oossssssssssoo.....",
       ],
-      rest: [0, 1].map((k) => [
-        ".......................",
-        ".......................",
-        ".......................",
-        ".......................",
-        ".......................",
-        k ? "...oo.......oo........." : "....oo.....oo..........",
-        k ? "..owwo.....owwo........" : "...owwo...owwo.........",
-        k ? "..owso......owso......." : "...owso...owso.........",
-        "...owwo...owwo.........",
-        "..oowwooooowwoooooo....",
-        ".owwwwwwwwwwwwwwwtto...",
-        "owswwwwwwwwwwwwwtwwtoo.",
-        "owwwwwwwwpwwwwwwkkwwto.",
-        "oswwwwwwwwwwwwwwkekwwno",
-        ".owwwwwwwwwwwwwwkkwwwPo",
-        "..ossssssssssssotoooPPo",
-        "...oooooooooooootpo.oo.",
-      ]),
+      // 翻肚子（兩張輪流，看起來像在踢腳）：比走路的圖寬 3 格，多出來的是平放在草地上的尾巴
+      rest: [
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".......oo.....oo..........",
+          "......owwo...owwo.........",
+          "......owso...owso.........",
+          "......owwo...owwo.........",
+          ".....oowwooooowwoooooo....",
+          "....owwwwwwwwwwwwwwwtto...",
+          ".o.owswwwwwwwwwwwwwtwwtoo.",
+          "owoowwwwwwwwpwwwwwwkkwwto.",
+          "owwoswwwwwwwwwwwwwwkekwwno",
+          "owwwowwwwwwwwwwwwwwkkwwwPo",
+          "oswwswssssssssssssotoooPPo",
+          ".ooooooooooooooooootpo.oo.",
+        ],
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "......oo.......oo.........",
+          ".....owwo.....owwo........",
+          ".....owso.....owso........",
+          "......owwo...owwo.........",
+          ".....oowwooooowwoooooo....",
+          "....owwwwwwwwwwwwwwwtto...",
+          ".o.owswwwwwwwwwwwwwtwwtoo.",
+          "owoowwwwwwwwpwwwwwwkkwwto.",
+          "owwoswwwwwwwwwwwwwwkekwwno",
+          "owwwowwwwwwwwwwwwwwkkwwwPo",
+          "oswwswssssssssssssotoooPPo",
+          ".ooooooooooooooooootpo.oo.",
+        ],
+      ],
       fx: "hearts",
       small: true, // 畫的時候每格少 1px
       // 粉紅色鋪棉外套：身體換成粉紅色，加幾個深一點的點點當鋪棉的紋路
@@ -455,8 +477,8 @@
           { px: [[7, 11], [10, 10], [13, 12], [8, 13]], ch: "C" },
         ],
         rest: [
-          { fill: [1, 15, 10, 16], main: "c", shade: "C" },
-          { px: [[4, 12], [8, 11], [12, 13], [6, 14]], ch: "C" },
+          { fill: [6, 18, 10, 16], main: "c", shade: "C" }, // 只包身體，左邊的尾巴不包
+          { px: [[8, 12], [12, 11], [15, 13], [10, 14]], ch: "C" },
         ],
       },
     },
@@ -704,14 +726,16 @@
       const { walk: walkNow, rest } = look();
       const img = still ? walkNow[0] : mode === "walk" ? walkNow[step] : rest[Math.floor(now / 350) % rest.length];
       const y = ground - img.height * PX + 2;
+      // 比走路的圖寬的那幾格（小奈的尾巴）往身體後面多出去，頭的位置不變
+      const ox = spriteW - img.width * PX;
       ctx.save();
       if (dir < 0) {
         // 往左走時左右翻過來
         ctx.translate(x + spriteW, 0);
         ctx.scale(-1, 1);
-        ctx.drawImage(img, 0, y, img.width * PX, img.height * PX);
+        ctx.drawImage(img, ox, y, img.width * PX, img.height * PX);
       } else {
-        ctx.drawImage(img, x, y, img.width * PX, img.height * PX);
+        ctx.drawImage(img, x + ox, y, img.width * PX, img.height * PX);
       }
       ctx.restore();
       if (!still && mode === "rest") {

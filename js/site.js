@@ -2,7 +2,7 @@
 // 1. 依視窗寬度在 <html> 加上 u-responsive-xx（CSS 會用到）
 // 2. 手機版漢堡選單的開關
 // 3. 標示目前所在頁面的選單項目
-// 4. 讓有 data-href 的元素可以點擊（社群圖示、學校 logo）
+// 4. 讓有 data-href 的元素可以點擊（社群圖示）：外部網址開新分頁
 // 5. 深色 / 淺色主題切換（太陽 / 月亮按鈕）
 // 6. 個性簽名的「寫出來」動畫
 
@@ -85,7 +85,9 @@
   // ---- 4. data-href 連結 ----
   document.querySelectorAll("[data-href]").forEach((el) => {
     const go = () => {
-      window.location.href = el.getAttribute("data-href");
+      const url = el.getAttribute("data-href");
+      if (/^https?:/.test(url)) window.open(url, "_blank", "noopener"); // 外部網站開新分頁，不離開這個網站
+      else window.location.href = url; // mailto: 之類的照舊
     };
     el.setAttribute("role", "link");
     el.setAttribute("tabindex", "0");

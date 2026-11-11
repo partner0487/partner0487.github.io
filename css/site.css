@@ -57,6 +57,23 @@
   margin-bottom: 0;
 }
 
+/* Nicepage 也把列表和每個學校的右半邊設了最小高度，第一間學校下面會空一大片 */
+#sec-6049 .u-repeater-1,
+#sec-6049 .u-group {
+  min-height: 0;
+}
+
+/* 學校 logo + 名字是連結：平常不要底線，滑過去名字才出現底線 */
+#sec-6049 .school-info {
+  color: inherit;
+  text-decoration: none;
+}
+
+#sec-6049 .school-info:hover h5,
+#sec-6049 .school-info:focus-visible h5 {
+  text-decoration: underline;
+}
+
 /* 窄螢幕縮小間距，8 個圖示才排得進一行 */
 @media (max-width: 420px) {
   .footer-social {

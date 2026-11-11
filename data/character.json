@@ -10,8 +10,8 @@
   "title": "斜咖軟體人",
   "gender": "♂",
   "pets": [
-    { "name": "小樹", "sprite": "shu", "breed": "長毛吉娃娃", "gender": "♂", "personality": "愛睡覺", "ability": "使主人放鬆" },
-    { "name": "小奈", "sprite": "nai", "breed": "吉娃娃", "gender": "♀", "personality": "愛撒嬌" },
+    { "name": "小樹", "sprite": "shu", "breed": "長毛吉娃娃", "gender": "♂", "personality": "愛睡覺", "ability": "睡覺", "outfit": "綠色恐龍裝" },
+    { "name": "小奈", "sprite": "nai", "breed": "吉娃娃", "gender": "♀", "personality": "愛撒嬌", "ability": "吐舌頭", "outfit": "粉紅色的衣服" },
     null
   ],
   "startedCoding": "2019-11",

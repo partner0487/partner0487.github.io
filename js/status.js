@@ -341,8 +341,11 @@
     k: "#1a1618", // 眼睛
     e: "#ffffff", // 眼睛反光
     n: "#603628", // 鼻子
-    r: "#ff6996", // 小奈的蝴蝶結
-    R: "#c83c6e", // 蝴蝶結的結
+    g: "#4caf50", // 小樹的綠色恐龍裝
+    G: "#2e7d32", // 恐龍裝的陰影
+    y: "#bee65a", // 恐龍背上的刺
+    c: "#ffc4c8", // 小奈的粉紅色衣服
+    C: "#e896a5", // 粉紅衣服的陰影、鋪棉的點點
   };
   // 四隻短腿的走路循環（兩隻共用）
   const PET_LEGS = [
@@ -391,14 +394,27 @@
         "......ooooooo..........",
       ]],
       fx: "zzz",
+      // 綠色恐龍裝：身體換成綠色、頭上戴恐龍帽、帽子中間一排刺；睡覺時整個背都是綠的，背上一排刺
+      clothes: {
+        walk: [
+          { fill: [4, 16, 9, 14], main: "g", shade: "G" },
+          { fill: [9, 20, 0, 3], main: "g", shade: "g" },
+          { fill: [9, 20, 4, 4], main: "G", shade: "G" },
+          { px: [[13, 1], [14, 0], [15, 1], [14, 2]], ch: "y" },
+        ],
+        rest: [
+          { fill: [2, 12, 8, 16], main: "g", shade: "G" },
+          { spikes: [3, 11, 7], ch: "y" },
+        ],
+      },
     },
-    // 小奈：跟小樹差不多的配色，頭上綁粉紅蝴蝶結、舌頭吐出來；休息時翻肚子討摸、四腳朝天踢呀踢，冒愛心
+    // 小奈：跟小樹差不多的配色，舌頭吐出來；休息時翻肚子討摸、四腳朝天踢呀踢，冒愛心
     nai: {
       body: [
         "..........oo.....oo....",
-        ".........otpo.rr.otpo..",
-        ".........otppoRrotppo..",
-        "..oo.....otttwwrtttto..",
+        ".........otpo...otpo...",
+        ".........otppo.otppo...",
+        "..oo.....otttwwtttto...",
         ".owso...ottttwwtttto...",
         ".owwso..otttwwwkkwwto..",
         "..owso..ottttwkekwwwo..",
@@ -431,6 +447,17 @@
         "...oooooooooooootpo.oo.",
       ]),
       fx: "hearts",
+      // 粉紅色鋪棉外套：身體換成粉紅色，加幾個深一點的點點當鋪棉的紋路
+      clothes: {
+        walk: [
+          { fill: [4, 16, 9, 14], main: "c", shade: "C" },
+          { px: [[7, 11], [10, 10], [13, 12], [8, 13]], ch: "C" },
+        ],
+        rest: [
+          { fill: [1, 15, 10, 16], main: "c", shade: "C" },
+          { px: [[4, 12], [8, 11], [12, 13], [6, 14]], ch: "C" },
+        ],
+      },
     },
   };
 
@@ -448,6 +475,34 @@
       })
     );
     return c;
+  }
+
+  // 幫像素圖穿衣服：照 ops 一步一步改格子
+  //   fill: [x0, x1, y0, y1] 範圍裡不是外框的格子換成 main（原本是陰影的換成 shade）
+  //   px: [[x, y], ...] 這幾格直接換成 ch
+  //   spikes: [x0, x1, yMin] 每隔一欄，在最上面那格的再上面一格加一根刺
+  function dress(rows, ops) {
+    const g = rows.map((r) => [...r]);
+    ops.forEach((op) => {
+      if (op.fill) {
+        const [x0, x1, y0, y1] = op.fill;
+        for (let y = y0; y <= y1; y++)
+          for (let x = x0; x <= x1; x++) {
+            const ch = g[y]?.[x];
+            if (!ch || ch === "." || ch === "o") continue;
+            g[y][x] = ch === "s" || ch === "d" ? op.shade : op.main;
+          }
+      }
+      if (op.px) op.px.forEach(([x, y]) => (g[y][x] = op.ch));
+      if (op.spikes) {
+        const [x0, x1, yMin] = op.spikes;
+        for (let x = x0; x <= x1; x += 2) {
+          const top = g.findIndex((row) => row[x] !== ".");
+          if (top > 0 && top >= yMin && g[top - 1][x] === ".") g[top - 1][x] = op.ch;
+        }
+      }
+    });
+    return g.map((r) => r.join(""));
   }
 
   const petLine = (pet) =>
@@ -477,8 +532,38 @@
     yard.addEventListener("click", () => say(petLine(pet)));
     card.append(yard, info);
 
-    const walk = PET_LEGS.map((legs) => spriteCanvas([...sprite.body, ...legs]));
-    const rest = sprite.rest.map(spriteCanvas);
+    const walkRows = PET_LEGS.map((legs) => [...sprite.body, ...legs]);
+    const looks = {
+      plain: { walk: walkRows.map(spriteCanvas), rest: sprite.rest.map(spriteCanvas) },
+    };
+    let dressed = false;
+    if (sprite.clothes && pet.outfit) {
+      looks.dressed = {
+        walk: walkRows.map((r) => spriteCanvas(dress(r, sprite.clothes.walk))),
+        rest: sprite.rest.map((r) => spriteCanvas(dress(r, sprite.clothes.rest))),
+      };
+      // 院子左上角的衣服按鈕：按了穿上 / 脫掉
+      const btn = el("button", "rpg-pet-dress");
+      btn.type = "button";
+      btn.innerHTML =
+        '<svg viewBox="0 0 12 10" aria-hidden="true"><path d="M3 0h2v1h2V0h2v1h1v1h1v1h1v2h-2v5H2V5H0V3h1V2h1V1h1z"/></svg>';
+      const label = () => {
+        btn.setAttribute("aria-pressed", String(dressed));
+        btn.setAttribute("aria-label", dressed ? `幫${pet.name}脫掉${pet.outfit}` : `幫${pet.name}穿上${pet.outfit}`);
+        btn.title = btn.getAttribute("aria-label");
+      };
+      label();
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation(); // 不要觸發院子的介紹
+        dressed = !dressed;
+        label();
+        say(dressed ? `${pet.name}穿上了${pet.outfit}。` : `${pet.name}把${pet.outfit}脫掉了。`);
+        if (still) draw(performance.now()); // 不跑動畫時也要重畫一次
+      });
+      yard.append(btn);
+    }
+    const look = () => looks[dressed ? "dressed" : "plain"];
+    const walk = looks.plain.walk;
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let PX = 3; // 一格像素在畫面上幾 px：院子大的時候放大
     let spriteW = walk[0].width * PX;
@@ -553,7 +638,8 @@
         stepTime += dt;
         if (stepTime > 0.14) { stepTime = 0; step = (step + 1) % walk.length; }
       }
-      const img = still ? walk[0] : mode === "walk" ? walk[step] : rest[Math.floor(now / 350) % rest.length];
+      const { walk: walkNow, rest } = look();
+      const img = still ? walkNow[0] : mode === "walk" ? walkNow[step] : rest[Math.floor(now / 350) % rest.length];
       const y = ground - img.height * PX + 2;
       ctx.save();
       if (dir < 0) {

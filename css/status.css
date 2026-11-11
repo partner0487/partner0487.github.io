@@ -713,6 +713,47 @@
   background: linear-gradient(180deg, #16206a 0%, #24348f 55%, #3b56b8 100%);
 }
 
+/* 院子左上角的衣服按鈕：沒穿是空心、穿上是實心亮起來 */
+.rpg-pet-dress {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 30px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+  background: rgba(10, 17, 74, 0.7);
+  cursor: pointer;
+}
+
+.rpg-pet-dress svg {
+  width: 18px;
+  height: 15px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.rpg-pet-dress[aria-pressed="true"] {
+  border-color: #ffd84d;
+}
+
+.rpg-pet-dress[aria-pressed="true"] svg {
+  fill: #ffd84d;
+  stroke: #ffd84d;
+}
+
+.rpg-pet-dress:hover,
+.rpg-pet-dress:focus-visible {
+  outline: 2px solid #ffd84d;
+  outline-offset: 1px;
+}
+
 .rpg-pet-info {
   align-self: start;
   align-content: start;

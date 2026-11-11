@@ -256,8 +256,8 @@
         const li = el("li");
         const btn = el("button", "rpg-row");
         btn.type = "button";
-        btn.append(el("span", "rpg-name", s.name), segBar(10, "skill"), el("span", "rpg-num", String(s.value)));
-        btn.addEventListener("click", () => select(btn, () => say(`${s.name} ${s.value}${s.desc ? `：${s.desc}` : "。"}`)));
+        btn.append(el("span", "rpg-name", s.name), segBar(10, "skill"), el("span", "rpg-num", `Lv. ${s.value}`));
+        btn.addEventListener("click", () => select(btn, () => say(`${s.name} Lv. ${s.value}${s.desc ? `：${s.desc}` : "。"}`)));
         li.append(btn);
         lifeList.append(li);
         s._bar = btn.querySelector(".rpg-bar");

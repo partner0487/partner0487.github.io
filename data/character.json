@@ -43,7 +43,7 @@
     { "name": "SQL", "base": 12, "from": "資料庫系統，加上專案裡用到的資料庫", "github": "SQL", "langs": [] },
     { "name": "Java", "base": 10, "from": "JAVA 程式設計和它的期末專案", "github": "Java", "langs": ["java"] },
     { "name": "TypeScript", "base": 10, "from": "軟體工程的海大拍賣平台", "github": "TypeScript", "langs": ["react"] },
-    { "name": "C", "base": 6, "from": "大一程式設計", "github": "C", "langs": [] },
+    { "name": "C", "base": 15, "from": "大一程式設計，寫法跟 C++ 大同小異，只是平常比較少用", "github": "C", "langs": [] },
     { "name": "Verilog", "base": 6, "from": "數位系統設計，一個學期", "github": "Verilog", "langs": [] },
     { "name": "MIPS", "base": 6, "from": "微處理器原理與組合語言，一個學期", "github": "MIPS", "langs": [] },
     { "name": "PHP", "base": 6, "from": "崩鐵圖鑑的後端", "github": "PHP", "langs": [] },
@@ -51,7 +51,7 @@
     { "name": "Dart", "base": 2, "from": "用 Flutter 做任務系統", "github": "Dart", "langs": ["dart"] }
   ],
   "lifeSkills": [
-    { "name": "睡覺", "value": 96, "desc": "哪裡都能睡，旁邊在施工、在打仗都照睡，跟寵物小樹一樣。" },
+    { "name": "睡覺", "value": 96, "desc": "哪裡都能睡，旁邊在施工、在打仗都照睡，小樹就是跟我學的。" },
     { "name": "剪輯", "value": 68, "desc": "2022 年開始自學 CapCut，主要剪遊戲：TikTok 的特效精華、YouTube 的遊戲實況都剪過。" },
     { "name": "英文", "value": 65, "desc": "2024 年多益 650 分。" },
     { "name": "文書", "value": 63, "desc": "報告、簡報都做得出來，排版整齊。" },

@@ -524,19 +524,29 @@
   }
 
   // 看獎狀的彈出視窗（<dialog>：Esc、點任何地方都會關閉，關掉後焦點回到原本的按鈕）
+  // 每次都換一張新的 <img>，等圖片解碼好才打開視窗，不會先閃出上一張獎狀
   let proofDialog = null;
-  function showProof(src, caption) {
+  let proofToken = 0;
+  async function showProof(src, caption) {
     if (!proofDialog) {
       proofDialog = el("dialog", "rpg-window rpg-proof");
       proofDialog.append(el("img"), el("p", "rpg-proof-caption"), el("span", "rpg-proof-hint", "點一下關閉"));
       proofDialog.addEventListener("click", () => proofDialog.close());
       root.append(proofDialog);
     }
-    const img = proofDialog.querySelector("img");
+    const token = ++proofToken;
+    const img = new Image();
     img.src = src;
     img.alt = caption;
+    try {
+      await img.decode();
+    } catch {
+      // 解碼失敗也照樣打開，至少看得到說明文字
+    }
+    if (token !== proofToken) return; // 等待中又點了別張，以最後點的為準
+    proofDialog.querySelector("img").replaceWith(img);
     proofDialog.querySelector(".rpg-proof-caption").textContent = caption;
-    proofDialog.showModal();
+    if (!proofDialog.open) proofDialog.showModal();
   }
 
   // 選中某一列：加上 ▶ 游標

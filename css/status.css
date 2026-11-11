@@ -205,6 +205,11 @@
   font-weight: normal;
 }
 
+/* 分頁最上面的小標題不用留上方空白 */
+.rpg-page > .rpg-sub:first-child {
+  margin-top: 0;
+}
+
 /* ---- 分格的進度條 ---- */
 .rpg-bar {
   display: flex;

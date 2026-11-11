@@ -50,6 +50,12 @@
     { "name": "Kotlin", "base": 6, "from": "Android 行動裝置軟體設計，做了學分計算機", "github": "Kotlin", "langs": ["kotlin"] },
     { "name": "Dart", "base": 2, "from": "用 Flutter 做任務系統", "github": "Dart", "langs": ["dart"] }
   ],
+  "lifeSkills": [
+    { "name": "健身", "rank": "中" },
+    { "name": "籃球", "rank": "中" },
+    { "name": "剪輯", "rank": "中" },
+    { "name": "文書", "rank": "中" }
+  ],
   "achievements": [
     { "icon": "📐", "name": "考進數理資優班", "desc": "高二考進永春高中的數理資優班，開始接觸 C++，也是後來一路寫程式的起點。", "date": "2019" },
     { "icon": "💻", "name": "APCS 4／3", "desc": "APCS 觀念題 4 級、實作題 3 級，用 C++ 應考。這是高中開始寫程式的起點。", "date": "2020", "image": "images/achievements/apcs.webp", "imageLabel": "成績證明" },

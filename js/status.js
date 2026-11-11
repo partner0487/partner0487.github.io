@@ -246,10 +246,33 @@
       s._bar = btn.querySelector(".rpg-bar");
     });
     list.style.setProperty("--rows", Math.ceil(c.skills.length / 2));
-    page.append(list, el("p", "rpg-hint", "等級 = 實際有在寫的月數；GitHub 上有寫的月份會自動加上去。"));
-    // 進度條：跟最高等的技能比，看得出差距
+    page.append(el("h3", "rpg-sub", "職業技能"), list);
+
+    // 基礎技能：生活上的技能，沒辦法算月數，用「初／中／中上／高」表示
+    const life = c.lifeSkills || [];
+    const RANK = { 初: 0.3, 中: 0.5, 中上: 0.7, 高: 0.9 };
+    if (life.length) {
+      const lifeList = el("ul", "rpg-list rpg-skills");
+      life.forEach((s) => {
+        const li = el("li");
+        const btn = el("button", "rpg-row");
+        btn.type = "button";
+        btn.append(el("span", "rpg-name", s.name), segBar(10, "skill"), el("span", "rpg-num", s.rank));
+        btn.addEventListener("click", () => select(btn, () => say(`${s.name}（${s.rank}）${s.desc ? `：${s.desc}` : "。"}`)));
+        li.append(btn);
+        lifeList.append(li);
+        s._bar = btn.querySelector(".rpg-bar");
+      });
+      lifeList.style.setProperty("--rows", Math.ceil(life.length / 2));
+      page.append(el("h3", "rpg-sub", "基礎技能"), lifeList);
+    }
+
+    // 進度條：職業技能跟最高等的比，看得出差距；基礎技能照等第
     const top = Math.max(1, ...c.skills.map((s) => s.level));
-    page._reveal = () => c.skills.forEach((s, i) => fillBar(s._bar, s.level ? Math.max(0.1, s.level / top) : 0, i * 60)); // 有等級就至少亮一格
+    page._reveal = () => {
+      c.skills.forEach((s, i) => fillBar(s._bar, s.level ? Math.max(0.1, s.level / top) : 0, i * 60)); // 有等級就至少亮一格
+      life.forEach((s, i) => fillBar(s._bar, RANK[s.rank] ?? 0.5, (c.skills.length + i) * 60));
+    };
     page._intro = () => say("選一個技能，看看它的等級和用它做過的作品。");
     return page;
   }

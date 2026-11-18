@@ -231,3 +231,82 @@
     font-size: 0.9rem;
   }
 }
+
+/* ---- 開箱時區塊最底下長出來的草地、左右兩邊的樹和花草（js/chest.js 產生） ---- */
+.chest-ground,
+.chest-decos {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* 點擊要穿過去給寶箱和掉落物 */
+  z-index: 5;
+}
+
+.chest-ground {
+  overflow: hidden; /* 方塊往下藏起來時不會露出區塊外面 */
+}
+
+.chest-ground-col {
+  position: absolute;
+  bottom: 0;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  transform: translateY(105%);
+  transition: transform 0.25s ease-in;
+}
+
+#chest-section.grown .chest-ground-col {
+  transform: none;
+  /* 從中間往兩邊一欄一欄冒上來，冒過頭再彈回去 */
+  transition: transform 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) var(--d);
+}
+
+.chest-deco {
+  position: absolute;
+  transform-origin: 50% 100%;
+  transform: scale(0);
+  transition: transform 0.15s ease-in;
+}
+
+#chest-section.grown .chest-deco {
+  transform: none;
+  transition: transform 0.4s cubic-bezier(0.3, 1.8, 0.5, 1) var(--d);
+}
+
+.chest-deco img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  transform-origin: 50% 100%;
+  animation: chest-sway 2.6s ease-in-out var(--sway) infinite alternate; /* 隨風搖 */
+}
+
+.chest-deco img.tree {
+  animation-duration: 4s;
+  animation-name: chest-sway-small;
+}
+
+@keyframes chest-sway {
+  from { transform: rotate(-4deg); }
+  to { transform: rotate(4deg); }
+}
+
+@keyframes chest-sway-small {
+  from { transform: rotate(-1.5deg); }
+  to { transform: rotate(1.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chest-ground-col,
+  .chest-deco,
+  #chest-section.grown .chest-ground-col,
+  #chest-section.grown .chest-deco {
+    transition: none;
+  }
+
+  .chest-deco img {
+    animation: none;
+  }
+}

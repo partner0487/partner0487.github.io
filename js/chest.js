@@ -1,7 +1,8 @@
 // 首頁的 Minecraft 寶箱（three.js r170，ES module）
 // three 和 GLTFLoader 的實際網址寫在 index.html 的 importmap 裡
 //
-// 玩法：滑鼠移上去寶箱會打開；點一下，作品會像掉落物一樣噴出來散在寶箱周圍。
+// 玩法：滑鼠移上去寶箱會打開；點一下，作品會像掉落物一樣噴出來散在寶箱周圍，
+// 寶箱底下同時長出一座浮空草地小島，左右冒出花草（見「開箱時長出來的浮空小島」）。
 // 點某個作品，寶箱和掉落物滑到左邊、右邊滑出那個作品的卡片（手機是從下面滑上來）；
 // 點空白處 / 按 Esc / 按 × 收起卡片；再點寶箱本身，作品會飛回去、蓋子關上。
 // 網址 #projects 會自動開箱，#projects/<repo> 會再打開那個作品的卡片。
@@ -309,9 +310,15 @@ function layoutItems(fromChest) {
   // 1. 決定鏡頭要退多遠：讓寶箱縮到可用範圍高度的 3 成左右，窄的時候還要看寬度
   const box = chestBox();
   const size = box.getSize(new THREE.Vector3());
+  const all = island.box ? box.clone().union(island.box) : box; // 寶箱 + 小島
+  const allSize = all.getSize(new THREE.Vector3());
   const viewH = (z) => 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * z;
-  const zForHeight = (size.y * H) / (0.3 * regionH * viewH(1));
-  const zForWidth = (size.x * W) / (0.42 * regionW * viewH(1) * camera.aspect);
+  // 鏡頭在 y = 0（大約是寶箱中間，比草地高，才看得到草地表面）：上下兩邊比較遠的那邊要放得進畫面
+  const halfH = Math.max(all.max.y, -all.min.y);
+  const zForHeight = (Math.max(size.y / 0.3, (2 * halfH) / 0.85) * H) / (regionH * viewH(1));
+  // 直式手機小島只佔 6 成寬，兩邊才留得下一排掉落物
+  const islandFrac = camera.aspect < 1 ? 0.6 : 0.8;
+  const zForWidth = (Math.max(size.x / 0.42, allSize.x / islandFrac) * W) / (regionW * viewH(1) * camera.aspect);
   cameraTargetZ = Math.max(CAMERA_Z, zForHeight, zForWidth);
   cameraTargetY = 0; // 開箱後的構圖用 viewOffset 置中，鏡頭回到原本的高度
 
@@ -337,6 +344,19 @@ function layoutItems(fromChest) {
     top: Math.min(...corners.map((c) => c.y)),
     bottom: Math.max(...corners.map((c) => c.y)),
   };
+  let islandScreen = null;
+  if (island.box) {
+    const pts = [];
+    for (const x of [island.box.min.x, island.box.max.x])
+      for (const y of [island.box.min.y, island.box.max.y])
+        for (const z of [island.box.min.z, island.box.max.z]) pts.push(toScreen(new THREE.Vector3(x, y, z)));
+    islandScreen = {
+      left: Math.min(...pts.map((c) => c.x)),
+      right: Math.max(...pts.map((c) => c.x)),
+      top: Math.min(...pts.map((c) => c.y)),
+      bottom: Math.max(...pts.map((c) => c.y)),
+    };
+  }
   // 手機打開卡片時標題會淡出，不用避開
   const label = container.querySelector(".floating-label").getBoundingClientRect();
   const sectionTop = container.getBoundingClientRect().top;
@@ -364,8 +384,9 @@ function layoutItems(fromChest) {
         for (let k = -nx; k <= nx; k++) {
           const x = center.x + k * step;
           if (x - itemPx / 2 < region.x0 + 8 || x + itemPx / 2 > region.x1 - 8) continue;
-          const inside = x + itemPx / 2 > chestScreen.left - pad && x - itemPx / 2 < chestScreen.right + pad &&
-            y + itemPx / 2 > chestScreen.top - pad && y - itemPx / 2 < chestScreen.bottom + pad;
+          const hits = (r) => r && x + itemPx / 2 > r.left - pad && x - itemPx / 2 < r.right + pad &&
+            y + itemPx / 2 > r.top - pad && y - itemPx / 2 < r.bottom + pad;
+          const inside = hits(chestScreen) || hits(islandScreen);
           // 距離相同時讓左右交替，兩邊才會一樣多
           if (!inside) spots.push({ x, y, d: Math.hypot((x - center.x) * 0.8, y - center.y) + (k > 0 ? 0.01 : 0) });
         }
@@ -429,16 +450,239 @@ function chestBox() {
   return box;
 }
 
+// ---- 開箱時長出來的浮空小島 ----
+// 寶箱底下從下面長出草地方塊，左右兩側再冒出花、草、蘑菇。
+// 方塊和植物的 16×16 像素圖都是用程式畫的（沒有用 Minecraft 的材質檔）
+const island = { stage: null, blocks: [], plants: [], state: "hidden", t0: 0, box: null };
+const STAGE_YAW = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+
+// 固定種子的亂數：每次畫出來的方塊花紋都一樣
+function seeded(seed) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function pixelTexture(draw) {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 16;
+  draw(canvas.getContext("2d"));
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.magFilter = THREE.NearestFilter; // 放大時保持一格一格的像素感
+  texture.minFilter = THREE.NearestFilter;
+  texture.generateMipmaps = false;
+  return texture;
+}
+
+const GRASS = ["#5d9e3a", "#67ab41", "#53913a", "#71b84a"];
+const DIRT = ["#8b5a34", "#7a4e2d", "#966540", "#6e4528"];
+
+function speckle(ctx, colors, rand, rows = 16) {
+  for (let y = 0; y < rows; y++)
+    for (let x = 0; x < 16; x++) {
+      ctx.fillStyle = colors[Math.floor(rand() * colors.length)];
+      ctx.fillRect(x, y, 1, 1);
+    }
+}
+
+// 用字串畫植物：一個字一格，"." 是透明
+const PLANTS = {
+  redFlower: {
+    pal: { r: "#e0352d", R: "#a8211c", c: "#3a2a1a", g: "#4c9c34", G: "#2f6e22" },
+    rows: [
+      "................", "................", "................", "................",
+      "......rr........", ".....rRRr.......", "....rRccRr......", "....rRccRr......",
+      ".....rRRr.......", "......rr........", ".......g........", "....gg.g........",
+      ".....gGg..g.....", ".......g.gG.....", ".......gGg......", ".......g........",
+    ],
+  },
+  yellowFlower: {
+    pal: { y: "#f6d23a", Y: "#d9a520", o: "#e9821c", g: "#4c9c34", G: "#2f6e22" },
+    rows: [
+      "................", "................", "................", "................",
+      "................", ".......y........", "......yYy.......", ".....yYoYy......",
+      "......yYy.......", ".......y........", ".......g........", ".......g..g.....",
+      "....gg.g.gG.....", ".....gGg.g......", ".......gGg......", ".......g........",
+    ],
+  },
+  blueFlower: {
+    pal: { b: "#5aa7f0", B: "#2f6fc4", w: "#ffffff", g: "#4c9c34", G: "#2f6e22" },
+    rows: [
+      "................", "................", "................", "................",
+      "................", "................", ".........b......", "...b....bBb.....",
+      "..bBb....b......", "...b.....g......", "...g.....g......", "...g....g.......",
+      "....g...g.......", "....gG.gG.......", ".....gGg........", "......g.........",
+    ],
+  },
+  tuft: {
+    pal: { g: "#6fb24a", G: "#4c8f33" },
+    rows: [
+      "................", "................", "................", "................",
+      ".........g......", "..g......g......", "..g...g..G...g..", "..G...g.gG...g..",
+      "...G..G.gG..gG..", "...GgGG.G...G...", "....gGg.G..gG...", "....GGgGG.gG....",
+      ".....GGgGGgG....", "......GgGGG.....", "......GGGGG.....", ".......GGG......",
+    ],
+  },
+  mushroom: {
+    pal: { r: "#d8312b", R: "#a51f1c", w: "#ffffff", s: "#efe3c8", S: "#cdbb98" },
+    rows: [
+      "................", "................", "................", "................",
+      "................", "................", "................", "......rrrr......",
+      "....rrwrrrrr....", "...rrrrrrrwrr...", "...rwrRRrrrrr...", "...RRRRRRRRRR...",
+      "......sssS......", "......sssS......", "......sssS......", "......sssS......",
+    ],
+  },
+};
+
+function plantTexture({ pal, rows }) {
+  return pixelTexture((ctx) =>
+    rows.forEach((row, y) =>
+      [...row].forEach((ch, x) => {
+        if (ch === ".") return;
+        ctx.fillStyle = pal[ch];
+        ctx.fillRect(x, y, 1, 1);
+      })
+    )
+  );
+}
+
+function buildIsland() {
+  const box = chestBox();
+  const bs = ((box.max.x - box.min.x) * 16) / 14; // 寶箱寬度是一格的 14/16（深度會被打開的蓋子撐大，不能用）
+  const base = model.position;
+  const cx = (box.min.x + box.max.x) / 2 - base.x;
+  const cz = (box.min.z + box.max.z) / 2 - base.z;
+  const top = box.min.y - base.y; // 寶箱底部 = 草地表面
+
+  const rand = seeded(487);
+  const topTex = pixelTexture((ctx) => speckle(ctx, GRASS, rand));
+  const dirtTex = pixelTexture((ctx) => speckle(ctx, DIRT, rand));
+  const sideTex = pixelTexture((ctx) => {
+    speckle(ctx, DIRT, rand);
+    for (let x = 0; x < 16; x++) {
+      const h = 3 + (rand() < 0.45 ? 1 : 0) + (rand() < 0.2 ? 1 : 0); // 草往下垂的長度不一樣
+      for (let y = 0; y < h; y++) {
+        ctx.fillStyle = GRASS[Math.floor(rand() * GRASS.length)];
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  });
+  const mat = (map) => new THREE.MeshLambertMaterial({ map });
+  const side = mat(sideTex), dirt = mat(dirtTex);
+  const grassMats = [side, side, mat(topTex), dirt, side, side];
+  const geo = new THREE.BoxGeometry(bs, bs, bs);
+
+  const stage = new THREE.Group();
+  stage.position.copy(base);
+  scene.add(stage);
+
+  // 上面一層 3×3 草地，底下掛兩格泥土（故意不對稱），看起來像浮空島
+  const layout = [];
+  for (let i = -1; i <= 1; i++) for (let k = -1; k <= 1; k++) layout.push([i, 0, k, true]);
+  layout.push([-1, -1, 0, false], [0, -1, 0, false]);
+  island.blocks = layout.map(([i, j, k, grass]) => {
+    const mesh = new THREE.Mesh(geo, grass ? grassMats : dirt);
+    const to = new THREE.Vector3(cx + i * bs, top - bs / 2 + j * bs, cz + k * bs);
+    mesh.visible = false;
+    stage.add(mesh);
+    // 從最下面那格開始往上長，最上層再從中間往外擴散
+    const delay = (1 + j) * 0.1 + (j === 0 ? (Math.abs(i) + Math.abs(k)) * 0.06 : 0);
+    return { mesh, to, delay };
+  });
+
+  // 植物：左右兩側的草地上，寶箱正前方和後面不放（會擋到寶箱）
+  const spots = [
+    [-1, 1, "redFlower"], [-1, 0, "tuft"], [-1, -1, "mushroom"],
+    [1, 1, "yellowFlower"], [1, 0, "blueFlower"], [1, -1, "tuft"],
+  ];
+  island.plants = spots.map(([i, k, kind], n) => {
+    const material = new THREE.MeshBasicMaterial({ map: plantTexture(PLANTS[kind]), alphaTest: 0.5, side: THREE.DoubleSide });
+    const plane = new THREE.PlaneGeometry(1, 1).translate(0, 0.5, 0); // 底部當支點，長出來和搖擺都從根部開始
+    const group = new THREE.Group();
+    const a = new THREE.Mesh(plane, material);
+    const b = new THREE.Mesh(plane, material);
+    a.rotation.y = Math.PI / 4; // 兩片交叉，從哪個角度看都有東西
+    b.rotation.y = -Math.PI / 4;
+    group.add(a, b);
+    const jitter = () => (rand() - 0.5) * bs * 0.3;
+    group.position.set(cx + i * bs + jitter(), top, cz + k * bs + jitter());
+    group.visible = false;
+    stage.add(group);
+    return { group, size: bs * (0.75 + rand() * 0.25), delay: 0.5 + n * 0.07, phase: rand() * Math.PI * 2 };
+  });
+
+  // 排版要避開的範圍（寶箱沒轉的時候）：方塊 + 植物的高度
+  island.box = new THREE.Box3(
+    new THREE.Vector3(base.x + cx - 1.5 * bs, base.y + top - 2 * bs, base.z + cz - 1.5 * bs),
+    new THREE.Vector3(base.x + cx + 1.5 * bs, base.y + top + bs, base.z + cz + 1.5 * bs)
+  );
+  island.stage = stage;
+}
+
+function showIsland(show) {
+  if (!model) return;
+  if (show && !island.stage) buildIsland();
+  if (!island.stage) return;
+  island.state = show ? "growing" : "shrinking";
+  island.t0 = now();
+}
+
+const easeOutBack = (t) => 1 + 2.2 * Math.pow(t - 1, 3) + 1.2 * Math.pow(t - 1, 2);
+
+function updateIsland() {
+  if (!island.stage || island.state === "hidden") return;
+  // 小島跟著寶箱一起轉（寶箱本身多轉了 -90 度，要扣回來）
+  island.stage.quaternion.copy(model.quaternion).multiply(STAGE_YAW);
+  const t = now() - island.t0;
+  const growing = island.state === "growing";
+  const bs = island.blocks[0].mesh.geometry.parameters.width;
+  let done = true;
+
+  island.blocks.forEach(({ mesh, to, delay }) => {
+    // 收起來的時候倒過來、而且要快：鏡頭會同時拉近，慢了方塊會在畫面上被放得很大
+    const k = growing
+      ? Math.min(1, Math.max(0, (t - delay) / 0.5))
+      : Math.min(1, Math.max(0, (t - (0.3 - delay) * 0.3) / 0.22));
+    if (k < 1) done = false;
+    const p = growing ? easeOutBack(k) : (1 - k) * (1 - k);
+    mesh.visible = p > 0.01;
+    mesh.position.copy(to);
+    mesh.position.y -= (1 - Math.min(p, 1)) * bs * 2.5;
+    mesh.scale.setScalar(Math.max(0.01, Math.min(p, 1.08)));
+  });
+
+  island.plants.forEach(({ group, size, delay, phase }) => {
+    const k = growing ? Math.min(1, Math.max(0, (t - delay) / 0.35)) : Math.min(1, t / 0.12);
+    if (k < 1) done = false;
+    const p = growing ? easeOutBack(k) : 1 - k;
+    group.visible = p > 0.01;
+    group.scale.setScalar(Math.max(0.01, p) * size);
+    group.rotation.z = Math.sin(now() * 1.8 + phase) * 0.08; // 風吹的搖擺
+  });
+
+  if (done && !growing) {
+    island.state = "hidden";
+    island.blocks.forEach((b) => (b.mesh.visible = false));
+    island.plants.forEach((p) => (p.group.visible = false));
+  }
+}
+
 function dropItems() {
   if (!projects.length || !model) return;
   dropped = true;
   hint.textContent = HINT_OPEN;
+  showIsland(true);
   if (!items.length) {
     items = projects.map((project) => {
       const mesh = new THREE.Mesh(
         new THREE.PlaneGeometry(1, 1),
-        new THREE.MeshBasicMaterial({ map: makeTexture(project), transparent: true, side: THREE.DoubleSide })
+        // depthTest 關掉：寶箱跟著滑鼠轉時，小島的方塊不會擋住作品
+        new THREE.MeshBasicMaterial({ map: makeTexture(project), transparent: true, side: THREE.DoubleSide, depthTest: false })
       );
+      mesh.renderOrder = 10;
       mesh.visible = false;
       scene.add(mesh);
       return { mesh, project, phase: Math.random() * Math.PI * 2 };
@@ -451,8 +695,12 @@ function recallItems() {
   deselect(false);
   dropped = false;
   hint.textContent = HINT_CLOSED;
+  showIsland(false);
   setHovered(null);
-  frameIdle();
+  // 等作品飛回寶箱再把鏡頭拉近：一邊飛一邊拉近，作品會在畫面上被放得很大
+  setTimeout(() => {
+    if (!dropped) frameIdle();
+  }, 500);
   const box = chestBox();
   const mouth = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, (box.min.z + box.max.z) / 2);
   items.forEach((item, i) => {
@@ -659,6 +907,7 @@ function animate() {
   viewOffset.y += (viewOffsetTarget.y - viewOffset.y) * 0.1;
   applyViewOffset();
 
+  updateIsland();
   updateItems();
   updateLabel();
   renderer.render(scene, camera);

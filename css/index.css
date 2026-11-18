@@ -126,9 +126,68 @@
   margin-bottom: 60px;
   position: relative;}
 .u-section-2 .u-image-1 {min-height: 400px;
-  background-image: url(../images/profile/intro.jpg);
   --radius: 10px;
-  background-position: 50% 50%;}
+  perspective: 1400px;}
+
+/* 自我介紹的翻面卡：兩張圖疊在一起，背面先轉 180 度藏起來，整張卡轉的時候就會換面 */
+.intro-card {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.intro-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: 50% 50% / cover no-repeat;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.intro-front {
+  background-image: url(../images/profile/intro-bunny.jpg);
+}
+
+.intro-back {
+  background-image: url(../images/profile/intro.jpg);
+  transform: rotateY(180deg);
+}
+
+/* 右下角的小提示：看得出來可以點 */
+.intro-hint {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #222;
+  font-size: 1.3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s;
+  pointer-events: none;
+}
+
+.intro-card:hover .intro-hint,
+.intro-card:focus-visible .intro-hint {
+  transform: rotate(180deg);
+}
+
+.intro-card:focus-visible {
+  outline: 3px solid #478ac9;
+  outline-offset: 4px;
+  border-radius: 12px;
+}
 .u-section-2 .u-container-layout-1 {padding: 0 30px;}
 .u-section-2 .u-layout-cell-2 {min-height: 400px;}
 .u-section-2 .u-container-layout-2 {padding: 30px;}

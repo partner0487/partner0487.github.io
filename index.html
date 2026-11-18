@@ -32,6 +32,7 @@
 
   <script src="js/site.js" defer></script>
   <script src="js/blob.js" defer></script>
+  <script src="js/flip.js" defer></script>
 
   <!-- three.js（ES module）：importmap 讓 chest.js 可以直接寫 import "three"，版本固定在 r170 -->
   <script type="importmap">
@@ -198,7 +199,13 @@
           <div class="u-layout-row">
             <div class="u-container-style u-image u-image-round u-layout-cell u-radius u-size-24 u-image-1"
               data-image-width="2696" data-image-height="2696">
-              <div class="u-container-layout u-container-layout-1"></div>
+              <div class="u-container-layout u-container-layout-1">
+                <!-- 翻面卡：正面是兔兔，點一下彈起來翻到背面（本人照片），再點翻回來（js/flip.js） -->
+                <button class="intro-card" type="button" aria-pressed="false" aria-label="翻面看本人照片">
+                  <span class="intro-face intro-front"><span class="intro-hint" aria-hidden="true">↻</span></span>
+                  <span class="intro-face intro-back"><span class="intro-hint" aria-hidden="true">↻</span></span>
+                </button>
+              </div>
             </div>
             <div class="u-container-align-center u-container-style u-layout-cell u-size-36 u-layout-cell-2">
               <div class="u-container-layout u-valign-middle u-container-layout-2">

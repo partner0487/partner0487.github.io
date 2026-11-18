@@ -15,6 +15,7 @@
 **自我介紹**
 - **彈跳 blob 背景**：幾個模糊的彩色圓用 `requestAnimationFrame` 在畫面裡亂跑，碰到邊界就反彈。（[js/blob.js](js/blob.js)）
 - 社群圖示列：GitHub、FB、IG、Discord、Threads、TikTok、Twitch
+- **翻面卡**：「斜咖軟體人」旁邊的照片，正面是兔兔，點一下會彈起來在空中翻半圈，落地換成本人照片，再點翻回來（Web Animations API + CSS 3D `backface-visibility`）（[js/flip.js](js/flip.js)）
 
 **My Project（開箱掉寶）**
 - **3D 模型嵌入**：用 three.js 載入 Minecraft 寶箱的 GLB 模型（[js/chest.js](js/chest.js)）。three.js 是 r170，用 `importmap` 以 ES module 從 CDN 載入

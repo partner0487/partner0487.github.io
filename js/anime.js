@@ -19,7 +19,7 @@
 
   const GROUP_LABEL = (g) => (/^\d{4}$/.test(g) ? `${g}` : g);
   const GROUP_NOTE = (g) => (/^\d{4}$/.test(g) ? `${g} 年看的` : g);
-  const TAG_TEXT = { 完成: "✅ 看完", 推薦: "⭐ 推薦", 電影: "🎬 電影", 解說: "⏩ 看解說", 韓國: "🇰🇷 韓國" };
+  const TAG_TEXT = { 完成: "✅ 看完", 推薦: "⭐ 推薦", 電影: "🎬 電影", 解說: "⏩ 看解說", 陸劇: "🇨🇳 陸劇", 日劇: "🇯🇵 日劇", 韓劇: "🇰🇷 韓劇" };
 
   let groups = new Map(); // 分類 → 作品陣列（照清單順序）
   let current = null; // 目前的分類
@@ -176,6 +176,7 @@
     const chips = [GROUP_NOTE(a.group)];
     if (a.progress !== undefined) chips.push(a.progress ? `看到第 ${a.progress} 集` : "還沒開始看"); // 清單上寫 0️⃣ 的是還沒開始
     a.tags.forEach((t) => chips.push(TAG_TEXT[t] || t));
+    if (a.times) chips.push(`🔁 看了 ${a.times} 次`);
     infoMeta.replaceChildren(
       ...chips.map((t) => {
         const s = document.createElement("span");

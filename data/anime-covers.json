@@ -50,7 +50,12 @@
   "file": "images/anime/bgm-266794.webp"
  },
  "滿腦都是OO的我沒辦法談戀愛": {
-  "none": true
+  "bgm": 268412,
+  "source": "bgm",
+  "id": 268412,
+  "name": "淫乱的青酱不能学习",
+  "score": 1.0,
+  "file": "images/anime/bgm-268412.webp"
  },
  "家有女友": {
   "source": "bgm",
@@ -817,7 +822,12 @@
   "file": "images/anime/bgm-389571.webp"
  },
  "黑化律師": {
-  "none": true
+  "bgm": 394885,
+  "source": "bgm",
+  "id": 394885,
+  "name": "黑话律师",
+  "score": 1.0,
+  "file": "images/anime/bgm-394885.webp"
  },
  "飆速宅男": {
   "source": "bgm",
@@ -947,13 +957,6 @@
   "score": 0.683,
   "file": "images/anime/bgm-470660.webp"
  },
- "肌肉魔法使 2肌肉魔法使-MASHLE- 神覺者候補選拔試驗篇(第二季)": {
-  "source": "bgm",
-  "id": 443493,
-  "name": "物理魔法使马修 神觉者候补选拔试验篇",
-  "score": 0.553,
-  "file": "images/anime/bgm-443493.webp"
- },
  "嘆氣的亡靈想隱退": {
   "source": "bgm",
   "id": 481410,
@@ -990,7 +993,12 @@
   "file": "images/anime/bgm-1445.webp"
  },
  "鐵拳教育": {
-  "none": true
+  "bgm": 565285,
+  "source": "bgm",
+  "id": 565285,
+  "name": "铁拳教育",
+  "score": 1.0,
+  "file": "images/anime/bgm-565285.webp"
  },
  "無職轉生~到了異世界就拿出真本事~第2季": {
   "source": "bgm",
@@ -1517,5 +1525,28 @@
   "name": "剧场版 七大罪 被光诅咒的众人",
   "score": 1.0,
   "file": "images/anime/bgm-325728.webp"
+ },
+ "端腦": {
+  "bgm": 112978,
+  "source": "bgm",
+  "id": 112978,
+  "name": "端脑",
+  "score": 1.0,
+  "file": "images/anime/bgm-112978.webp"
+ },
+ "3年A班": {
+  "bgm": 266647,
+  "source": "bgm",
+  "id": 266647,
+  "name": "3年A班 -现在开始，全员人质-",
+  "score": 1.0,
+  "file": "images/anime/bgm-266647.webp"
+ },
+ "肌肉魔法使-MASHLE- 神覺者候補選拔試驗篇(第二季)": {
+  "source": "bgm",
+  "id": 443493,
+  "name": "物理魔法使马修 神觉者候补选拔试验篇",
+  "score": 0.553,
+  "file": "images/anime/bgm-443493.webp"
  }
 }

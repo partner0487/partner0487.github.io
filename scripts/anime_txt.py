@@ -5,7 +5,8 @@
 txt 的格式（我平常用記事本記的樣子）：
   - 「2019年」「進行中」「未看」「未看續作」這種一行是分組
   - 每一行一部，後面接表情符號當標記：
-      ✅ 完成  🥰 推薦  🎬 電影  ⏩️ 看解說  🇰🇷 韓國作品
+      ✅ 完成  🥰 推薦  🎬 電影  ⏩️ 看解說  🇨🇳 🇯🇵 🇰🇷 真人影劇（陸劇、日劇、韓劇）
+  - 同一個符號重複幾次 = 看了幾遍（罪惡王冠✅✅✅ 是看了三次、天氣之子🎬🎬 是看了兩次）
   - 「進行中」後面的數字表情（4️⃣0️⃣）是看到第幾集，🔟2️⃣ 當成 12
   - 第一個分組前面的說明行會略過
 """
@@ -18,13 +19,14 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "anime.json"
 
 GROUPS = {"進行中", "未看", "未看續作"}
-TAGS = [("✅", "完成"), ("🥰", "推薦"), ("🎬", "電影"), ("⏩", "解說"), ("🇰🇷", "韓國")]
+TAGS = [("✅", "完成"), ("🥰", "推薦"), ("🎬", "電影"), ("⏩", "解說"), ("🇨🇳", "陸劇"), ("🇯🇵", "日劇"), ("🇰🇷", "韓劇")]
 VS = "️"  # 表情符號後面常跟著的「變體選擇符」，有的有、有的沒有
 KEYCAP = "⃣"
 
 
 def parse_line(line):
     text = line.replace(VS, "")
+    times = max(text.count("✅"), text.count("🎬"))  # 重複的勾 = 看了幾遍
     tags = []
     for emoji, name in TAGS:
         if emoji in text:
@@ -50,6 +52,8 @@ def parse_line(line):
     item = {"title": title, "tags": sorted(set(tags), key=[n for _, n in TAGS].index)}
     if progress is not None:
         item["progress"] = progress
+    if times > 1:
+        item["times"] = times
     return item
 
 

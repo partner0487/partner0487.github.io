@@ -1295,9 +1295,6 @@
   "score": 0.0,
   "file": "images/anime/anilist-159808.webp"
  },
- "戀愛光譜": {
-  "none": true
- },
  "鴨乃橋論的禁忌推理": {
   "source": "bgm",
   "id": 411426,
@@ -1527,12 +1524,7 @@
   "file": "images/anime/bgm-325728.webp"
  },
  "端腦": {
-  "bgm": 112978,
-  "source": "bgm",
-  "id": 112978,
-  "name": "端脑",
-  "score": 1.0,
-  "file": "images/anime/bgm-112978.webp"
+  "none": true
  },
  "3年A班": {
   "bgm": 266647,
@@ -1548,5 +1540,13 @@
   "name": "物理魔法使马修 神觉者候补选拔试验篇",
   "score": 0.553,
   "file": "images/anime/bgm-443493.webp"
+ },
+ "位於戀愛光譜極端的我們": {
+  "bgm": 400595,
+  "source": "bgm",
+  "id": 400595,
+  "name": "经验丰富的你和经验为零的我交往的故事",
+  "score": 1.0,
+  "file": "images/anime/bgm-400595.webp"
  }
 }

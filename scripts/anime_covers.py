@@ -39,6 +39,19 @@ def norm(s):
     return re.sub(r"[\W_]+", "", s)  # 拿掉空白和標點，只比字
 
 
+SEASON_WORDS = {"二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "Ⅱ": 2, "Ⅲ": 3, "Ⅳ": 4, "Ⅴ": 5}
+
+
+def season(s):
+    """片名裡的第幾季（沒寫就是 1）：第二季、第2季、Season 2、s2、Ⅱ、片名結尾的數字"""
+    s = t2s(s or "")
+    m = re.search(r"第\s*([二三四五六\d])\s*[季期部]|season\s*(\d)|(?<![a-z])s(\d)(?!\d)|([ⅡⅢⅣⅤ])|\s(\d)$", s, re.I)
+    if not m:
+        return 1
+    v = next(g for g in m.groups() if g)
+    return SEASON_WORDS.get(v) or int(v)
+
+
 def score(query, cand, movie):
     q = norm(query)
     best = 0
@@ -50,6 +63,9 @@ def score(query, cand, movie):
         if q in n or n in q:
             r += 0.2
         best = max(best, r)
+    # 第幾季對不上（例如要第二季卻對到第一季、同名的別部）要扣分
+    if season(query) != season(cand.get("name_cn") or cand.get("name")):
+        best -= 0.4
     platform = cand.get("platform") or ""
     if movie and platform in ("剧场版", "电影"):
         best += 0.15

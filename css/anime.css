@@ -122,7 +122,7 @@
 
 /* 舞台：透視點在中間偏上，看起來像微微往下看著一圈卡片 */
 .anime-stage {
-  --cw: 160px;
+  --cw: 210px;
   position: relative;
   height: calc(var(--cw) * 1.42 * 1.25 + 70px);
   margin-top: 10px;

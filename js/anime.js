@@ -101,7 +101,7 @@
   }
 
   function cardWidth() {
-    return stage.clientWidth < 600 ? 112 : 160;
+    return stage.clientWidth < 600 ? 140 : 210; // 卡片寬度（手機 / 桌機）
   }
 
   function buildRing(list) {

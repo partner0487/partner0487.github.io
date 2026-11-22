@@ -263,6 +263,7 @@ let pendingLaunch = null;
 let camTween = null; // { from, t0, dur }：鏡頭從 from 補間到目前的目標（cameraTargetZ / Y、viewOffsetTarget）
 let lastTick = 0;
 const LID_SPEED = 1.2; // 開箱動畫的播放速度（動畫秒數 / 真實秒數）
+const LID_READY = 0.5; // 蓋子離全開還差多少（佔「關著 → 全開」的比例）以內，作品就可以起飛
 const now = () => performance.now() / 1000; // 秒；不用 THREE.Clock，因為停止渲染再開始時它會歸零
 
 // 選了作品時，畫面要往左（手機往上）讓出位置給卡片：用 camera.setViewOffset 平移整個畫面
@@ -630,7 +631,8 @@ function lidWait() {
   const a = actions[0];
   const peak = a.getClip().duration / 2;
   const t = openness < 0.5 ? 0 : a.time; // 蓋子關著：會從頭開始開
-  return t <= peak ? (peak - t) / LID_SPEED : (t - peak) / (LID_SPEED * 1.5); // 往下關的時候是倒著播回來（1.5 倍速）
+  const gap = Math.max(0, Math.abs(t - peak) - peak * LID_READY); // 開過一半就可以起飛，不用等全開
+  return t <= peak ? gap / LID_SPEED : gap / (LID_SPEED * 1.5); // 往下關的時候是倒著播回來（1.5 倍速）
 }
 
 // 鏡頭從現在的位置，用 dur 秒補間到目標
@@ -924,7 +926,7 @@ function animate() {
     const tick = now();
     mixer.update(Math.min(0.05, tick - (lastTick || tick)) * LID_SPEED); // 照真實時間播（60Hz、120Hz 螢幕一樣快）
     lastTick = tick;
-    let lidOpen = openness > 0.95;
+    let lidOpen = openness > 0.6;
     if (hold) {
       actions.forEach((action) => {
         const peak = action.getClip().duration / 2;
@@ -933,10 +935,10 @@ function animate() {
           action.time = peak;
           mixer.update(0);
         }
-        if (Math.abs(action.time - peak) > 1e-4) lidOpen = false;
+        if (Math.abs(action.time - peak) > peak * LID_READY) lidOpen = false; // 開過一半就算
       });
     }
-    // 蓋子到全開了：作品這時才起飛 / 飛回去
+    // 蓋子開過一半了：作品這時就起飛 / 飛回去（蓋子會繼續開到全開並停住）
     if (pendingLaunch && lidOpen) {
       const t = now();
       if (pendingLaunch === "drop") items.forEach((item, i) => (item.start = t + i * 0.06));

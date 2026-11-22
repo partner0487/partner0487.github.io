@@ -421,10 +421,14 @@ function viewRegion() {
   const W = window.innerWidth;
   const H = window.innerHeight;
   const bottom = H - groundHeight(); // 最下面的草地不能放東西
-  if (!selected) return { x0: 0, x1: W, y0: 0, y1: bottom };
-  // 手機：固定預留卡片的最大高度（CSS 的 max-height: 48%），換作品時掉落物才不會因為卡片高度不同而整個重排
+  // 上面的 My Project 標題也不能放：寶箱要擺在「標題下面到草地上面」的正中間，
+  // 不然矮的螢幕上寶箱上方塞不下掉落物、下方很多，看起來整圈歪掉
+  const label = container.querySelector(".floating-label").getBoundingClientRect();
+  const top = Math.max(0, label.bottom - container.getBoundingClientRect().top + 8);
+  if (!selected) return { x0: 0, x1: W, y0: top, y1: bottom };
+  // 手機：固定預留卡片的最大高度（CSS 的 max-height: 48%），換作品時掉落物才不會因為卡片高度不同而整個重排；標題會淡出，不用避開
   if (W < 600) return { x0: 0, x1: W, y0: 0, y1: H * 0.52 - 24 };
-  return { x0: 0, x1: W * 0.55, y0: 0, y1: bottom };
+  return { x0: 0, x1: W * 0.55, y0: top, y1: bottom };
 }
 
 // 還沒開箱時的鏡頭距離：直式手機的水平視角很窄，鏡頭固定在 CAMERA_Z 的話寶箱會比螢幕還寬，
@@ -439,6 +443,7 @@ function idleCameraZ() {
 // 直式螢幕：寶箱本來偏下面，上方標題和寶箱中間空一大塊；把鏡頭上下移，讓寶箱落在標題下方空間的正中間。
 // 橫式（桌機）維持原本的構圖
 let closedCenter = null; // 關著的寶箱中心（chestBox() 量的是蓋子全開的樣子，蓋子翹起來，中心會偏高）
+let closedTop = 0; // 關著的寶箱頂面高度 = 箱口，掉落物從這裡飛出來 / 飛回去
 function closedChestCenter() {
   if (!closedCenter) {
     model.updateMatrixWorld(true);
@@ -448,7 +453,9 @@ function closedChestCenter() {
         o.computeBoundingBox();
       }
     });
-    closedCenter = new THREE.Box3().setFromObject(model).getCenter(new THREE.Vector3());
+    const closed = new THREE.Box3().setFromObject(model);
+    closedCenter = closed.getCenter(new THREE.Vector3());
+    closedTop = closed.max.y;
   }
   return closedCenter;
 }
@@ -573,7 +580,7 @@ function layoutItems(fromChest) {
   const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -planeZ);
   const worldPerPx = viewH(cameraTargetZ - planeZ) / H;
   const itemSize = itemPx * worldPerPx;
-  const mouth = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, (box.min.z + box.max.z) / 2);
+  const mouth = chestMouth(box);
 
   items.forEach((item, i) => {
     const s = spots[i] || spots[spots.length - 1];
@@ -588,6 +595,13 @@ function layoutItems(fromChest) {
     item.arc = fromChest ? itemSize * 3 : 0;
     item.state = "flying";
   });
+}
+
+// 箱口：掉落物從這裡飛出來、飛回去
+// （原本用 box.max.y，那是蓋子全開時翹起來的蓋子頂端，看起來像從寶箱上方冒出來）
+function chestMouth(box) {
+  closedChestCenter();
+  return new THREE.Vector3((box.min.x + box.max.x) / 2, closedTop - (closedTop - box.min.y) * 0.15, (box.min.z + box.max.z) / 2);
 }
 
 // 寶箱「蓋子全開、沒有跟著滑鼠轉」時的範圍，排版用
@@ -648,7 +662,7 @@ function recallItems() {
   setHovered(null);
   frameIdle();
   const box = chestBox();
-  const mouth = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, (box.min.z + box.max.z) / 2);
+  const mouth = chestMouth(box);
   items.forEach((item, i) => {
     item.from = item.mesh.position.clone();
     item.to = mouth;

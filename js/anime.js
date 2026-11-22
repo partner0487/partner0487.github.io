@@ -1,241 +1,302 @@
-const board = document.querySelector(".anime-board");
+// 興趣頁的動漫清單：一個分類（年份 / 進行中 / 未看…）排成一圈 3D 環形卡牌
+//
+// 資料：data/anime.json（scripts/anime_txt.py 從記事本清單轉出來）
+//       data/anime-covers.json（scripts/anime_covers.py 抓的封面，圖在 images/anime/）
+// 玩法：上面選分類；環會一張一張慢慢轉，可以拖曳 / 滑動、按 ← →、點某張卡轉到正前方；
+//       正前方那張放大，下面顯示片名和標記。搜尋會跳到那部所在的分類並轉過去。
+(() => {
+  const board = document.querySelector(".anime-board");
+  if (!board) return;
+  const tabsEl = board.querySelector(".anime-tabs");
+  const stage = board.querySelector(".anime-stage");
+  const wrap = board.querySelector(".anime-ring-wrap");
+  const ring = board.querySelector(".anime-ring");
+  const infoTitle = board.querySelector(".anime-info-title");
+  const infoMeta = board.querySelector(".anime-info-meta");
+  const search = document.getElementById("search-input");
+  const searchHint = board.querySelector(".anime-search-hint");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
-// 你想要的順序
-const categoryOrder = [
-  "進行中",
-  "2025",
-  "2024",
-  "2023",
-  "2022",
-  "2021",
-  "2020",
-  "2019",
-  "未看",
-  "未看續作",
-];
+  const GROUP_LABEL = (g) => (/^\d{4}$/.test(g) ? `${g}` : g);
+  const GROUP_NOTE = (g) => (/^\d{4}$/.test(g) ? `${g} 年看的` : g);
+  const TAG_TEXT = { 完成: "✅ 看完", 推薦: "⭐ 推薦", 電影: "🎬 電影", 解說: "⏩ 看解說", 韓國: "🇰🇷 韓國" };
 
-// 定義表情符號對應
-const tagEmojis = {
-  完成: "✅",
-  電影: "🎬",
-  KR: "🎬",
-};
+  let groups = new Map(); // 分類 → 作品陣列（照清單順序）
+  let current = null; // 目前的分類
+  let items = []; // 目前這個分類的作品
+  let ringItems = []; // 實際排在環上的（作品太少時重複排，見 buildRing）
+  let cards = [];
+  let step = 0; // 相鄰兩張差幾度
+  let radius = 0;
+  let angle = 0; // 環現在轉到幾度
+  let target = 0; // 要轉到幾度（angle 每一幀往它靠近）
+  let front = -1;
+  let drag = null;
+  let lastTouch = 0; // 上次有人操作的時間：操作完過一陣子才繼續自己轉
+  let hovering = false;
+  let visible = false;
+  let frame = null;
+  let lastCw = 0; // 目前這一圈用的卡片寬度
 
-// 處理數字標籤顯示對應的數字表情符號
-function getNumberEmojis(number) {
-  const numberEmojis = [
-    "0️⃣",
-    "1️⃣",
-    "2️⃣",
-    "3️⃣",
-    "4️⃣",
-    "5️⃣",
-    "6️⃣",
-    "7️⃣",
-    "8️⃣",
-    "9️⃣",
-  ];
-  // 將每個數字轉換為對應的表情符號
-  return number
-    .toString()
-    .split("")
-    .map((digit) => numberEmojis[digit])
-    .join(" ");
-}
+  const mod = (a, n) => ((a % n) + n) % n;
 
-// 讀取 JSON 檔案
-fetch("data/anime.json")
-  .then((response) => response.json())
-  .then((animeData) => {
-    // 分類
-    const categorized = {};
-
-    animeData.forEach((anime) => {
-      const key = anime.category;
-      if (!categorized[key]) categorized[key] = [];
-      categorized[key].push(anime);
+  Promise.all([
+    fetch("data/anime.json").then((r) => r.json()),
+    fetch("data/anime-covers.json").then((r) => r.json()).catch(() => ({})),
+  ]).then(([anime, covers]) => {
+    anime.forEach((a) => {
+      a.cover = covers[a.title]?.file || null;
+      if (!groups.has(a.group)) groups.set(a.group, []);
+      groups.get(a.group).push(a);
     });
-
-    // 畫面動態產生
-    categoryOrder.forEach((category) => {
-      if (categorized[category]) {
-        const section = document.createElement("div");
-        section.className = "category-section";
-
-        const title = document.createElement("h3");
-        title.className = "category-title";
-        title.textContent = category;
-        section.appendChild(title);
-
-        const listContainer = document.createElement("div");
-        listContainer.className = "anime-list-container";
-
-        const leftBtn = document.createElement("button");
-        leftBtn.className = "scroll-btn left-btn";
-        leftBtn.textContent = "←";
-
-        const rightBtn = document.createElement("button");
-        rightBtn.className = "scroll-btn right-btn";
-        rightBtn.textContent = "→";
-
-        const list = document.createElement("div");
-        list.className = "anime-list";
-
-        categorized[category].forEach((anime) => {
-          const card = document.createElement("div");
-          card.className = "anime-card";
-
-          // 生成每個tag對應的表情符號
-          const tagIcons =
-            anime.tags && anime.tags.length > 0
-              ? anime.tags
-                  .map((tag) => {
-                    if (typeof tag === "string") {
-                      return tagEmojis[tag] || ""; // 如果是字串類型的tag，如 "完成"
-                    } else if (typeof tag === "number") {
-                      return getNumberEmojis(tag); // 如果是數字型tag，顯示對應數字表情
-                    }
-                    return ""; // 如果是其他類型，則不顯示
-                  })
-                  .join("")
-              : ""; // 如果沒有標籤，顯示 "無標籤"
-
-          card.innerHTML = `
-            <h3 class="anime-title">${anime.title}</h3>
-            ${
-              anime.tags && anime.tags.includes("推薦")
-                ? '<div class="recommend-icon">💖</div>'
-                : ""
-            }
-            <div class="anime-tags">${tagIcons}</div>
-          `;
-
-          list.appendChild(card);
-        });
-
-        listContainer.appendChild(leftBtn);
-        listContainer.appendChild(list);
-        listContainer.appendChild(rightBtn);
-        section.appendChild(listContainer);
-        board.appendChild(section);
-
-        // 加上滑鼠拖曳滑動功能
-        enableDragScroll(list);
-      }
-    });
-
-    // 加上左右按鈕功能
-    enableHorizontalScrollWithButtons();
-  })
-  .catch((error) => {
-    console.error("無法讀取 JSON 檔案:", error);
+    // 分類順序：進行中 → 年份新到舊 → 未看 → 未看續作
+    const years = [...groups.keys()].filter((g) => /^\d{4}$/.test(g)).sort((a, b) => b - a);
+    const order = ["進行中", ...years, "未看", "未看續作"].filter((g) => groups.has(g));
+    groups = new Map(order.map((g) => [g, groups.get(g)]));
+    buildTabs();
+    showGroup(order[0], true);
   });
 
-// 右/左按鈕的滑動功能
-function enableHorizontalScrollWithButtons() {
-  const allLists = document.querySelectorAll(".anime-list-container");
+  // ---- 分類標籤 ----
+  function buildTabs() {
+    tabsEl.replaceChildren(
+      ...[...groups.keys()].map((g) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "anime-tab";
+        b.setAttribute("role", "tab");
+        b.dataset.group = g;
+        b.innerHTML = `${GROUP_LABEL(g)}<span class="anime-tab-count">${groups.get(g).length}</span>`;
+        b.addEventListener("click", () => showGroup(g));
+        return b;
+      })
+    );
+  }
 
-  allLists.forEach((listContainer) => {
-    const animeList = listContainer.querySelector(".anime-list");
-    const leftBtn = listContainer.querySelector(".left-btn");
-    const rightBtn = listContainer.querySelector(".right-btn");
+  // ---- 換一圈 ----
+  function showGroup(g, immediate = false, thenFocus = null) {
+    if (g === current) {
+      if (thenFocus !== null) rotateTo(thenFocus);
+      return;
+    }
+    current = g;
+    tabsEl.querySelectorAll(".anime-tab").forEach((b) => {
+      const on = b.dataset.group === g;
+      b.setAttribute("aria-selected", String(on));
+      if (on) b.scrollIntoView({ block: "nearest", inline: "nearest" });
+    });
+    const build = () => {
+      buildRing(groups.get(g));
+      if (thenFocus !== null) angle = target = -thenFocus * step;
+      render(true);
+      wrap.classList.remove("swap");
+    };
+    if (immediate || reduceMotion.matches) return build();
+    // 舊的一圈縮起來淡出，換成新的再展開
+    wrap.classList.add("swap");
+    setTimeout(build, 260);
+  }
 
-    if (animeList && leftBtn && rightBtn) {
-      // 確保這些元素存在
-      leftBtn.addEventListener("click", () => {
-        const scrollAmount = animeList.offsetWidth; // 每次滑動一個視窗寬度
-        animeList.scrollLeft -= scrollAmount; // 向左滑動
-      });
+  function cardWidth() {
+    return stage.clientWidth < 600 ? 112 : 160;
+  }
 
-      rightBtn.addEventListener("click", () => {
-        const scrollAmount = animeList.offsetWidth; // 每次滑動一個視窗寬度
-        animeList.scrollLeft += scrollAmount; // 向右滑動
-      });
+  function buildRing(list) {
+    items = list;
+    // 少於 8 部時同一份清單重複排滿一圈：只有 3 張的話另外兩張會轉到背面，畫面上只剩一張
+    ringItems = [];
+    while (ringItems.length < 8) ringItems.push(...items);
+    const cw = cardWidth();
+    lastCw = cw;
+    const n = ringItems.length;
+    step = 360 / n;
+    // 半徑跟著張數變大：卡片之間留一點空隙；張數很少時也不要小到擠成一團
+    radius = Math.max((cw * 1.18 * n) / (2 * Math.PI), cw * 0.9);
+    stage.style.setProperty("--cw", `${cw}px`);
+    angle = target = 0;
+    front = -1;
+    cards = ringItems.map((a) => {
+      const card = document.createElement("div");
+      card.className = "anime-card";
+      if (a.cover) {
+        const img = document.createElement("img");
+        img.src = a.cover;
+        img.alt = "";
+        img.decoding = "async";
+        img.draggable = false;
+        card.append(img);
+      } else {
+        // 沒有封面：直接寫片名
+        const ph = document.createElement("span");
+        ph.className = "anime-card-placeholder";
+        ph.textContent = a.title;
+        card.append(ph);
+      }
+      if (a.tags.includes("推薦")) card.insertAdjacentHTML("beforeend", '<span class="anime-card-star" aria-hidden="true">★</span>');
+      if (a.tags.includes("電影")) card.insertAdjacentHTML("beforeend", '<span class="anime-card-badge">電影</span>');
+      if (a.progress) card.insertAdjacentHTML("beforeend", `<span class="anime-card-badge">第 ${a.progress} 集</span>`);
+      return card;
+    });
+    ring.replaceChildren(...cards);
+    stage.setAttribute("aria-label", `${GROUP_NOTE(current)}，共 ${items.length} 部。用左右方向鍵切換`);
+  }
+
+  // ---- 每一幀：環轉一點、每張卡依角度調整大小和亮度 ----
+  function render(force = false) {
+    if (!drag) {
+      const d = target - angle;
+      if (Math.abs(d) < 0.01 && !force) return;
+      angle = Math.abs(d) < 0.01 ? target : angle + d * (reduceMotion.matches ? 1 : 0.12);
+    }
+    ring.style.transform = `translateZ(${-radius}px) rotateY(${angle}deg)`;
+    cards.forEach((card, i) => {
+      const rel = mod(i * step + angle + 180, 360) - 180; // 這張卡離正前方幾度
+      const c = Math.cos((rel * Math.PI) / 180);
+      const near = Math.max(0, c);
+      const scale = 1 + 0.18 * Math.pow(near, 12); // 只有正前方那張會放大
+      card.style.transform = `rotateY(${i * step}deg) translateZ(${radius}px) scale(${scale.toFixed(3)})`;
+      card.style.opacity = (0.15 + 0.85 * Math.pow(near, 1.5)).toFixed(3);
+    });
+    const f = mod(Math.round(-angle / step), cards.length);
+    if (f !== front) {
+      cards[front]?.classList.remove("is-front");
+      front = f;
+      cards[front].classList.add("is-front");
+      showInfo(ringItems[front]);
+    }
+  }
+
+  function loop() {
+    frame = requestAnimationFrame(loop);
+    render();
+  }
+
+  function showInfo(a) {
+    infoTitle.textContent = a.title;
+    const chips = [GROUP_NOTE(a.group)];
+    if (a.progress !== undefined) chips.push(a.progress ? `看到第 ${a.progress} 集` : "還沒開始看"); // 清單上寫 0️⃣ 的是還沒開始
+    a.tags.forEach((t) => chips.push(TAG_TEXT[t] || t));
+    infoMeta.replaceChildren(
+      ...chips.map((t) => {
+        const s = document.createElement("span");
+        s.className = "anime-chip";
+        s.textContent = t;
+        return s;
+      })
+    );
+  }
+
+  // 轉到第 i 張：從現在的角度挑最近的那一圈，不要整圈繞回去
+  function rotateTo(i) {
+    const base = -i * step;
+    target = base + Math.round((angle - base) / 360) * 360;
+    lastTouch = performance.now();
+  }
+
+  // ---- 拖曳 / 滑動 ----
+  stage.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    drag = { x: e.clientX, start: angle, last: e.clientX, t: performance.now(), v: 0, moved: false, id: e.pointerId };
+  });
+  stage.addEventListener("pointermove", (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) > 6) {
+      drag.moved = true;
+      stage.setPointerCapture(e.pointerId);
+      stage.classList.add("dragging");
+    }
+    if (!drag.moved) return;
+    const degPerPx = 360 / (2 * Math.PI * radius); // 正前方那張卡跟著手指走
+    angle = drag.start + dx * degPerPx;
+    const now = performance.now();
+    drag.v = ((e.clientX - drag.last) * degPerPx) / Math.max(1, now - drag.t);
+    drag.last = e.clientX;
+    drag.t = now;
+    render(true);
+  });
+  const endDrag = (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag;
+    drag = null;
+    stage.classList.remove("dragging");
+    lastTouch = performance.now();
+    if (d.moved) {
+      // 放開時順著速度多滑一點，再停在最近的一張
+      target = Math.round((angle + d.v * 220) / step) * step;
     } else {
-      console.warn("某些元素未正確加載，無法設置事件");
+      // 沒拖動 = 點擊：點到哪張就轉到哪張
+      const card = e.target.closest?.(".anime-card");
+      const i = cards.indexOf(card);
+      if (i >= 0) rotateTo(i);
     }
-  });
-}
+  };
+  stage.addEventListener("pointerup", endDrag);
+  stage.addEventListener("pointercancel", endDrag);
+  stage.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && (hovering = true));
+  stage.addEventListener("pointerleave", () => (hovering = false));
 
-// 拖曳滑動功能
-function enableDragScroll(container) {
-  let isDown = false;
-  let startX;
-  let scrollLeft;
-
-  // 禁止選擇文字
-  function disableTextSelection() {
-    container.style.userSelect = "none";
-  }
-
-  // 恢復選擇文字
-  function enableTextSelection() {
-    container.style.userSelect = "";
-  }
-
-  container.addEventListener("mousedown", (e) => {
-    isDown = true;
-    container.classList.add("active");
-    startX = e.pageX - container.offsetLeft;
-    scrollLeft = container.scrollLeft;
-
-    // 禁止選擇文字
-    disableTextSelection();
-  });
-
-  container.addEventListener("mouseleave", () => {
-    isDown = false;
-    container.classList.remove("active");
-    // 恢復選擇文字
-    enableTextSelection();
-  });
-
-  container.addEventListener("mouseup", () => {
-    isDown = false;
-    container.classList.remove("active");
-    // 恢復選擇文字
-    enableTextSelection();
-  });
-
-  container.addEventListener("mousemove", (e) => {
-    if (!isDown) return;
+  stage.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") rotateTo(front + 1);
+    else if (e.key === "ArrowLeft") rotateTo(front - 1);
+    else return;
     e.preventDefault();
-
-    const x = e.pageX - container.offsetLeft;
-    const walk = (x - startX) * 1.5;
-
-    container.scrollLeft = scrollLeft - walk;
   });
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById("search-input");
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      const query = searchInput.value.toLowerCase();
-      let found = false;
+  // 沒人操作時，每 3.5 秒自己轉到下一張
+  setInterval(() => {
+    if (!visible || hovering || drag || reduceMotion.matches || document.hidden) return;
+    if (performance.now() - lastTouch < 6000 || items.length < 2) return; // 只有一部就不用轉
+    target -= step;
+  }, 3500);
 
-      const allAnimeCards = document.querySelectorAll(".anime-card");
-      allAnimeCards.forEach((card) => {
-        card.classList.remove("highlight");
-      });
-
-      allAnimeCards.forEach((card) => {
-        const title = card
-          .querySelector(".anime-title")
-          .textContent.trim()
-          .toLowerCase();
-
-        if (title.includes(query)) {
-          found = true;
-          card.classList.add("highlight");
-          card.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      });
-
-      if (!found) {
-        alert("未找到" + query);
-      }
+  // 不在畫面上就不跑動畫
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && frame === null) frame = requestAnimationFrame(loop);
+    else if (!visible && frame !== null) {
+      cancelAnimationFrame(frame);
+      frame = null;
     }
+  }).observe(stage);
+
+  // 視窗寬度跨過手機 / 桌機時，卡片大小不同，重排這一圈
+  new ResizeObserver(() => {
+    const cw = cardWidth();
+    if (!current || cw === lastCw) return;
+    const keep = front;
+    lastCw = cw;
+    buildRing(groups.get(current));
+    angle = target = -Math.max(0, keep) * step;
+    render(true);
+  }).observe(stage);
+
+  // ---- 搜尋：跳到那部所在的分類並轉過去；Enter 看下一筆 ----
+  let matches = [];
+  let matchAt = 0;
+  function goMatch() {
+    const a = matches[matchAt];
+    searchHint.textContent = `${matchAt + 1} / ${matches.length}`;
+    const i = groups.get(a.group).indexOf(a);
+    showGroup(a.group, false, i);
+    lastTouch = performance.now() + 4000; // 找到之後多停一下，不要馬上轉走
+  }
+  let timer = null;
+  search.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const q = search.value.trim().toLowerCase();
+      matches = q ? [...groups.values()].flat().filter((a) => a.title.toLowerCase().includes(q)) : [];
+      matchAt = 0;
+      if (!q) searchHint.textContent = "";
+      else if (!matches.length) searchHint.textContent = "找不到";
+      else goMatch();
+    }, 250);
   });
-});
+  search.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || !matches.length) return;
+    e.preventDefault();
+    matchAt = (matchAt + 1) % matches.length;
+    goMatch();
+  });
+})();

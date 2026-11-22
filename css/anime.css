@@ -36,195 +36,258 @@
   }
 }
 
-.anime-card.highlight {
-  border: 3px solid #ff0; /* 黃色邊框 */
-  animation: highlight 1s ease-in-out infinite;
-}
-
-@keyframes highlight {
-  0% {
-    border-color: #ff0;
-  }
-  50% {
-    border-color: #f00;
-  }
-  100% {
-    border-color: #ff0;
-  }
-}
-
-.search-container {
-  position: absolute;
-  top: 60px; /* 跟標題同一列，靠右 */
-  right: 2rem;
-  width: 220px;
-  transform: translateY(-50%);
-  z-index: 10; /* 確保搜尋框在最上層 */
-  border-radius: 8px; /* 邊框圓角 */
-}
-
-.search-container input {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 4px;
-  background-color: #fff;
-  color: #121212;
-  font-size: 16px;
-}
-
+/* ---- 動漫清單：分類標籤 + 3D 環形卡牌（js/anime.js） ---- */
 .anime-board {
-  padding: 2rem;
-  padding-top: 120px;
+  padding: 120px 2rem 1.5rem;
   margin: 0;
   background: linear-gradient(135deg, #1a1a1a, #121212);
   color: #fff;
   font-family: "Noto Sans TC", sans-serif;
+  overflow: hidden;
 }
 
-.category-section {
-  margin-bottom: 2.5rem;
-}
-
-.category-title {
-  font-size: 1.5rem; /* 小一點 */
-  margin-bottom: 1rem;
-  padding-left: 1rem;
-}
-
-.anime-list {
+.anime-toolbar {
   display: flex;
-  overflow-x: auto;
-  padding: 1rem;
-  gap: 1rem;
-  scroll-behavior: smooth;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.anime-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.anime-tab {
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ddd;
+  font: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.anime-tab:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.anime-tab[aria-selected="true"] {
+  background: #ff416c;
+  border-color: #ff416c;
+  color: #fff;
+}
+
+.anime-tab-count {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.search-container {
+  position: relative;
+  width: 200px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 7px 56px 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.search-container input::placeholder {
+  color: #999;
+}
+
+.anime-search-hint {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: #aaa;
+  pointer-events: none;
+}
+
+/* 舞台：透視點在中間偏上，看起來像微微往下看著一圈卡片 */
+.anime-stage {
+  --cw: 160px;
+  position: relative;
+  height: calc(var(--cw) * 1.42 * 1.25 + 70px);
+  margin-top: 10px;
+  perspective: 1100px;
+  perspective-origin: 50% 25%;
+  touch-action: pan-y; /* 手機上下捲動照常，左右滑交給環 */
+  user-select: none;
   cursor: grab;
+  outline: none;
+}
+
+.anime-stage.dragging {
+  cursor: grabbing;
+}
+
+.anime-stage:focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(255, 65, 108, 0.6);
+  border-radius: 12px;
+}
+
+.anime-ring-wrap {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: opacity 0.26s, transform 0.26s;
+  pointer-events: none; /* 外框擋在卡片前面（z = 0 的平面），點擊要穿過去給卡片 */
+}
+
+/* 換分類：舊的一圈縮小淡出，新的再展開 */
+.anime-ring-wrap.swap {
+  opacity: 0;
+  transform: scale(0.75);
+}
+
+.anime-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
 }
 
 .anime-card {
-  position: relative; /* 記得一定要 relative 才能讓角落元素定位！ */
-  flex: 0 0 auto;
-  width: 200px; /* 卡片變小一點 */
-  height: 100px; /* 卡片變小一點 */
-  background-color: #1e1e1e;
-  border-radius: 12px;
-  padding: 1rem;
+  position: absolute;
+  left: calc(var(--cw) / -2);
+  top: calc(var(--cw) * -0.71);
+  width: var(--cw);
+  height: calc(var(--cw) * 1.42);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #2a2a30;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+  pointer-events: auto;
+  backface-visibility: hidden; /* 轉到背面的卡不要顯示成左右相反 */
+  -webkit-backface-visibility: hidden;
+}
+
+.anime-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.anime-card.is-front {
+  box-shadow: 0 0 0 2px #ff416c, 0 0 28px rgba(255, 65, 108, 0.55), 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* 沒有封面的作品：直接寫片名 */
+.anime-card-placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 12px;
+  background: linear-gradient(160deg, #3a2f4a, #1f2a3a);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.4;
   text-align: center;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-.anime-card.highlight {
-  transform: scale(1.05);
-  opacity: 1;
-}
-
-.anime-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.recommend-icon {
+.anime-card-star {
   position: absolute;
-  bottom: 8px;
+  top: 6px;
   right: 8px;
-  font-size: 1.5rem;
-  animation: pulse 2s infinite;
+  color: #ffd54a;
+  font-size: 1.3rem;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 200, 60, 0.6);
 }
 
-.anime-tags {
+.anime-card-badge {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
-  font-size: 1.5rem;
-  animation: pulse 2s infinite;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.7);
+  font-size: 0.75rem;
 }
 
-/* 💖 脈動一下，看起來更可愛 */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+.anime-info {
+  min-height: 78px;
+  text-align: center;
 }
 
-.anime-card h3 {
-  font-size: 0.9rem; /* 卡片內字也小一點 */
-  margin: 0;
+.anime-info-title {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 700;
 }
 
-/* 滑動條美化 */
-.anime-list::-webkit-scrollbar {
-  height: 6px; /* 更細緻一點 */
-}
-
-.anime-list::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 4px;
-}
-
-.anime-list-container {
-  position: relative;
+.anime-info-meta {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
 }
 
-.scroll-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  font-size: 14px;
-  padding: 5px 10px;
-  cursor: pointer;
-  z-index: 5;
+.anime-chip {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: #ddd;
 }
 
-.left-btn {
-  left: -25px;
+.anime-credit {
+  margin: 14px 0 0;
+  font-size: 0.75rem;
+  color: #777;
+  text-align: center;
 }
 
-.right-btn {
-  right: -25px;
+.anime-credit a {
+  color: #999;
 }
 
-/* 手機：標題佔滿一列，搜尋框移到標題下面、靠右 */
+/* 手機：標題佔滿一列；分類標籤改成一排左右滑 */
 @media (max-width: 600px) {
-  .search-container {
-    top: 120px;
-    right: 1rem;
-    width: 180px;
-  }
-
   .anime-board {
-    padding-top: 160px;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 110px 1rem 1.25rem;
   }
 
-  /* 一個畫面兩張完整的卡片（原本固定 200px，只看得到一張半），右邊再露出下一張的一小角，提示還可以往右滑；
-     滑動時會停在卡片邊緣 */
-  .anime-list {
-    gap: 0.75rem;
-    padding: 0.75rem 0.25rem;
-    scroll-snap-type: x mandatory;
-    scroll-padding: 0 0.25rem;
+  .anime-tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 4px;
+    scrollbar-width: none;
   }
 
-  .anime-card {
-    width: calc((100% - 1.5rem) / 2.15); /* 2 張 + 兩個間距 + 0.15 張 */
-    scroll-snap-align: start;
+  .anime-tab {
+    flex: 0 0 auto;
   }
 
-  /* 手機用手指滑就好，左右箭頭會蓋到卡片 */
-  .scroll-btn {
-    display: none;
+  .search-container {
+    width: 100%;
+  }
+
+  .anime-stage {
+    perspective: 800px;
+  }
+
+  .anime-info-title {
+    font-size: 1.1rem;
   }
 }

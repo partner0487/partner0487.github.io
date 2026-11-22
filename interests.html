@@ -145,11 +145,26 @@
       <div class="line1">我的動漫清單</div>
     </div>
 
-    <div class="search-container">
-      <input type="text" id="search-input" placeholder="搜尋..." autocomplete="off">
-    </div>    
-    
-    <div class="anime-board"></div>
+    <!-- 一個分類排成一圈 3D 環形卡牌（js/anime.js） -->
+    <div class="anime-board">
+      <div class="anime-toolbar">
+        <div class="anime-tabs" role="tablist" aria-label="分類"></div>
+        <div class="search-container">
+          <input type="search" id="search-input" placeholder="搜尋片名…" autocomplete="off" aria-label="搜尋片名">
+          <span class="anime-search-hint" aria-live="polite"></span>
+        </div>
+      </div>
+      <div class="anime-stage" tabindex="0">
+        <div class="anime-ring-wrap">
+          <div class="anime-ring"></div>
+        </div>
+      </div>
+      <div class="anime-info" aria-live="polite">
+        <h3 class="anime-info-title"></h3>
+        <div class="anime-info-meta"></div>
+      </div>
+      <p class="anime-credit">封面來源：<a href="https://bgm.tv/" target="_blank" rel="noopener">Bangumi 番組計劃</a>、<a href="https://anilist.co/" target="_blank" rel="noopener">AniList</a></p>
+    </div>
   </section>
 
   </main>

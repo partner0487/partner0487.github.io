@@ -62,10 +62,14 @@
 - 手機版的動畫方向跟桌機不同（[js/gamer.js](js/gamer.js)）
 
 **我的動漫清單**
-- 這塊主要是拿來練**讀檔和搜尋**，剛好包裝成我的動漫紀錄
-- 用 `fetch` 讀 [data/anime.json](data/anime.json)，依年份和觀看狀態分類
-- 搜尋：按 Enter 後找到的卡片會 highlight 並自動捲過去
-- 每一列可以用滑鼠拖曳左右滑動，也可以按左右按鈕
+- **3D 環形卡牌**：上面選分類（進行中、各年份、未看、未看續作），那一類的封面排成一圈（[js/anime.js](js/anime.js)）
+  - 純 CSS 3D：每張卡 `rotateY(第幾張 × 角度) translateZ(半徑)`，整圈再往後推一個半徑；半徑跟著張數變大，所以 52 部的那年是一個大轉輪、一次看到 7～9 張
+  - 每一幀依「離正前方幾度」調整大小和透明度，正前方那張放大、下面顯示片名、看到第幾集和標記（⭐ 推薦、🎬 電影、⏩ 看解說…）
+  - 會一張一張自己轉；可以拖曳 / 手指滑（放開時順著速度多滑一點再停在最近的一張）、點某張轉到正前方、方向鍵切換；換分類時舊的一圈縮小淡出、新的展開
+  - 少於 8 部的分類把清單重複排滿一圈，不然另外幾張會轉到背面看不到
+  - 搜尋會跳到那部所在的分類並轉過去，Enter 看下一筆
+- **清單從記事本來**：我平常用記事本記（✅ 完成、🥰 推薦、🎬 電影、⏩️ 解說，進行中後面接集數表情），[scripts/anime_txt.py](scripts/anime_txt.py) 把 txt 轉成 [data/anime.json](data/anime.json)
+- **封面**：[scripts/anime_covers.py](scripts/anime_covers.py) 用 Bangumi（有中文片名）搜尋、比對片名挑最像的，找不到再用 AniList；下載成 280px 寬的 WebP 放在 images/anime，對應記在 [data/anime-covers.json](data/anime-covers.json)，對錯的可以手動指定關鍵字或條目編號再跑一次。`--sheet` 會輸出一張全部封面的總覽圖方便檢查
 
 ### 每一頁都有
 - **手機版選單**：[js/site.js](js/site.js) 負責漢堡選單、響應式斷點、標示目前頁面。這是拿掉 Nicepage 之後自己寫的替代版

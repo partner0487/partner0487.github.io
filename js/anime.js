@@ -154,13 +154,16 @@
     }
     appear = Math.abs(da) < 0.005 ? appearTarget : appear + da * 0.2;
     const grow = 0.7 + 0.3 * appear; // 換分類時整圈縮小 / 展開
-    ring.style.transform = `translateZ(${-radius}px) scale(${grow.toFixed(3)}) rotateY(${angle}deg)`;
+    // 整圈本身不轉，每張卡直接用「離正前方幾度」擺位置：
+    // 原本是整圈 rotateY(angle) 再加上每張卡自己的 rotateY，兩個加起來超過 360° 時，
+    // Chrome 會判斷不到滑鼠點到那張卡（畫面上看得到，點下去卻穿過去）
+    ring.style.transform = `translateZ(${-radius}px) scale(${grow.toFixed(3)})`;
     cards.forEach((card, i) => {
       const rel = mod(i * step + angle + 180, 360) - 180; // 這張卡離正前方幾度
       const c = Math.cos((rel * Math.PI) / 180);
       const near = Math.max(0, c);
       const scale = 1 + 0.18 * Math.pow(near, 12); // 只有正前方那張會放大
-      card.style.transform = `rotateY(${i * step}deg) translateZ(${radius}px) scale(${scale.toFixed(3)})`;
+      card.style.transform = `rotateY(${rel.toFixed(3)}deg) translateZ(${radius}px) scale(${scale.toFixed(3)})`;
       card.style.opacity = ((0.15 + 0.85 * Math.pow(near, 1.5)) * appear).toFixed(3);
     });
     const f = mod(Math.round(-angle / step), cards.length);

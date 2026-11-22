@@ -31,8 +31,10 @@
   let target = 0; // 要轉到幾度（angle 每一幀往它靠近）
   let front = -1;
   let drag = null;
-  let lastTouch = 0; // 上次有人操作的時間：操作完過一陣子才繼續自己轉
-  let hovering = false;
+  let lastTouch = -Infinity; // 上次有人操作的時間：剛進頁面算閒置，操作完過 IDLE_MS 才又開始自己轉
+  let lastFrame = 0;
+  const IDLE_MS = 6000;
+  const SPIN_PX = 30; // 閒置時正前方的卡片每秒移動幾 px（大圈、小圈看起來一樣慢）
   let visible = false;
   let frame = null;
   let lastCw = 0; // 目前這一圈用的卡片寬度
@@ -175,9 +177,16 @@
     }
   }
 
-  function loop() {
+  function loop(now) {
     frame = requestAnimationFrame(loop);
-    render();
+    const dt = Math.min(0.1, (now - (lastFrame || now)) / 1000); // 秒；切回分頁時不要一次跳一大段
+    lastFrame = now;
+    // 閒置時整圈慢慢轉（不是一張一張跳）；目的地跟著現在的角度走，一操作就從這裡接手
+    if (!drag && !reduceMotion.matches && items.length > 1 && performance.now() - lastTouch > IDLE_MS) {
+      angle -= ((SPIN_PX * 360) / (2 * Math.PI * radius)) * dt;
+      target = angle;
+      render(true);
+    } else render();
   }
 
   function showInfo(a) {
@@ -206,7 +215,8 @@
   // 往右（正數）/ 往左（負數）多轉幾張：疊加在「已經要轉去的位置」上，
   // 還在轉的時候連點 / 連按會一直往同一個方向加，不會被拉回來而卡住
   function nudge(n) {
-    target -= n * step;
+    // 先對齊到最近的一張（閒置時是慢慢轉，角度不會剛好停在某一張上）
+    target = Math.round(target / step) * step - n * step;
     lastTouch = performance.now();
   }
 
@@ -250,8 +260,6 @@
   };
   stage.addEventListener("pointerup", endDrag);
   stage.addEventListener("pointercancel", endDrag);
-  stage.addEventListener("pointerenter", (e) => e.pointerType === "mouse" && (hovering = true));
-  stage.addEventListener("pointerleave", () => (hovering = false));
 
   stage.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") nudge(1);
@@ -260,12 +268,6 @@
     e.preventDefault();
   });
 
-  // 沒人操作時，每 3.5 秒自己轉到下一張
-  setInterval(() => {
-    if (!visible || hovering || drag || reduceMotion.matches || document.hidden) return;
-    if (performance.now() - lastTouch < 6000 || items.length < 2) return; // 只有一部就不用轉
-    target -= step;
-  }, 3500);
 
   // 不在畫面上就不跑動畫
   new IntersectionObserver(([entry]) => {

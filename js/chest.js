@@ -243,6 +243,9 @@ let holdOpenUntil = 0; // 收起來時：作品飛回寶箱之前蓋子都保持
 // 等蓋子到全開才起飛："drop" = 等著噴出來、"recall" = 等著飛回去、null = 沒在等
 // （蓋子正在往下關的時候點，不能直接跳到全開；倒著播回全開，到了再讓作品動）
 let pendingLaunch = null;
+// 鏡頭和草地也要跟著作品的時間：作品起飛時才退後、長草；作品全部飛回去之後才拉近、收草
+let pendingCam = null; // 開箱後要用的鏡頭位置（等作品起飛才套用）
+let settleAt = 0; // 收起來時，作品全部回到寶箱的時間（到了才拉近鏡頭、收草地）
 const now = () => performance.now() / 1000; // 秒；不用 THREE.Clock，因為停止渲染再開始時它會歸零
 
 // 選了作品時，畫面要往左（手機往上）讓出位置給卡片：用 camera.setViewOffset 平移整個畫面
@@ -503,6 +506,7 @@ function layoutItems(fromChest) {
   const region = viewRegion();
   const regionW = region.x1 - region.x0;
   const regionH = region.y1 - region.y0;
+  const prevCam = { z: cameraTargetZ, y: cameraTargetY, ox: viewOffsetTarget.x, oy: viewOffsetTarget.y };
 
   // 把整個畫面平移，讓寶箱出現在可用範圍的正中間
   viewOffsetTarget.x = W / 2 - (region.x0 + region.x1) / 2;
@@ -602,6 +606,15 @@ function layoutItems(fromChest) {
     if (fromMouth) item.mesh.visible = false;
     item.state = "flying";
   });
+
+  // 作品還在箱子裡等蓋子全開：鏡頭先不要動，記下來等起飛時再套用
+  if (fromChest || pendingLaunch === "drop") {
+    pendingCam = { z: cameraTargetZ, y: cameraTargetY, ox: viewOffsetTarget.x, oy: viewOffsetTarget.y };
+    cameraTargetZ = prevCam.z;
+    cameraTargetY = prevCam.y;
+    viewOffsetTarget.x = prevCam.ox;
+    viewOffsetTarget.y = prevCam.oy;
+  }
 }
 
 // 箱口：掉落物從這裡飛出來、飛回去
@@ -646,7 +659,8 @@ function dropItems() {
   if (!projects.length || !model) return;
   dropped = true;
   hint.textContent = HINT_OPEN;
-  showGround(true);
+  settleAt = 0; // 收到一半又打開：不要等一下又把鏡頭拉近
+  buildGround(); // 先建好（排版要知道草地多高），長出來的動畫等作品起飛
   if (!items.length) {
     items = projects.map((project) => {
       const mesh = new THREE.Mesh(
@@ -663,12 +677,15 @@ function dropItems() {
 }
 
 function recallItems() {
+  // 鏡頭先停在原地（關掉卡片也不要先平移），等作品全部飛回寶箱才拉近
+  const keepOffset = { x: viewOffsetTarget.x, y: viewOffsetTarget.y };
   deselect(false);
+  viewOffsetTarget.x = keepOffset.x;
+  viewOffsetTarget.y = keepOffset.y;
   dropped = false;
   hint.textContent = HINT_CLOSED;
-  showGround(false);
+  pendingCam = null;
   setHovered(null);
-  frameIdle();
   const box = chestBox();
   const mouth = chestMouth(box);
   pendingLaunch = "recall";
@@ -891,12 +908,30 @@ function animate() {
     // 蓋子到全開了：作品這時才起飛 / 飛回去
     if (pendingLaunch && lidOpen) {
       const t = now();
-      if (pendingLaunch === "drop") items.forEach((item, i) => (item.start = t + i * 0.06));
-      else {
+      if (pendingLaunch === "drop") {
+        items.forEach((item, i) => (item.start = t + i * 0.06));
+        // 作品起飛的同時鏡頭退後、草地長出來
+        if (pendingCam) {
+          cameraTargetZ = pendingCam.z;
+          cameraTargetY = pendingCam.y;
+          viewOffsetTarget.x = pendingCam.ox;
+          viewOffsetTarget.y = pendingCam.oy;
+          pendingCam = null;
+        }
+        showGround(true);
+      } else {
         items.forEach((item, i) => (item.start = t + (items.length - 1 - i) * 0.03));
-        holdOpenUntil = t + (items.length - 1) * 0.03 + 0.5 + 0.15; // 最後一個飛回去再關
+        settleAt = t + (items.length - 1) * 0.03 + 0.5; // 最後一個飛回去的時間
+        holdOpenUntil = settleAt + 0.15; // 最後一個飛回去再關
       }
       pendingLaunch = null;
+    }
+    // 作品全部回到寶箱：鏡頭拉近回原本的構圖、草地收起來
+    if (settleAt && now() >= settleAt) {
+      settleAt = 0;
+      frameIdle();
+      viewOffsetTarget.x = viewOffsetTarget.y = 0;
+      showGround(false);
     }
   }
 

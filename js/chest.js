@@ -240,7 +240,9 @@ let hoveredItem = null;
 let selected = null; // 目前打開卡片的作品
 let pending = null; // 網址要求自動開箱：{ slug }
 let holdOpenUntil = 0; // 收起來時：作品飛回寶箱之前蓋子都保持打開（秒，跟 now() 同一個時鐘）
-let launchDelay = 0; // 開箱時：蓋子還沒打開就先等它打開，作品再飛出來（秒）
+// 等蓋子到全開才起飛："drop" = 等著噴出來、"recall" = 等著飛回去、null = 沒在等
+// （蓋子正在往下關的時候點，不能直接跳到全開；倒著播回全開，到了再讓作品動）
+let pendingLaunch = null;
 const now = () => performance.now() / 1000; // 秒；不用 THREE.Clock，因為停止渲染再開始時它會歸零
 
 // 選了作品時，畫面要往左（手機往上）讓出位置給卡片：用 camera.setViewOffset 平移整個畫面
@@ -590,11 +592,14 @@ function layoutItems(fromChest) {
     const target = new THREE.Vector3();
     raycaster.ray.intersectPlane(plane, target);
     item.size = itemSize;
-    item.from = fromChest ? mouth.clone() : item.mesh.position.clone();
+    // 從寶箱噴出來的先等蓋子全開（animate() 裡的 launch）；還在等的時候重排（打開卡片、改視窗大小）也一樣繼續等
+    const fromMouth = fromChest || pendingLaunch === "drop";
+    item.from = fromMouth ? mouth.clone() : item.mesh.position.clone();
     item.to = target;
-    item.start = now() + (fromChest ? launchDelay + i * 0.06 : 0);
-    item.duration = fromChest ? 0.9 : 0.5;
-    item.arc = fromChest ? itemSize * 3 : 0;
+    item.start = fromMouth ? Infinity : now();
+    item.duration = fromMouth ? 0.9 : 0.5;
+    item.arc = fromMouth ? itemSize * 3 : 0;
+    if (fromMouth) item.mesh.visible = false;
     item.state = "flying";
   });
 }
@@ -642,8 +647,6 @@ function dropItems() {
   dropped = true;
   hint.textContent = HINT_OPEN;
   showGround(true);
-  // 蓋子還關著（手機點擊、網址直接開箱，沒有滑鼠先移上去）：等它大概打開再噴，作品才不會穿過蓋子
-  launchDelay = openness > 0.8 ? 0 : 0.3;
   if (!items.length) {
     items = projects.map((project) => {
       const mesh = new THREE.Mesh(
@@ -656,6 +659,7 @@ function dropItems() {
     });
   }
   layoutItems(true);
+  pendingLaunch = "drop";
 }
 
 function recallItems() {
@@ -667,12 +671,12 @@ function recallItems() {
   frameIdle();
   const box = chestBox();
   const mouth = chestMouth(box);
+  pendingLaunch = "recall";
   items.forEach((item, i) => {
     item.from = item.mesh.position.clone();
     item.to = mouth;
-    item.start = now() + (items.length - 1 - i) * 0.03;
+    item.start = Infinity; // 先停在原地，等蓋子全開再飛回去（animate() 裡的 launch）
     item.duration = 0.5;
-    holdOpenUntil = Math.max(holdOpenUntil, item.start + item.duration + 0.15); // 最後一個飛回去再關
     item.arc = item.size * 1.5;
     item.state = "returning";
   });
@@ -855,26 +859,44 @@ function animate() {
   frame = requestAnimationFrame(animate);
 
   if (mixer) {
-    // 作品噴出來、還有作品在飛回來的路上時，蓋子都保持打開
-    const target = isHovered || dropped || now() < holdOpenUntil ? 1 : 0;
+    // 作品要噴出來 / 正在飛 / 還有作品在飛回來的路上：蓋子要停在全開
+    const flying = items.some((item) => item.state === "flying" || item.state === "returning");
+    const hold = pendingLaunch !== null || flying || now() < holdOpenUntil;
+    const target = isHovered || dropped || hold ? 1 : 0;
     openness += (target - openness) * 0.12; // 每一幀往目標靠近一點，開合比較自然
     if (target === 0 && openness < 0.001) {
       openness = 0;
       actions.forEach((action) => (action.time = 0)); // 關好了，下次從頭開始晃
     }
-    actions.forEach((action) => action.setEffectiveWeight(openness));
+    // 開箱動畫本身是「打開 → 一半時開最大 → 關回去」一直重播。
+    // hold 的時候：還在往上開就照常播到全開；已經在往下關就倒著播回全開（看起來是蓋子又掀起來，不會瞬間跳過去）
+    actions.forEach((action) => {
+      const peak = action.getClip().duration / 2;
+      action.timeScale = hold && action.time > peak ? -1.5 : 1;
+      action.setEffectiveWeight(openness);
+    });
     mixer.update(0.02);
-    // 開箱動畫本身是「打開 → 一半時開最大 → 關回去」一直重播；
-    // 只有作品正在飛出來 / 飛回去的這段時間停在開最大那一刻，作品落地之後蓋子照常開合
-    const flying = items.some((item) => item.state === "flying" || item.state === "returning");
-    if (flying || now() < holdOpenUntil) {
+    let lidOpen = openness > 0.95;
+    if (hold) {
       actions.forEach((action) => {
         const peak = action.getClip().duration / 2;
-        if (action.time > peak) {
+        // 剛好越過全開那一刻就停在那裡
+        if ((action.timeScale > 0 && action.time > peak) || (action.timeScale < 0 && action.time < peak)) {
           action.time = peak;
           mixer.update(0);
         }
+        if (Math.abs(action.time - peak) > 1e-4) lidOpen = false;
       });
+    }
+    // 蓋子到全開了：作品這時才起飛 / 飛回去
+    if (pendingLaunch && lidOpen) {
+      const t = now();
+      if (pendingLaunch === "drop") items.forEach((item, i) => (item.start = t + i * 0.06));
+      else {
+        items.forEach((item, i) => (item.start = t + (items.length - 1 - i) * 0.03));
+        holdOpenUntil = t + (items.length - 1) * 0.03 + 0.5 + 0.15; // 最後一個飛回去再關
+      }
+      pendingLaunch = null;
     }
   }
 

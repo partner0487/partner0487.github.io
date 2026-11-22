@@ -1,7 +1,7 @@
 // 首頁的 Minecraft 寶箱（three.js r170，ES module）
 // three 和 GLTFLoader 的實際網址寫在 index.html 的 importmap 裡
 //
-// 玩法：滑鼠移上去寶箱會打開；點一下，作品會像掉落物一樣噴出來散在寶箱周圍，
+// 玩法：點一下寶箱，蓋子打開、作品像掉落物一樣噴出來散在寶箱周圍，
 // 同時整個區塊最底下長出一排草地，左右兩邊冒出樹和花草。
 // 點某個作品，寶箱和掉落物滑到左邊、右邊滑出那個作品的卡片（手機是從下面滑上來）；
 // 點空白處 / 按 Esc / 按 × 收起卡片；再點寶箱本身，作品會飛回去、蓋子關上。
@@ -240,7 +240,6 @@ const CAMERA_Z = 50; // 原本的鏡頭距離
 const sceneColor = () => (document.documentElement.dataset.theme === "dark" ? 0x181b21 : 0xf5f7fa);
 
 let scene, camera, renderer, mixer, model;
-let isHovered = false; // 滑鼠是否在寶箱區塊上
 let actions = []; // 模型的開箱動畫
 let openness = 0; // 0 = 關著（模型的靜止姿勢），1 = 完全套用開箱動畫
 let chestVisible = false; // 寶箱是否在畫面上
@@ -338,15 +337,8 @@ function init() {
 
   hint.textContent = HINT_CLOSED;
 
-  // 滑鼠移上去打開、離開關上；實際的開合在 animate() 裡慢慢靠近目標
-  // 用 pointer 事件才能分辨觸控：手機點一下會觸發 mouseenter 卻永遠不會 mouseleave，蓋子會一直開著
-  container.addEventListener("pointerenter", (e) => {
-    if (e.pointerType !== "touch") isHovered = true;
-  });
-  container.addEventListener("pointerleave", () => {
-    isHovered = false;
-    setHovered(null);
-  });
+  // 滑鼠離開區塊：作品名稱標籤收起來（還沒開箱時滑鼠移上去，寶箱維持關著）
+  container.addEventListener("pointerleave", () => setHovered(null));
 
   // 寶箱不在畫面上時停止渲染
   new IntersectionObserver(([entry]) => {
@@ -801,6 +793,8 @@ function onPointerMove(event) {
   if (event.pointerType === "touch") return;
   if (!dropped) {
     setHovered(null);
+    // 還沒開箱：蓋子不會因為滑鼠移上去打開了，改用手指游標提示可以點
+    if (model) renderer.domElement.style.cursor = pickChest(event) ? "pointer" : "";
     return;
   }
   setHovered(pickItem(event));
@@ -910,7 +904,7 @@ function animate() {
     // 作品要噴出來 / 正在飛 / 還有作品在飛回來的路上：蓋子要停在全開
     const flying = items.some((item) => item.state === "flying" || item.state === "returning");
     const hold = pendingLaunch !== null || flying || now() < holdOpenUntil;
-    const target = isHovered || dropped || hold ? 1 : 0;
+    const target = dropped || hold ? 1 : 0; // 還沒開箱：不管滑鼠在不在上面都關著
     openness += (target - openness) * 0.12; // 每一幀往目標靠近一點，開合比較自然
     if (target === 0 && openness < 0.001) {
       openness = 0;

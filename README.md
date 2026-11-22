@@ -19,7 +19,7 @@
 
 **My Project（開箱掉寶）**
 - **3D 模型嵌入**：用 three.js 載入 Minecraft 寶箱的 GLB 模型（[js/chest.js](js/chest.js)）。three.js 是 r170，用 `importmap` 以 ES module 從 CDN 載入
-  - 滑鼠移動時寶箱會跟著轉，移上去蓋子會打開（用動畫權重在關閉和打開的姿勢之間補間）
+  - 滑鼠移動時寶箱會跟著轉；點開時蓋子打開（用動畫權重在關閉和打開的姿勢之間補間），開過一半作品就噴出來
 - **點寶箱開箱**：讀 [data/projects.json](data/projects.json)，每個作品變成一個掉落物，從箱口沿拋物線噴出、落在寶箱周圍浮動
   - 落點是先在螢幕上找寶箱周圍的空位，再用 raycasting 換算回 3D 座標，所以手機和桌機都排得下
   - 滑鼠移到作品上顯示名稱

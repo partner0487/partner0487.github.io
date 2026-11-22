@@ -8,6 +8,7 @@
     "片名": {"search": "換一個關鍵字"}        → 用這個關鍵字重新查
     "片名": {"bgm": 400602}                   → 直接指定 Bangumi 的條目編號
     "片名": {"none": true}                    → 不要封面
+    "片名": {"file": "images/anime/xxx.webp"} → 自己找的圖（Bangumi / AniList 都沒有的，像 2017 年的真人劇《端腦》）
     "片名": {"search": "…", "type": [6]}      → 不是動畫（像韓劇）要查 Bangumi 的「三次元」分類
   改完把那一筆的 "file" 刪掉再跑一次就會重抓
 - 圖片縮成 280px 寬的 WebP

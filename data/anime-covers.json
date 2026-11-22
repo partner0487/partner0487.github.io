@@ -1,4 +1,17 @@
 {
+ "端腦": {
+  "source": "local",
+  "name": "端腦 Die Now（2017）",
+  "file": "images/anime/local-duannao.webp"
+ },
+ "3年A班 -從現在起，大家都是我的人質-": {
+  "bgm": 266647,
+  "source": "bgm",
+  "id": 266647,
+  "name": "3年A班 -现在开始，全员人质-",
+  "score": 1.0,
+  "file": "images/anime/bgm-266647.webp"
+ },
  "天氣之子": {
   "search": "天气之子",
   "source": "bgm",
@@ -21,28 +34,28 @@
   "score": 0.968,
   "file": "images/anime/bgm-275371.webp"
  },
- "如果有妹妹就好了": {
+ "如果有妹妹就好了。": {
   "source": "bgm",
   "id": 213076,
   "name": "如果有妹妹就好了。",
   "score": 1.2,
   "file": "images/anime/bgm-213076.webp"
  },
- "五等分的花嫁": {
+ "五等分的新娘": {
   "source": "bgm",
   "id": 256114,
   "name": "五等分的新娘",
   "score": 0.833,
   "file": "images/anime/bgm-256114.webp"
  },
- "我們真的學不來": {
+ "我們真的學不來！": {
   "source": "bgm",
   "id": 257369,
   "name": "我们真的学不来",
   "score": 1.2,
   "file": "images/anime/bgm-257369.webp"
  },
- "新石紀/Dr.stone": {
+ "Dr.STONE 新石紀": {
   "source": "bgm",
   "id": 266794,
   "name": "石纪元",
@@ -92,14 +105,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-264356.webp"
  },
- "科學超電磁炮": {
+ "科學超電磁砲": {
   "source": "bgm",
   "id": 2585,
   "name": "某科学的超电磁炮",
   "score": 0.857,
   "file": "images/anime/bgm-2585.webp"
  },
- "科學超電磁炮S": {
+ "科學超電磁砲S": {
   "source": "bgm",
   "id": 51928,
   "name": "某科学的超电磁炮S",
@@ -128,7 +141,7 @@
   "score": 0.671,
   "file": "images/anime/bgm-285776.webp"
  },
- "因為他怕痛就全點防禦力了": {
+ "因為太怕痛就全點防禦力了。": {
   "source": "bgm",
   "id": 268545,
   "name": "因为太怕痛就全点防御力了。",
@@ -142,7 +155,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-18635.webp"
  },
- "刀劍神域 Sword Art Online": {
+ "刀劍神域": {
   "search": "刀剑神域",
   "source": "bgm",
   "id": 23686,
@@ -150,7 +163,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-23686.webp"
  },
- "刀劍神域 Sword Art Online 第二季": {
+ "刀劍神域 第二季": {
   "search": "刀剑神域 第二季",
   "source": "bgm",
   "id": 92382,
@@ -180,7 +193,7 @@
   "score": 0.469,
   "file": "images/anime/bgm-279457.webp"
  },
- "刀劍神域 劇場版 序列爭戰": {
+ "刀劍神域劇場版 -序列爭戰-": {
   "search": "刀剑神域 序列之争",
   "source": "bgm",
   "id": 148099,
@@ -188,14 +201,14 @@
   "score": 1.1,
   "file": "images/anime/bgm-148099.webp"
  },
- "你的名字": {
+ "你的名字。": {
   "source": "bgm",
   "id": 160209,
   "name": "你的名字。",
   "score": 1.1,
   "file": "images/anime/bgm-160209.webp"
  },
- "遊戲人生": {
+ "NO GAME NO LIFE 遊戲人生": {
   "search": "游戏人生",
   "source": "bgm",
   "id": 79227,
@@ -217,7 +230,7 @@
   "score": 0.5,
   "file": "images/anime/bgm-102134.webp"
  },
- "遊戲人生 ZERO": {
+ "NO GAME NO LIFE 遊戲人生 ZERO": {
   "search": "游戏人生 零",
   "source": "bgm",
   "id": 187276,
@@ -225,21 +238,21 @@
   "score": 1.1,
   "file": "images/anime/bgm-187276.webp"
  },
- "普通攻擊是全體二連擊，這樣的媽媽你喜歡嗎": {
+ "普通攻擊是全體二連擊，這樣的媽媽你喜歡嗎？": {
   "source": "bgm",
   "id": 264355,
   "name": "普通攻击是全体攻击而且能二次攻击的妈妈你喜欢吗？",
   "score": 0.762,
   "file": "images/anime/bgm-264355.webp"
  },
- "關於我轉生史萊姆這黨事": {
+ "關於我轉生變成史萊姆這檔事": {
   "source": "bgm",
   "id": 239816,
   "name": "关于我转生变成史莱姆这档事",
   "score": 0.833,
   "file": "images/anime/bgm-239816.webp"
  },
- "為美好世界獻上祝福": {
+ "為美好的世界獻上祝福！": {
   "source": "bgm",
   "id": 135275,
   "name": "为美好的世界献上祝福！",
@@ -253,7 +266,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-106818.webp"
  },
- "輝夜姬想讓人告白～天才們的戀愛頭腦戰～第二季": {
+ "輝夜姬想讓人告白？～天才們的戀愛頭腦戰～": {
   "source": "bgm",
   "id": 248175,
   "name": "辉夜大小姐想让我告白～天才们的恋爱头脑战～",
@@ -281,7 +294,7 @@
   "score": 0.5,
   "file": "images/anime/bgm-264089.webp"
  },
- "宇崎學妹想要玩耍": {
+ "宇崎學妹想要玩！": {
   "source": "bgm",
   "id": 299498,
   "name": "宇崎学妹想要玩！",
@@ -309,7 +322,7 @@
   "score": 0.5,
   "file": "images/anime/bgm-277954.webp"
  },
- "科學超電磁炮T": {
+ "科學超電磁砲T": {
   "source": "bgm",
   "id": 262940,
   "name": "某科学的超电磁炮T",
@@ -380,7 +393,7 @@
   "score": 1.123,
   "file": "images/anime/bgm-351349.webp"
  },
- "總之就是很可愛": {
+ "總之就是非常可愛": {
   "search": "总之就是非常可爱",
   "source": "bgm",
   "id": 301541,
@@ -388,14 +401,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-301541.webp"
  },
- "鬼滅之刃 無限列車篇": {
+ "鬼滅之刃劇場版 無限列車篇": {
   "source": "bgm",
   "id": 291494,
   "name": "剧场版 鬼灭之刃 无限列车篇",
   "score": 1.207,
   "file": "images/anime/bgm-291494.webp"
  },
- "五等分的新娘∬(第二季)": {
+ "五等分的新娘∬": {
   "source": "bgm",
   "id": 282000,
   "name": "五等分的新娘∬",
@@ -409,7 +422,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-294993.webp"
  },
- "回覆術士的重啟人生": {
+ "回復術士的重啟人生": {
   "search": "回复术士的重启人生",
   "source": "bgm",
   "id": 295017,
@@ -460,7 +473,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-153196.webp"
  },
- "全職高手s2": {
+ "全職高手 第二季": {
   "bgm": 217235,
   "source": "bgm",
   "id": 217235,
@@ -482,7 +495,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-238006.webp"
  },
- "哥布林殺手 - 劇場版 Goblin’s Crown": {
+ "哥布林殺手 -GOBLIN'S CROWN-": {
   "source": "bgm",
   "id": 238006,
   "name": "哥布林杀手",
@@ -539,7 +552,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-335036.webp"
  },
- "咒術迴戰0": {
+ "劇場版 咒術迴戰 0": {
   "source": "bgm",
   "id": 331559,
   "name": "剧场版 咒术回战 0",
@@ -581,7 +594,7 @@
   "score": 1.35,
   "file": "images/anime/bgm-260680.webp"
  },
- "刀劍神域劇場版 無星夜的詠嘆調": {
+ "刀劍神域劇場版 -Progressive- 無星夜的詠嘆調": {
   "search": "无星之夜的咏叹调",
   "source": "bgm",
   "id": 315375,
@@ -589,14 +602,14 @@
   "score": 0.715,
   "file": "images/anime/bgm-315375.webp"
  },
- "海賊王 紅髮歌姬": {
+ "航海王劇場版：紅髮歌姬": {
   "source": "bgm",
   "id": 358803,
   "name": "航海王：红发歌姬",
   "score": 1.007,
   "file": "images/anime/bgm-358803.webp"
  },
- "搖曳露營 電影版": {
+ "搖曳露營△ 電影版": {
   "source": "bgm",
   "id": 207195,
   "name": "摇曳露营△",
@@ -631,7 +644,7 @@
   "score": 1.1,
   "file": "images/anime/bgm-221736.webp"
  },
- "魔法科高中的劣等生 追憶篇": {
+ "魔法科高校的劣等生 追憶篇": {
   "search": "魔法科高校的劣等生 追忆篇",
   "source": "bgm",
   "id": 329436,
@@ -661,14 +674,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-333158.webp"
  },
- "灌籃高手 SLAMDUNK": {
+ "灌籃高手 THE FIRST SLAM DUNK": {
   "source": "bgm",
   "id": 324720,
   "name": "灌篮高手",
   "score": 0.85,
   "file": "images/anime/bgm-324720.webp"
  },
- "五等分的花嫁 劇場版": {
+ "五等分的新娘 劇場版": {
   "bgm": 331489,
   "source": "bgm",
   "id": 331489,
@@ -676,7 +689,7 @@
   "score": 1.0,
   "file": "images/anime/bgm-331489.webp"
  },
- "孤獨搖滾": {
+ "孤獨搖滾！": {
   "source": "anilist",
   "id": 130003,
   "name": "ぼっち・ざ・ろっく！",
@@ -711,7 +724,7 @@
   "score": 1.109,
   "file": "images/anime/bgm-116287.webp"
  },
- "BLEACH 死神 千年血戰篇 上半": {
+ "BLEACH 死神 千年血戰篇": {
   "source": "bgm",
   "id": 302286,
   "name": "死神 千年血战篇",
@@ -725,7 +738,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-395714.webp"
  },
- "隔壁的天使變成廢柴這件事": {
+ "關於鄰家的天使大人不知不覺把我慣成了廢人這檔子事": {
   "source": "anilist",
   "id": 143338,
   "name": "お隣の天使様にいつの間にか駄目人間にされていた件",
@@ -746,7 +759,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-174143.webp"
  },
- "歡迎來到實力至上主義教室 第二季": {
+ "歡迎來到實力至上主義的教室 第二季": {
   "source": "bgm",
   "id": 371546,
   "name": "欢迎来到实力至上主义的教室 第二季",
@@ -781,7 +794,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-27364.webp"
  },
- "我推的孩子": {
+ "【我推的孩子】": {
   "source": "bgm",
   "id": 386809,
   "name": "【我推的孩子】",
@@ -795,7 +808,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-322955.webp"
  },
- "刀劍神域劇場版 陰沉薄暮的詼諧曲": {
+ "刀劍神域劇場版 -Progressive- 陰沉薄暮的詼諧曲": {
   "search": "阴沉薄暮的诙谐曲",
   "source": "bgm",
   "id": 355004,
@@ -814,14 +827,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-364967.webp"
  },
- "肌肉魔法師": {
+ "肌肉魔法使-MASHLE-": {
   "source": "bgm",
   "id": 389571,
   "name": "物理魔法使马修",
   "score": 0.333,
   "file": "images/anime/bgm-389571.webp"
  },
- "黑化律師": {
+ "黑話律師": {
   "bgm": 394885,
   "source": "bgm",
   "id": 394885,
@@ -879,14 +892,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-400602.webp"
  },
- "敗北女角太多了": {
+ "敗北女角太多了！": {
   "source": "bgm",
   "id": 464376,
   "name": "败犬女主太多了！",
   "score": 0.714,
   "file": "images/anime/bgm-464376.webp"
  },
- "藍色監獄 U20": {
+ "藍色監獄 VS. U-20 JAPAN": {
   "source": "bgm",
   "id": 341163,
   "name": "蓝色监狱",
@@ -914,7 +927,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-441939.webp"
  },
- "鬼滅之刃 無限城篇 猗窩座再襲": {
+ "劇場版 鬼滅之刃 無限城篇 第一章 猗窩座再襲": {
   "source": "bgm",
   "id": 501958,
   "name": "剧场版 鬼灭之刃 无限城篇 第一章 猗窝座再袭",
@@ -942,7 +955,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-531945.webp"
  },
- "鏈鉅人": {
+ "鏈鋸人": {
   "search": "电锯人",
   "source": "bgm",
   "id": 321885,
@@ -950,12 +963,19 @@
   "score": 0.667,
   "file": "images/anime/bgm-321885.webp"
  },
- "鏈鉅人 蕾潔篇": {
+ "劇場版 鏈鋸人 蕾潔篇": {
   "source": "bgm",
   "id": 470660,
   "name": "剧场版 链锯人 蕾塞篇",
   "score": 0.683,
   "file": "images/anime/bgm-470660.webp"
+ },
+ "肌肉魔法使-MASHLE- 神覺者候補選拔試驗篇": {
+  "source": "bgm",
+  "id": 443493,
+  "name": "物理魔法使马修 神觉者候补选拔试验篇",
+  "score": 0.553,
+  "file": "images/anime/bgm-443493.webp"
  },
  "嘆氣的亡靈想隱退": {
   "source": "bgm",
@@ -1000,14 +1020,14 @@
   "score": 1.0,
   "file": "images/anime/bgm-565285.webp"
  },
- "無職轉生~到了異世界就拿出真本事~第2季": {
+ "無職轉生～到了異世界就拿出真本事～ 第二季": {
   "source": "bgm",
   "id": 277554,
   "name": "无职转生～到了异世界就拿出真本事～",
   "score": 1.109,
   "file": "images/anime/bgm-277554.webp"
  },
- "全職高手s3": {
+ "全職高手 第三季": {
   "search": "全职高手 第三季",
   "source": "bgm",
   "id": 345806,
@@ -1029,12 +1049,28 @@
   "score": 1.2,
   "file": "images/anime/bgm-525565.webp"
  },
+ "香格里拉·開拓異境～糞作獵手挑戰神作～ 第二季": {
+  "bgm": 487684,
+  "source": "bgm",
+  "id": 487684,
+  "name": "香格里拉边境 第二季",
+  "score": 1.0,
+  "file": "images/anime/bgm-487684.webp"
+ },
  "婚姻劇毒": {
   "source": "bgm",
   "id": 590353,
   "name": "婚姻剧毒",
   "score": 1.2,
   "file": "images/anime/bgm-590353.webp"
+ },
+ "【我推的孩子】第二季": {
+  "bgm": 443428,
+  "source": "bgm",
+  "id": 443428,
+  "name": "【我推的孩子】 第二季",
+  "score": 1.0,
+  "file": "images/anime/bgm-443428.webp"
  },
  "BanG Dream! It’s MyGO!!!!!": {
   "source": "bgm",
@@ -1043,21 +1079,21 @@
   "score": 1.2,
   "file": "images/anime/bgm-428735.webp"
  },
- "艾莉同學": {
+ "不時輕聲地以俄語遮羞的鄰座艾莉同學": {
   "source": "bgm",
   "id": 424883,
   "name": "不时轻声地以俄语遮羞的邻座艾莉同学",
   "score": 0.581,
   "file": "images/anime/bgm-424883.webp"
  },
- "蔚藍檔案": {
+ "蔚藍檔案 The Animation": {
   "source": "bgm",
   "id": 416777,
   "name": "蔚蓝档案 动画版",
   "score": 0.927,
   "file": "images/anime/bgm-416777.webp"
  },
- "我想成為影之強者！2nd season(第二季）": {
+ "我想成為影之強者！第二季": {
   "source": "bgm",
   "id": 419846,
   "name": "想要成为影之实力者！ 第二季",
@@ -1078,14 +1114,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-395684.webp"
  },
- "間諜家家酒": {
+ "SPY×FAMILY 間諜家家酒": {
   "source": "bgm",
   "id": 329906,
   "name": "间谍过家家",
   "score": 0.8,
   "file": "images/anime/bgm-329906.webp"
  },
- "咒術迴戰 2": {
+ "咒術迴戰 第二季": {
   "bgm": 369304,
   "source": "bgm",
   "id": 369304,
@@ -1100,7 +1136,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-10381.webp"
  },
- "夏日時光": {
+ "夏日重現": {
   "search": "夏日重现",
   "source": "bgm",
   "id": 326895,
@@ -1108,21 +1144,13 @@
   "score": 1.2,
   "file": "images/anime/bgm-326895.webp"
  },
- "平凡職業 2": {
+ "平凡職業造就世界最強 第二季": {
   "search": "平凡职业造就世界最强 第二季",
   "source": "bgm",
   "id": 292316,
   "name": "平凡职业造就世界最强 第二季",
   "score": 1.2,
   "file": "images/anime/bgm-292316.webp"
- },
- "我內心的糟糕念頭 2": {
-  "search": "我心里危险的东西 第二季",
-  "source": "bgm",
-  "id": 441795,
-  "name": "我心里危险的东西 第二季",
-  "score": 1.2,
-  "file": "images/anime/bgm-441795.webp"
  },
  "彈珠汽水瓶裡的千歲同學": {
   "source": "bgm",
@@ -1131,14 +1159,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-507634.webp"
  },
- "魔都精兵": {
+ "魔都精兵的奴隸": {
   "source": "bgm",
   "id": 357962,
   "name": "魔都精兵的奴隶",
   "score": 0.927,
   "file": "images/anime/bgm-357962.webp"
  },
- "Ave mujika": {
+ "BanG Dream! Ave Mujica": {
   "source": "bgm",
   "id": 454684,
   "name": "BanG Dream! Ave Mujica",
@@ -1194,7 +1222,7 @@
   "score": 0.824,
   "file": "images/anime/bgm-407133.webp"
  },
- "防風少年": {
+ "WIND BREAKER 防風少年": {
   "source": "bgm",
   "id": 426947,
   "name": "防风少年",
@@ -1216,14 +1244,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-7157.webp"
  },
- "不起眼女主": {
+ "不起眼女主角培育法": {
   "source": "bgm",
   "id": 100403,
   "name": "路人女主的养成方法",
   "score": 0.286,
   "file": "images/anime/bgm-100403.webp"
  },
- "殭屍100": {
+ "殭屍100～在成為殭屍前要做的100件事～": {
   "bgm": 414461,
   "source": "bgm",
   "id": 414461,
@@ -1231,7 +1259,7 @@
   "score": 1.0,
   "file": "images/anime/bgm-414461.webp"
  },
- "古見同學": {
+ "古見同學有交流障礙症": {
   "source": "bgm",
   "id": 335225,
   "name": "古见同学有交流障碍症",
@@ -1245,7 +1273,7 @@
   "score": 0.889,
   "file": "images/anime/bgm-327606.webp"
  },
- "末日三問": {
+ "末日時在做什麼？有沒有空？可以來拯救嗎？": {
   "search": "末日时在做什么",
   "source": "bgm",
   "id": 185943,
@@ -1253,21 +1281,21 @@
   "score": 0.783,
   "file": "images/anime/bgm-185943.webp"
  },
- "我們仍未知道那天所看見的花名": {
+ "我們仍未知道那天所看見的花名。": {
   "source": "bgm",
   "id": 10440,
   "name": "我们仍未知道那天所看见的花的名字。",
   "score": 0.933,
   "file": "images/anime/bgm-10440.webp"
  },
- "夫婦以上，戀人未滿": {
+ "夫婦以上，戀人未滿。": {
   "source": "bgm",
   "id": 359177,
   "name": "夫妇以上，恋人未满。",
   "score": 1.2,
   "file": "images/anime/bgm-359177.webp"
  },
- "排球少年": {
+ "排球少年！！": {
   "source": "bgm",
   "id": 84171,
   "name": "排球少年",
@@ -1295,6 +1323,14 @@
   "score": 0.0,
   "file": "images/anime/anilist-159808.webp"
  },
+ "位於戀愛光譜極端的我們": {
+  "bgm": 400595,
+  "source": "bgm",
+  "id": 400595,
+  "name": "经验丰富的你和经验为零的我交往的故事",
+  "score": 1.0,
+  "file": "images/anime/bgm-400595.webp"
+ },
  "鴨乃橋論的禁忌推理": {
   "source": "bgm",
   "id": 411426,
@@ -1309,14 +1345,7 @@
   "score": 0.75,
   "file": "images/anime/bgm-397808.webp"
  },
- "全職高手 3": {
-  "source": "bgm",
-  "id": 345806,
-  "name": "全职高手 第三季",
-  "score": 1.2,
-  "file": "images/anime/bgm-345806.webp"
- },
- "美好世界 3": {
+ "為美好的世界獻上祝福！3": {
   "bgm": 342667,
   "source": "bgm",
   "id": 342667,
@@ -1338,7 +1367,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-351349.webp"
  },
- "奧術 2": {
+ "奧術 第二季": {
   "search": "英雄联盟：双城之战 第二季",
   "source": "bgm",
   "id": 358801,
@@ -1346,7 +1375,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-358801.webp"
  },
- "五等分的新娘*": {
+ "五等分的新娘＊": {
   "bgm": 492352,
   "source": "bgm",
   "id": 492352,
@@ -1354,7 +1383,7 @@
   "score": 1.0,
   "file": "images/anime/bgm-492352.webp"
  },
- "五等分的新娘 特別篇": {
+ "五等分的新娘∽": {
   "bgm": 427233,
   "source": "bgm",
   "id": 427233,
@@ -1362,7 +1391,7 @@
   "score": 1.0,
   "file": "images/anime/bgm-427233.webp"
  },
- "劣等生 3": {
+ "魔法科高校的劣等生 第三季": {
   "search": "魔法科高校的劣等生 第三季",
   "source": "bgm",
   "id": 364522,
@@ -1370,7 +1399,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-364522.webp"
  },
- "約會大作戰 5": {
+ "約會大作戰 DATE A LIVE V": {
   "search": "约会大作战 第五季",
   "source": "bgm",
   "id": 389466,
@@ -1385,7 +1414,7 @@
   "score": 0.545,
   "file": "images/anime/bgm-441795.webp"
  },
- "實力至上 3": {
+ "歡迎來到實力至上主義的教室 第三季": {
   "search": "欢迎来到实力至上主义的教室 第三季",
   "source": "bgm",
   "id": 373266,
@@ -1393,7 +1422,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-373266.webp"
  },
- "轉生史萊姆 2 + 3": {
+ "關於我轉生變成史萊姆這檔事 第二季 + 第三季": {
   "search": "关于我转生变成史莱姆这档事 第二季",
   "source": "bgm",
   "id": 278031,
@@ -1401,7 +1430,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-278031.webp"
  },
- "轉生史萊姆 劇場版 紅蓮之絆篇": {
+ "劇場版 關於我轉生變成史萊姆這檔事 紅蓮之絆篇": {
   "bgm": 350185,
   "source": "bgm",
   "id": 350185,
@@ -1409,7 +1438,7 @@
   "score": 1.0,
   "file": "images/anime/bgm-350185.webp"
  },
- "輝夜 3": {
+ "輝夜姬想讓人告白－超級浪漫－": {
   "search": "辉夜大小姐想让我告白 超级浪漫",
   "source": "bgm",
   "id": 317613,
@@ -1417,14 +1446,14 @@
   "score": 1.2,
   "file": "images/anime/bgm-317613.webp"
  },
- "進巨 final": {
+ "進擊的巨人 The Final Season": {
   "source": "anilist",
   "id": 110277,
   "name": "進撃の巨人 The Final Season",
   "score": 0.0,
   "file": "images/anime/anilist-110277.webp"
  },
- "虛構推理 2": {
+ "虛構推理 第二季": {
   "search": "虚构推理 Season2",
   "source": "bgm",
   "id": 320839,
@@ -1432,7 +1461,7 @@
   "score": 1.2,
   "file": "images/anime/bgm-320839.webp"
  },
- "防禦力 2": {
+ "因為太怕痛就全點防禦力了。第二季": {
   "bgm": 302766,
   "source": "bgm",
   "id": 302766,
@@ -1440,14 +1469,14 @@
   "score": 1.0,
   "file": "images/anime/bgm-302766.webp"
  },
- "魔法科高中的優等生": {
+ "魔法科高校的優等生": {
   "source": "bgm",
   "id": 323840,
   "name": "魔法科高校的优等生",
   "score": 0.889,
   "file": "images/anime/bgm-323840.webp"
  },
- "正宗君的復仇R": {
+ "政宗君的復仇R": {
   "search": "政宗君的复仇 R",
   "source": "bgm",
   "id": 376433,
@@ -1455,15 +1484,15 @@
   "score": 1.2,
   "file": "images/anime/bgm-376433.webp"
  },
- "無職轉生 2 + 3": {
-  "bgm": 373247,
+ "無職轉生～到了異世界就拿出真本事～ 第三季": {
+  "bgm": 501963,
   "source": "bgm",
-  "id": 373247,
-  "name": "无职转生 第二季 ～到了异世界就拿出真本事～",
+  "id": 501963,
+  "name": "无职转生 第三季 ～到了异世界就拿出真本事～",
   "score": 1.0,
-  "file": "images/anime/bgm-373247.webp"
+  "file": "images/anime/bgm-501963.webp"
  },
- "堀與宮村 piece": {
+ "堀與宮村 -piece-": {
   "source": "bgm",
   "id": 425992,
   "name": "堀与宫村 -piece-",
@@ -1477,28 +1506,21 @@
   "score": 0.714,
   "file": "images/anime/bgm-315745.webp"
  },
- "死神 千年血戰": {
+ "BLEACH 死神 千年血戰篇 -訣別譚-、-相剋譚-": {
+  "bgm": 412916,
   "source": "bgm",
-  "id": 302286,
-  "name": "死神 千年血战篇",
-  "score": 1.123,
-  "file": "images/anime/bgm-302286.webp"
+  "id": 412916,
+  "name": "死神 千年血战篇-诀别谭-",
+  "score": 1.0,
+  "file": "images/anime/bgm-412916.webp"
  },
- "間諜家家酒 2": {
+ "SPY×FAMILY 間諜家家酒 第二季": {
   "search": "间谍过家家 第二季",
   "source": "bgm",
   "id": 411427,
   "name": "间谍过家家 第二季",
   "score": 1.2,
   "file": "images/anime/bgm-411427.webp"
- },
- "女朋友and女朋友2": {
-  "search": "女友成堆 第二季",
-  "source": "bgm",
-  "id": 398949,
-  "name": "女友成堆 第二季",
-  "score": 1.2,
-  "file": "images/anime/bgm-398949.webp"
  },
  "青春豬頭少年不會夢到嬌憐外出妹": {
   "search": "青春猪头少年不会梦到娇怜外出妹",
@@ -1522,31 +1544,5 @@
   "name": "剧场版 七大罪 被光诅咒的众人",
   "score": 1.0,
   "file": "images/anime/bgm-325728.webp"
- },
- "端腦": {
-  "none": true
- },
- "3年A班": {
-  "bgm": 266647,
-  "source": "bgm",
-  "id": 266647,
-  "name": "3年A班 -现在开始，全员人质-",
-  "score": 1.0,
-  "file": "images/anime/bgm-266647.webp"
- },
- "肌肉魔法使-MASHLE- 神覺者候補選拔試驗篇(第二季)": {
-  "source": "bgm",
-  "id": 443493,
-  "name": "物理魔法使马修 神觉者候补选拔试验篇",
-  "score": 0.553,
-  "file": "images/anime/bgm-443493.webp"
- },
- "位於戀愛光譜極端的我們": {
-  "bgm": 400595,
-  "source": "bgm",
-  "id": 400595,
-  "name": "经验丰富的你和经验为零的我交往的故事",
-  "score": 1.0,
-  "file": "images/anime/bgm-400595.webp"
  }
 }

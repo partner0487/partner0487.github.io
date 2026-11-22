@@ -203,6 +203,13 @@
     lastTouch = performance.now();
   }
 
+  // 往右（正數）/ 往左（負數）多轉幾張：疊加在「已經要轉去的位置」上，
+  // 還在轉的時候連點 / 連按會一直往同一個方向加，不會被拉回來而卡住
+  function nudge(n) {
+    target -= n * step;
+    lastTouch = performance.now();
+  }
+
   // ---- 拖曳 / 滑動 ----
   stage.addEventListener("pointerdown", (e) => {
     if (e.button !== 0) return;
@@ -235,10 +242,10 @@
       // 放開時順著速度多滑一點，再停在最近的一張
       target = Math.round((angle + d.v * 220) / step) * step;
     } else {
-      // 沒拖動 = 點擊：點到哪張就轉到哪張
+      // 沒拖動 = 點擊：點到的那張在正前方右邊第幾張，就再往右轉幾張
       const card = e.target.closest?.(".anime-card");
       const i = cards.indexOf(card);
-      if (i >= 0) rotateTo(i);
+      if (i >= 0) nudge(Math.round((mod(i * step + angle + 180, 360) - 180) / step));
     }
   };
   stage.addEventListener("pointerup", endDrag);
@@ -247,8 +254,8 @@
   stage.addEventListener("pointerleave", () => (hovering = false));
 
   stage.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight") rotateTo(front + 1);
-    else if (e.key === "ArrowLeft") rotateTo(front - 1);
+    if (e.key === "ArrowRight") nudge(1);
+    else if (e.key === "ArrowLeft") nudge(-1);
     else return;
     e.preventDefault();
   });

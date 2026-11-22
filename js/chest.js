@@ -203,10 +203,26 @@ function buildGround() {
   decoEl.replaceChildren(...decos);
 }
 
-function showGround(show) {
+// total：整段要幾秒（跟作品落地 / 進箱同時完成）
+function showGround(show, total = 0.8) {
   if (show) {
     buildGround();
     void groundEl.offsetHeight; // 剛建好的元素先算一次樣式，加上 grown 時才會播長出來的動畫
+  }
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const cols = [...groundEl.children];
+    const mid = (cols.length - 1) / 2 || 1;
+    cols.forEach((col, i) => {
+      const f = Math.abs(i - mid) / mid; // 0 = 中間、1 = 最旁邊
+      col.style.transition = show
+        ? `transform ${(total * 0.45).toFixed(2)}s cubic-bezier(0.3, 1.5, 0.5, 1) ${(f * total * 0.55).toFixed(2)}s` // 從中間往兩邊長
+        : `transform ${(total * 0.4).toFixed(2)}s ease-in ${((1 - f) * total * 0.6).toFixed(2)}s`; // 從兩邊往中間收
+    });
+    [...decoEl.children].forEach((el, n) => {
+      el.style.transition = show
+        ? `transform 0.4s cubic-bezier(0.3, 1.8, 0.5, 1) ${(total * 0.7 + (n % 5) * 0.08).toFixed(2)}s` // 草地快長好時冒出來
+        : "transform 0.2s ease-in"; // 收起來時先縮掉
+    });
   }
   container.classList.toggle("grown", show);
 }
@@ -243,9 +259,10 @@ let holdOpenUntil = 0; // 收起來時：作品飛回寶箱之前蓋子都保持
 // 等蓋子到全開才起飛："drop" = 等著噴出來、"recall" = 等著飛回去、null = 沒在等
 // （蓋子正在往下關的時候點，不能直接跳到全開；倒著播回全開，到了再讓作品動）
 let pendingLaunch = null;
-// 鏡頭和草地也要跟著作品的時間：作品起飛時才退後、長草；作品全部飛回去之後才拉近、收草
-let pendingCam = null; // 開箱後要用的鏡頭位置（等作品起飛才套用）
-let settleAt = 0; // 收起來時，作品全部回到寶箱的時間（到了才拉近鏡頭、收草地）
+// 鏡頭和草地跟作品同步：點下去就開始變，但拉長成「蓋子到全開 + 作品飛完」那麼久，作品落地 / 進箱時剛好完成
+let camTween = null; // { from, t0, dur }：鏡頭從 from 補間到目前的目標（cameraTargetZ / Y、viewOffsetTarget）
+let lastTick = 0;
+const LID_SPEED = 1.2; // 開箱動畫的播放速度（動畫秒數 / 真實秒數）
 const now = () => performance.now() / 1000; // 秒；不用 THREE.Clock，因為停止渲染再開始時它會歸零
 
 // 選了作品時，畫面要往左（手機往上）讓出位置給卡片：用 camera.setViewOffset 平移整個畫面
@@ -506,7 +523,6 @@ function layoutItems(fromChest) {
   const region = viewRegion();
   const regionW = region.x1 - region.x0;
   const regionH = region.y1 - region.y0;
-  const prevCam = { z: cameraTargetZ, y: cameraTargetY, ox: viewOffsetTarget.x, oy: viewOffsetTarget.y };
 
   // 把整個畫面平移，讓寶箱出現在可用範圍的正中間
   viewOffsetTarget.x = W / 2 - (region.x0 + region.x1) / 2;
@@ -606,15 +622,24 @@ function layoutItems(fromChest) {
     if (fromMouth) item.mesh.visible = false;
     item.state = "flying";
   });
+}
 
-  // 作品還在箱子裡等蓋子全開：鏡頭先不要動，記下來等起飛時再套用
-  if (fromChest || pendingLaunch === "drop") {
-    pendingCam = { z: cameraTargetZ, y: cameraTargetY, ox: viewOffsetTarget.x, oy: viewOffsetTarget.y };
-    cameraTargetZ = prevCam.z;
-    cameraTargetY = prevCam.y;
-    viewOffsetTarget.x = prevCam.ox;
-    viewOffsetTarget.y = prevCam.oy;
-  }
+// 蓋子從現在到全開還要幾秒（估算，給鏡頭和草地決定要拉多長）
+function lidWait() {
+  if (!actions.length) return 0;
+  const a = actions[0];
+  const peak = a.getClip().duration / 2;
+  const t = openness < 0.5 ? 0 : a.time; // 蓋子關著：會從頭開始開
+  return t <= peak ? (peak - t) / LID_SPEED : (t - peak) / (LID_SPEED * 1.5); // 往下關的時候是倒著播回來（1.5 倍速）
+}
+
+// 鏡頭從現在的位置，用 dur 秒補間到目標
+function startCamTween(dur) {
+  camTween = {
+    from: { z: camera.position.z, y: camera.position.y, ox: viewOffset.x, oy: viewOffset.y },
+    t0: now(),
+    dur: Math.max(0.3, dur),
+  };
 }
 
 // 箱口：掉落物從這裡飛出來、飛回去
@@ -659,8 +684,7 @@ function dropItems() {
   if (!projects.length || !model) return;
   dropped = true;
   hint.textContent = HINT_OPEN;
-  settleAt = 0; // 收到一半又打開：不要等一下又把鏡頭拉近
-  buildGround(); // 先建好（排版要知道草地多高），長出來的動畫等作品起飛
+  buildGround(); // 先建好：排版要知道草地多高
   if (!items.length) {
     items = projects.map((project) => {
       const mesh = new THREE.Mesh(
@@ -674,18 +698,23 @@ function dropItems() {
   }
   layoutItems(true);
   pendingLaunch = "drop";
+  // 從現在到最後一個作品落地要多久：鏡頭退後、草地長出來都拉成這麼長
+  const total = lidWait() + (items.length - 1) * 0.06 + 0.9;
+  startCamTween(total);
+  showGround(true, total);
 }
 
 function recallItems() {
-  // 鏡頭先停在原地（關掉卡片也不要先平移），等作品全部飛回寶箱才拉近
-  const keepOffset = { x: viewOffsetTarget.x, y: viewOffsetTarget.y };
   deselect(false);
-  viewOffsetTarget.x = keepOffset.x;
-  viewOffsetTarget.y = keepOffset.y;
   dropped = false;
   hint.textContent = HINT_CLOSED;
-  pendingCam = null;
   setHovered(null);
+  // 從現在到最後一個作品回到寶箱要多久：鏡頭拉近、草地收起來都拉成這麼長
+  const total = lidWait() + (items.length - 1) * 0.03 + 0.5;
+  frameIdle();
+  viewOffsetTarget.x = viewOffsetTarget.y = 0;
+  startCamTween(total);
+  showGround(false, total);
   const box = chestBox();
   const mouth = chestMouth(box);
   pendingLaunch = "recall";
@@ -892,7 +921,9 @@ function animate() {
       action.timeScale = hold && action.time > peak ? -1.5 : 1;
       action.setEffectiveWeight(openness);
     });
-    mixer.update(0.02);
+    const tick = now();
+    mixer.update(Math.min(0.05, tick - (lastTick || tick)) * LID_SPEED); // 照真實時間播（60Hz、120Hz 螢幕一樣快）
+    lastTick = tick;
     let lidOpen = openness > 0.95;
     if (hold) {
       actions.forEach((action) => {
@@ -908,38 +939,32 @@ function animate() {
     // 蓋子到全開了：作品這時才起飛 / 飛回去
     if (pendingLaunch && lidOpen) {
       const t = now();
-      if (pendingLaunch === "drop") {
-        items.forEach((item, i) => (item.start = t + i * 0.06));
-        // 作品起飛的同時鏡頭退後、草地長出來
-        if (pendingCam) {
-          cameraTargetZ = pendingCam.z;
-          cameraTargetY = pendingCam.y;
-          viewOffsetTarget.x = pendingCam.ox;
-          viewOffsetTarget.y = pendingCam.oy;
-          pendingCam = null;
-        }
-        showGround(true);
-      } else {
+      if (pendingLaunch === "drop") items.forEach((item, i) => (item.start = t + i * 0.06));
+      else {
         items.forEach((item, i) => (item.start = t + (items.length - 1 - i) * 0.03));
-        settleAt = t + (items.length - 1) * 0.03 + 0.5; // 最後一個飛回去的時間
-        holdOpenUntil = settleAt + 0.15; // 最後一個飛回去再關
+        holdOpenUntil = t + (items.length - 1) * 0.03 + 0.5 + 0.15; // 最後一個飛回去再關
       }
       pendingLaunch = null;
-    }
-    // 作品全部回到寶箱：鏡頭拉近回原本的構圖、草地收起來
-    if (settleAt && now() >= settleAt) {
-      settleAt = 0;
-      frameIdle();
-      viewOffsetTarget.x = viewOffsetTarget.y = 0;
-      showGround(false);
     }
   }
 
   // 鏡頭慢慢退到（或回到）目標距離，畫面慢慢平移到目標位置
-  camera.position.z += (cameraTargetZ - camera.position.z) * 0.08;
-  camera.position.y += (cameraTargetY - camera.position.y) * 0.08;
-  viewOffset.x += (viewOffsetTarget.x - viewOffset.x) * 0.1;
-  viewOffset.y += (viewOffsetTarget.y - viewOffset.y) * 0.1;
+  // 開箱 / 收起來：照算好的時間長度補間（跟作品同時完成）；其他時候（打開卡片、改視窗大小）照舊慢慢靠近
+  if (camTween) {
+    const k = Math.min(1, (now() - camTween.t0) / camTween.dur);
+    const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; // 慢 → 快 → 慢
+    const f = camTween.from;
+    camera.position.z = f.z + (cameraTargetZ - f.z) * e;
+    camera.position.y = f.y + (cameraTargetY - f.y) * e;
+    viewOffset.x = f.ox + (viewOffsetTarget.x - f.ox) * e;
+    viewOffset.y = f.oy + (viewOffsetTarget.y - f.oy) * e;
+    if (k >= 1) camTween = null;
+  } else {
+    camera.position.z += (cameraTargetZ - camera.position.z) * 0.08;
+    camera.position.y += (cameraTargetY - camera.position.y) * 0.08;
+    viewOffset.x += (viewOffsetTarget.x - viewOffset.x) * 0.1;
+    viewOffset.y += (viewOffsetTarget.y - viewOffset.y) * 0.1;
+  }
   applyViewOffset();
 
   updateItems();

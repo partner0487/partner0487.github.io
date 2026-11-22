@@ -86,7 +86,13 @@
     tabsEl.querySelectorAll(".anime-tab").forEach((b) => {
       const on = b.dataset.group === g;
       b.setAttribute("aria-selected", String(on));
-      if (on) b.scrollIntoView({ block: "nearest", inline: "nearest" });
+      // 手機上標籤是一排左右滑：只捲標籤列，讓選到的那個露出來
+      // （不能用 scrollIntoView，它會連整個頁面一起捲，興趣頁一打開就被帶到動漫區）
+      if (on) {
+        const bar = tabsEl.getBoundingClientRect();
+        const r = b.getBoundingClientRect();
+        if (r.left < bar.left || r.right > bar.right) tabsEl.scrollLeft += r.left - bar.left - (bar.width - r.width) / 2;
+      }
     });
     const build = () => {
       buildRing(groups.get(g));

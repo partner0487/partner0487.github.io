@@ -72,6 +72,10 @@
 - **封面**：[scripts/anime_covers.py](scripts/anime_covers.py) 用 Bangumi（有中文片名）搜尋、比對片名挑最像的，找不到再用 AniList；下載成 280px 寬的 WebP 放在 images/anime，對應記在 [data/anime-covers.json](data/anime-covers.json)，對錯的可以手動指定關鍵字或條目編號再跑一次。`--sheet` 會輸出一張全部封面的總覽圖方便檢查
 
 ### 每一頁都有
+- **文字入場特效**（[js/reveal.js](js/reveal.js)、[css/reveal.css](css/reveal.css)）：捲到才播、只播一次
+  - 首頁「Hello」往上浮、名字逐字彈出、社群圖示依序出現；「斜咖軟體人」先是亂跳的全形符號再逐字定格（解碼）
+  - 關於的標題淡入、標題下的線從中間畫出來、三間學校依序滑上來；興趣的「I'm a Gamer」紅藍錯位閃一下（故障）
+  - 效果和選擇器寫成一張表，HTML 不用改；`<head>` 先幫 `<html>` 加 `rv-on` 才藏起來，系統關掉動畫的人直接看到完整文字。藏起來的規則用 `:where()` 壓低權重，入場後的樣式才蓋得過去
 - **手機版選單**：[js/site.js](js/site.js) 負責漢堡選單、響應式斷點、標示目前頁面。這是拿掉 Nicepage 之後自己寫的替代版
 - **字型**：Google Fonts 載入 Roboto、Open Sans 和 Noto Sans TC（400、700）。英文用前兩個，中文一律用 Noto Sans TC，不同電腦和手機看起來才會一樣；Google 把中文字型切成很多小塊，瀏覽器只下載頁面用到的字
 - **footer**：社群連結和 Email

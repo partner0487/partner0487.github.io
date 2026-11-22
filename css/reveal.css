@@ -1,0 +1,135 @@
+/* 文字入場特效（js/reveal.js）
+   <head> 裡的一行 script 會幫 <html> 加 rv-on（系統關掉動畫的人不加），
+   有 rv-on 才先把這些元素藏起來，等捲到再由 JS 加上 rv-in 播放 */
+
+/* ---- 入場前先藏起來 ----
+   用 :where() 把權重壓到最低（只算 .rv-on 一個 class），下面「入場後」的規則才蓋得過去 */
+.rv-on :where(
+  .u-section-1 .u-title,
+  .u-section-1 .u-repeater-item,
+  #block-3 .u-text-1,
+  #block-3 .u-text-2,
+  #research .u-text-1,
+  #research .research-text,
+  #sec-6049 > .u-sheet > .u-text-1,
+  #sec-6049 .u-list-item,
+  #sec-704a .product-title,
+  #sec-704a .product-subtitle
+) {
+  opacity: 0;
+}
+
+.rv-on :where(#research .u-line-1, #sec-6049 .u-line-1) {
+  transform: scaleX(0);
+}
+
+/* ---- 首頁開場：Hello 往上浮、名字逐字彈出、社群圖示依序出現 ---- */
+.rv-hello {
+  opacity: 1; /* 拆成一個字一個字之後，改由每個字自己藏起來 */
+}
+
+.rv-ch {
+  display: inline-block;
+  opacity: 0;
+}
+
+.rv-hello.rv-in .rv-rise {
+  animation: rv-rise 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) var(--d) both;
+}
+
+.rv-hello.rv-in .rv-pop {
+  animation: rv-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) var(--d) both;
+}
+
+.rv-icon.rv-in {
+  animation: rv-pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) var(--d) both;
+}
+
+@keyframes rv-rise {
+  from { opacity: 0; transform: translateY(0.6em); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes rv-pop {
+  from { opacity: 0; transform: translateY(0.4em) scale(0.4); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- 淡入上浮 ---- */
+.rv-fade.rv-in,
+.rv-stagger.rv-in {
+  animation: rv-rise 0.7s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+.rv-stagger.rv-in {
+  animation-duration: 0.8s;
+}
+
+/* 標題下面的線：從中間往兩邊畫出來 */
+.rv-line {
+  transition: transform 0.8s cubic-bezier(0.6, 0, 0.2, 1) 0.15s;
+}
+
+.rv-line.rv-in {
+  transform: none;
+}
+
+/* ---- 解碼 ---- */
+.rv-scramble.rv-in {
+  opacity: 1;
+}
+
+/* ---- 故障：紅藍錯位閃一下 ---- */
+.rv-glitch.rv-in {
+  opacity: 1;
+}
+
+.rv-glitch.rv-glitching {
+  position: relative;
+  animation: rv-jitter 0.9s steps(1) both;
+}
+
+.rv-glitch.rv-glitching::before,
+.rv-glitch.rv-glitching::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.rv-glitch.rv-glitching::before {
+  color: #ff2d55;
+  animation: rv-slice-a 0.9s steps(1) both;
+}
+
+.rv-glitch.rv-glitching::after {
+  color: #00e5ff;
+  animation: rv-slice-b 0.9s steps(1) both;
+}
+
+@keyframes rv-jitter {
+  0% { opacity: 0; transform: translateX(-6px); }
+  10% { opacity: 1; transform: translateX(4px); }
+  20% { transform: translateX(-3px) skewX(8deg); }
+  30% { transform: translateX(2px); }
+  45% { transform: translateX(-1px) skewX(-4deg); }
+  60%, 100% { transform: none; }
+}
+
+@keyframes rv-slice-a {
+  0% { clip-path: inset(10% 0 70% 0); transform: translate(-6px, -2px); }
+  15% { clip-path: inset(55% 0 20% 0); transform: translate(5px, 1px); }
+  30% { clip-path: inset(30% 0 45% 0); transform: translate(-4px, 0); }
+  45% { clip-path: inset(75% 0 5% 0); transform: translate(3px, -1px); }
+  60% { clip-path: inset(0 0 85% 0); transform: translate(-2px, 0); }
+  75%, 100% { clip-path: inset(50% 0 50% 0); transform: none; }
+}
+
+@keyframes rv-slice-b {
+  0% { clip-path: inset(65% 0 10% 0); transform: translate(6px, 2px); }
+  15% { clip-path: inset(5% 0 75% 0); transform: translate(-5px, -1px); }
+  30% { clip-path: inset(40% 0 35% 0); transform: translate(4px, 1px); }
+  45% { clip-path: inset(15% 0 60% 0); transform: translate(-3px, 0); }
+  60% { clip-path: inset(85% 0 0 0); transform: translate(2px, 1px); }
+  75%, 100% { clip-path: inset(50% 0 50% 0); transform: none; }
+}

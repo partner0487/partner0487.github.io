@@ -7,6 +7,8 @@
   <title>興趣 | Partner0487</title>
   <!-- 先決定深色 / 淺色（存過的選擇 > 系統主題），放在 CSS 前面才不會先閃一下白畫面 -->
   <script>(() => { let t; try { t = localStorage.getItem("theme"); } catch (e) {} if (t !== "dark" && t !== "light") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; document.documentElement.dataset.theme = t; })();</script>
+  <!-- 文字入場特效：先標記要等入場（css/reveal.css、js/reveal.js） -->
+  <script>matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.classList.add("rv-on");</script>
   <meta name="description" content="我在玩的遊戲和看過的動漫清單。">
   <link rel="icon" href="images/favicon/favicon.ico" sizes="any">
   <link rel="icon" href="images/favicon/favicon-32.png" type="image/png">
@@ -29,8 +31,10 @@
   <link rel="stylesheet" href="css/gamer.css" media="screen">
   <link rel="stylesheet" href="css/anime.css" media="screen">
   <link rel="stylesheet" href="css/dark.css">
+  <link rel="stylesheet" href="css/reveal.css" media="screen">
 
   <script src="js/site.js" defer></script>
+  <script src="js/reveal.js" defer></script>
   <script src="js/gamer.js" defer></script>
   <script src="js/anime.js" defer></script>
   <!-- 只載入實際用到的字重：Roboto 400、Open Sans 400/700（中文用系統字型） -->

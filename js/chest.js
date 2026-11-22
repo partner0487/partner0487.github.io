@@ -865,8 +865,9 @@ function animate() {
     actions.forEach((action) => action.setEffectiveWeight(openness));
     mixer.update(0.02);
     // 開箱動畫本身是「打開 → 一半時開最大 → 關回去」一直重播；
-    // 作品噴出來、飛回來的這段時間停在開最大那一刻，蓋子才不會一開一關（只是滑鼠移上去就照舊晃）
-    if (dropped || now() < holdOpenUntil) {
+    // 只有作品正在飛出來 / 飛回去的這段時間停在開最大那一刻，作品落地之後蓋子照常開合
+    const flying = items.some((item) => item.state === "flying" || item.state === "returning");
+    if (flying || now() < holdOpenUntil) {
       actions.forEach((action) => {
         const peak = action.getClip().duration / 2;
         if (action.time > peak) {

@@ -239,6 +239,8 @@ let dropped = false; // 作品是不是已經噴出來了
 let hoveredItem = null;
 let selected = null; // 目前打開卡片的作品
 let pending = null; // 網址要求自動開箱：{ slug }
+let holdOpenUntil = 0; // 收起來時：作品飛回寶箱之前蓋子都保持打開（秒，跟 now() 同一個時鐘）
+let launchDelay = 0; // 開箱時：蓋子還沒打開就先等它打開，作品再飛出來（秒）
 const now = () => performance.now() / 1000; // 秒；不用 THREE.Clock，因為停止渲染再開始時它會歸零
 
 // 選了作品時，畫面要往左（手機往上）讓出位置給卡片：用 camera.setViewOffset 平移整個畫面
@@ -590,7 +592,7 @@ function layoutItems(fromChest) {
     item.size = itemSize;
     item.from = fromChest ? mouth.clone() : item.mesh.position.clone();
     item.to = target;
-    item.start = now() + (fromChest ? i * 0.06 : 0);
+    item.start = now() + (fromChest ? launchDelay + i * 0.06 : 0);
     item.duration = fromChest ? 0.9 : 0.5;
     item.arc = fromChest ? itemSize * 3 : 0;
     item.state = "flying";
@@ -640,6 +642,8 @@ function dropItems() {
   dropped = true;
   hint.textContent = HINT_OPEN;
   showGround(true);
+  // 蓋子還關著（手機點擊、網址直接開箱，沒有滑鼠先移上去）：等它大概打開再噴，作品才不會穿過蓋子
+  launchDelay = openness > 0.8 ? 0 : 0.3;
   if (!items.length) {
     items = projects.map((project) => {
       const mesh = new THREE.Mesh(
@@ -668,6 +672,7 @@ function recallItems() {
     item.to = mouth;
     item.start = now() + (items.length - 1 - i) * 0.03;
     item.duration = 0.5;
+    holdOpenUntil = Math.max(holdOpenUntil, item.start + item.duration + 0.15); // 最後一個飛回去再關
     item.arc = item.size * 1.5;
     item.state = "returning";
   });
@@ -850,7 +855,8 @@ function animate() {
   frame = requestAnimationFrame(animate);
 
   if (mixer) {
-    const target = isHovered || dropped ? 1 : 0; // 作品噴出來的時候蓋子保持打開
+    // 作品噴出來、還有作品在飛回來的路上時，蓋子都保持打開
+    const target = isHovered || dropped || now() < holdOpenUntil ? 1 : 0;
     openness += (target - openness) * 0.12; // 每一幀往目標靠近一點，開合比較自然
     if (target === 0 && openness < 0.001) {
       openness = 0;
@@ -858,6 +864,17 @@ function animate() {
     }
     actions.forEach((action) => action.setEffectiveWeight(openness));
     mixer.update(0.02);
+    // 開箱動畫本身是「打開 → 一半時開最大 → 關回去」一直重播；
+    // 作品噴出來、飛回來的這段時間停在開最大那一刻，蓋子才不會一開一關（只是滑鼠移上去就照舊晃）
+    if (dropped || now() < holdOpenUntil) {
+      actions.forEach((action) => {
+        const peak = action.getClip().duration / 2;
+        if (action.time > peak) {
+          action.time = peak;
+          mixer.update(0);
+        }
+      });
+    }
   }
 
   // 鏡頭慢慢退到（或回到）目標距離，畫面慢慢平移到目標位置

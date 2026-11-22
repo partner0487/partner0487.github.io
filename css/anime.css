@@ -147,14 +147,7 @@
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  transition: opacity 0.26s, transform 0.26s;
   pointer-events: none; /* 外框擋在卡片前面（z = 0 的平面），點擊要穿過去給卡片 */
-}
-
-/* 換分類：舊的一圈縮小淡出，新的再展開 */
-.anime-ring-wrap.swap {
-  opacity: 0;
-  transform: scale(0.75);
 }
 
 .anime-ring {

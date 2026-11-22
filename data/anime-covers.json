@@ -62,14 +62,6 @@
   "score": 1.024,
   "file": "images/anime/bgm-266794.webp"
  },
- "滿腦都是OO的我沒辦法談戀愛": {
-  "bgm": 268412,
-  "source": "bgm",
-  "id": 268412,
-  "name": "淫乱的青酱不能学习",
-  "score": 1.0,
-  "file": "images/anime/bgm-268412.webp"
- },
  "家有女友": {
   "source": "bgm",
   "id": 253628,
@@ -934,13 +926,6 @@
   "score": 0.963,
   "file": "images/anime/bgm-501958.webp"
  },
- "帝乃三姐妹": {
-  "source": "bgm",
-  "id": 502272,
-  "name": "帝乃三姐妹原来很好搞定。",
-  "score": 0.825,
-  "file": "images/anime/bgm-502272.webp"
- },
  "舞動青春": {
   "source": "bgm",
   "id": 204317,
@@ -1214,13 +1199,6 @@
   "name": "怪兽8号",
   "score": 1.2,
   "file": "images/anime/bgm-394623.webp"
- },
- "轉生第七王子 隨心所欲學習魔法之路": {
-  "source": "bgm",
-  "id": 407133,
-  "name": "转生为第七王子，随心所欲的魔法学习之路",
-  "score": 0.824,
-  "file": "images/anime/bgm-407133.webp"
  },
  "WIND BREAKER 防風少年": {
   "source": "bgm",
@@ -1537,7 +1515,29 @@
   "score": 0.857,
   "file": "images/anime/bgm-398949.webp"
  },
- "七大罪 光之詛咒者": {
+ "滿腦都是○○的我沒辦法談戀愛": {
+  "bgm": 268412,
+  "source": "bgm",
+  "id": 268412,
+  "name": "淫乱的青酱不能学习",
+  "score": 1.0,
+  "file": "images/anime/bgm-268412.webp"
+ },
+ "帝乃三姊妹意外地容易相處。": {
+  "source": "bgm",
+  "id": 502272,
+  "name": "帝乃三姐妹原来很好搞定。",
+  "score": 0.825,
+  "file": "images/anime/bgm-502272.webp"
+ },
+ "轉生為第七王子，隨心所欲的魔法學習之路": {
+  "source": "bgm",
+  "id": 407133,
+  "name": "转生为第七王子，随心所欲的魔法学习之路",
+  "score": 0.824,
+  "file": "images/anime/bgm-407133.webp"
+ },
+ "七大罪：被光詛咒的人們": {
   "bgm": 325728,
   "source": "bgm",
   "id": 325728,

@@ -9,7 +9,6 @@
   if (!board) return;
   const tabsEl = board.querySelector(".anime-tabs");
   const stage = board.querySelector(".anime-stage");
-  const wrap = board.querySelector(".anime-ring-wrap");
   const ring = board.querySelector(".anime-ring");
   const infoTitle = board.querySelector(".anime-info-title");
   const infoMeta = board.querySelector(".anime-info-meta");
@@ -37,6 +36,8 @@
   let visible = false;
   let frame = null;
   let lastCw = 0; // 目前這一圈用的卡片寬度
+  let appear = 1; // 整圈出現的程度：0 = 縮小淡出，1 = 完整（換分類的動畫）
+  let appearTarget = 1;
 
   const mod = (a, n) => ((a % n) + n) % n;
 
@@ -88,13 +89,15 @@
     const build = () => {
       buildRing(groups.get(g));
       if (thenFocus !== null) angle = target = -thenFocus * step;
+      appear = immediate || reduceMotion.matches ? 1 : 0;
+      appearTarget = 1;
       render(true);
-      wrap.classList.remove("swap");
     };
     if (immediate || reduceMotion.matches) return build();
     // 舊的一圈縮起來淡出，換成新的再展開
-    wrap.classList.add("swap");
-    setTimeout(build, 260);
+    // （不能直接對外框做 opacity：3D 環的祖先只要半透明，瀏覽器就會把整圈壓平，先看到一排橫的）
+    appearTarget = 0;
+    setTimeout(build, 220);
   }
 
   function cardWidth() {
@@ -143,19 +146,22 @@
 
   // ---- 每一幀：環轉一點、每張卡依角度調整大小和亮度 ----
   function render(force = false) {
+    const da = appearTarget - appear;
     if (!drag) {
       const d = target - angle;
-      if (Math.abs(d) < 0.01 && !force) return;
+      if (Math.abs(d) < 0.01 && Math.abs(da) < 0.005 && !force) return;
       angle = Math.abs(d) < 0.01 ? target : angle + d * (reduceMotion.matches ? 1 : 0.12);
     }
-    ring.style.transform = `translateZ(${-radius}px) rotateY(${angle}deg)`;
+    appear = Math.abs(da) < 0.005 ? appearTarget : appear + da * 0.2;
+    const grow = 0.7 + 0.3 * appear; // 換分類時整圈縮小 / 展開
+    ring.style.transform = `translateZ(${-radius}px) scale(${grow.toFixed(3)}) rotateY(${angle}deg)`;
     cards.forEach((card, i) => {
       const rel = mod(i * step + angle + 180, 360) - 180; // 這張卡離正前方幾度
       const c = Math.cos((rel * Math.PI) / 180);
       const near = Math.max(0, c);
       const scale = 1 + 0.18 * Math.pow(near, 12); // 只有正前方那張會放大
       card.style.transform = `rotateY(${i * step}deg) translateZ(${radius}px) scale(${scale.toFixed(3)})`;
-      card.style.opacity = (0.15 + 0.85 * Math.pow(near, 1.5)).toFixed(3);
+      card.style.opacity = ((0.15 + 0.85 * Math.pow(near, 1.5)) * appear).toFixed(3);
     });
     const f = mod(Math.round(-angle / step), cards.length);
     if (f !== front) {

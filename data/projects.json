@@ -95,6 +95,7 @@
         "name": "海大資工 學分計算機",
         "desc": "海大資工學分計算 Android App。",
         "lang": "kotlin",
+        "icon": "images/projects/ntou-credit.png",
         "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/NTOU-credit-calculation" }]
       },
       {

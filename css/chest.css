@@ -203,6 +203,13 @@
   transform: translateY(-2px);
 }
 
+/* repo 暫時設成私人的作品：沒有按鈕，改寫一行說明 */
+.chest-card-private {
+  padding: 6px 4px;
+  color: #aaa;
+  font-size: 0.85rem;
+}
+
 @media (max-width: 600px) {
   /* 手機：標題淡出，卡片從下面滑上來 */
   #chest-section.focused .floating-label {

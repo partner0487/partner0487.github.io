@@ -6,7 +6,9 @@
         "name": "棒球打擊動作分析",
         "desc": "用兩台相機從正面和側面同步錄影，YOLO 抓打者和球棒、ViTPose 抓骨架，分析揮棒動作和 3D 姿態。和台鋼雄鷹棒球隊合作，我負責系統的開發和優化。",
         "lang": "python",
-        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/Hitter-Skeleton" }]
+        "id": "hitter-skeleton",
+        "private": true,
+        "links": []
       }
     ]
   },
@@ -18,6 +20,12 @@
         "desc": "自己寫的 PyGame 平台跳躍遊戲，再訓練 agent 去玩。一個讀遊戲數值的 PPO、一個只看畫面的 CNN，比較兩者的表現。",
         "lang": "python",
         "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/RL_Platform_Game" }]
+      },
+      {
+        "name": "文字提示的物件偵測與分割",
+        "desc": "輸入一段文字（例如「螺帽、墊片」），NanoOWL 找出物件的框、NanoSAM 再切出遮罩，畫面上即時顯示各零件的數量和面積，可以隨時換提示詞。兩個模型都用 TensorRT 跑在 Jetson Orin Nano 上。",
+        "lang": "python",
+        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/Owl_Sam" }]
       }
     ]
   },
@@ -26,7 +34,7 @@
     "projects": [
       {
         "name": "二遊更新日曆",
-        "desc": "自動抓原神、星鐵、鳴潮等遊戲官網公告，整理成日曆，可以一鍵同步到 Google 日曆。",
+        "desc": "自動抓原神、星鐵、鳴潮、異環的官網公告，整理成日曆看板，可以一鍵同步到 Google 日曆；重複匯出會自動更新，不會塞爆日曆，也能一鍵清掉。",
         "lang": "python",
         "icon": "images/projects/hoyo-calendar.png",
         "links": [
@@ -42,16 +50,29 @@
       },
       {
         "name": "任務系統",
-        "desc": "Android 待辦 App，沒做完的任務會一直掛在通知欄，拉下來就能打勾。",
+        "desc": "Android 待辦 App：主線、支線、每週、每日四種任務，大事件底下還能分細項。沒做完的任務會一直掛在通知欄，拉下來就能完成或放棄，快到期時倒數會越來越精細。",
         "lang": "dart",
         "icon": "images/projects/task-system.png",
-        "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/TaskSystem" }]
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/partner0487/TaskSystem" },
+          { "label": "下載 APK", "url": "https://github.com/partner0487/TaskSystem/releases/latest" }
+        ]
       },
       {
         "name": "全國雲端候診中心 自動提醒",
-        "desc": "盯著線上候診系統的看診進度，快輪到自己時提醒。",
+        "desc": "盯著全國雲端候診中心的叫號進度，依最近的叫號速度估算還要多久，快輪到自己時響鈴、跳通知提醒；網路不穩會自動重試。",
         "lang": "python",
         "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/Auto_Doctor_Checker" }]
+      },
+      {
+        "name": "Auto Wuwa Tappo",
+        "desc": "自動領鳴潮桌寵 Wuwa Tappo 的寶箱：讀桌寵泡泡上的倒數，時間到就用背景點擊領取，不會動到滑鼠，玩全螢幕遊戲時也照樣領。",
+        "lang": "python",
+        "icon": "images/projects/wuwa-tappo.png",
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/partner0487/Auto_WuwaTappo" },
+          { "label": "下載", "url": "https://github.com/partner0487/Auto_WuwaTappo/releases/latest" }
+        ]
       }
     ]
   },

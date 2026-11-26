@@ -9,7 +9,7 @@
   if (!root) return;
 
   const langNames = { python: "Python", dart: "Dart", react: "React", kotlin: "Kotlin", html: "HTML", java: "Java" };
-  const slug = (project) => project.links[0].url.replace(/\/+$/, "").split("/").pop().toLowerCase();
+  const slug = (project) => project.id || project.links[0].url.replace(/\/+$/, "").split("/").pop().toLowerCase(); // 沒公開連結的用 id
 
   // 小工具：建立元素
   function el(tag, className, text) {

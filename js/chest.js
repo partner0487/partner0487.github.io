@@ -272,8 +272,9 @@ const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
 // 每個作品用 repo 名稱當代號，網址 #projects/<repo> 會用到
+// 沒有公開連結的作品（repo 暫時設成私人）用 projects.json 裡的 id
 const slug = (project) =>
-  project.links[0].url.replace(/\/+$/, "").split("/").pop().toLowerCase();
+  project.id || project.links[0].url.replace(/\/+$/, "").split("/").pop().toLowerCase();
 
 function init() {
   scene = new THREE.Scene();
@@ -847,6 +848,7 @@ function fillCard(project) {
   langIcon.alt = "";
   lang.append(langIcon, langNames[project.lang] || project.lang);
   const links = el("div", "chest-card-links");
+  if (project.private) links.append(el("span", "chest-card-private", "程式碼暫不公開")); // repo 目前設成私人
   for (const link of project.links) {
     const a = el("a", "", link.label);
     a.href = link.url;

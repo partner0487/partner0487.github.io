@@ -62,6 +62,7 @@
         "name": "全國雲端候診中心 自動提醒",
         "desc": "盯著全國雲端候診中心的叫號進度，依最近的叫號速度估算還要多久，快輪到自己時響鈴、跳通知提醒；網路不穩會自動重試。",
         "lang": "python",
+        "icon": "images/projects/doctor-checker.png",
         "links": [{ "label": "GitHub", "url": "https://github.com/partner0487/Auto_Doctor_Checker" }]
       },
       {
